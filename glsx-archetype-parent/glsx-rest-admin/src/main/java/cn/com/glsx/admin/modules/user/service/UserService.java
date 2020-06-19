@@ -1,5 +1,7 @@
 package cn.com.glsx.admin.modules.user.service;
 
+import cn.com.glsx.admin.modules.user.dto.UserSearch;
+import cn.com.glsx.admin.modules.user.utils.JwtUser;
 import cn.hutool.core.lang.UUID;
 import com.github.pagehelper.PageInfo;
 import com.glsx.plat.common.utils.ObjectUtils;
@@ -7,8 +9,6 @@ import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.web.utils.SessionUtils;
-import cn.com.glsx.admin.modules.user.dto.UserSearch;
-import cn.com.glsx.admin.modules.user.utils.JwtUser;
 import com.glsx.vasp.modules.entity.User;
 import com.glsx.vasp.modules.mapper.UserMapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -86,7 +86,7 @@ public class UserService {
         jwtUser.setJwtId(jwtId);
         jwtUser.setUserId(String.valueOf(user.getId()));
         jwtUser.setPhone(user.getPhone());
-        jwtUser.setTerminal(jwtUtils.getApplication());
+        jwtUser.setApplication(jwtUtils.getApplication());
 
         Map<String, String> userMap = (Map<String, String>) ObjectUtils.objectToMap(jwtUser);
 

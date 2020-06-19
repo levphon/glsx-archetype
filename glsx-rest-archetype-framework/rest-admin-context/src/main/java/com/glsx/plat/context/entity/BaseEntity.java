@@ -52,8 +52,8 @@ public abstract class BaseEntity implements Serializable {
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @Column(name = "created_date", length = 19, updatable = false)
-    private Date createDate = new Date();
+    @Column(name = "created_date", length = 19, updatable = false, columnDefinition = "timestamp default current_timestamp comment '创建时间'")
+    private Date createDate;
 
     /**
      * 更新时间

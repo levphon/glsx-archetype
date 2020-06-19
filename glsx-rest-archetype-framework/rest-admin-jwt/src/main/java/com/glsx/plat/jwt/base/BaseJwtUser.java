@@ -31,9 +31,9 @@ public abstract class BaseJwtUser {
     private String roleIds;
 
     /**
-     * 终端系统：如：管理系后台，小程序后台，H5后台等
+     * 终端系统：如：管理系后台，小程序后台，H5后台等应用服务名
      */
-    private String terminal;
+    private String application;
 
     /**
      * 子类的class全限定名

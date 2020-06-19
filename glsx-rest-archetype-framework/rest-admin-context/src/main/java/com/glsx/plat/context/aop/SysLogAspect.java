@@ -7,9 +7,9 @@ import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.enums.RequestSaveMethod;
 import com.glsx.plat.common.utils.DateUtils;
 import com.glsx.plat.common.utils.StringUtils;
-import com.glsx.plat.context.entity.SysLogEntity;
 import com.glsx.plat.context.utils.IpUtils;
 import com.glsx.plat.core.constant.BasicConstants;
+import com.glsx.plat.core.entity.SysLogEntity;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.redis.service.GainIdService;
@@ -151,7 +151,8 @@ public class SysLogAspect {
         String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
         if (StringUtils.isNotEmpty(token)) {
             // TODO: 2020/5/27 jwt解析token
-            jwtUtils.parseClaim(BaseJwtUser.class, token);
+            Map<String, Object> claimMap = jwtUtils.parseClaim(BaseJwtUser.class, token);
+            log.info(claimMap.toString());
         }
 
         if (sysLogMark.saveLog()) {
