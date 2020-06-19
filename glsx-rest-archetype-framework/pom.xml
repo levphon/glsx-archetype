@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.glsx</groupId>
+    <artifactId>rest-framework-admin</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <spring-cloud.version>Hoxton.SR2</spring-cloud.version>
+        <spring-cloud-alibaba.version>2.2.0.RELEASE</spring-cloud-alibaba.version>
+        <fastjson.version>1.2.70</fastjson.version>
+
+        <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
+        <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
+        <!--        <repo.proxy.url>https://repo1.maven.org/maven2</repo.proxy.url>-->
+        <!--        <repo.external.url>https://repo1.maven.org/maven2</repo.external.url>-->
+    </properties>
+
+    <modules>
+        <module>rest-admin-config</module>
+        <module>rest-admin-registry</module>
+
+
+        <module>rest-admin-gateway-server</module>
+        <module>rest-admin-gateway-client</module>
+
+        <module>rest-admin-core</module>
+        <module>rest-admin-common</module>
+        <module>rest-admin-context</module>
+
+        <module>rest-admin-wechat</module>
+
+        <module>rest-admin-redis</module>
+        <module>rest-admin-dfs</module>
+        <module>rest-admin-jpa</module>
+        <module>rest-admin-mybatis</module>
+        <module>rest-admin-document</module>
+        <module>rest-admin-jwt</module>
+        <module>rest-admin-kafka</module>
+        <module>rest-admin-exception</module>
+        <module>rest-admin-container</module>
+        <module>rest-admin-datasource</module>
+        <module>rest-admin-sms</module>
+        <module>rest-admin-mail</module>
+        <module>rest-admin-sleuth</module>
+        <module>rest-admin-security</module>
+        <module>rest-admin-webflux</module>
+        <module>rest-admin-web</module>
+        <module>rest-admin-swagger2</module>
+        <module>rest-admin-elasticsearch</module>
+        <module>rest-admin-monitor</module>
+        <module>rest-admin-dubbo</module>
+        <module>rest-admin-feign</module>
+        <module>rest-admin-office</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!--lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.22</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.json</include>
+                    <include>**/*.string</include>
+                    <include>**/*.xlsx</include>
+                    <include>**/*.sh</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.yml</include>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--spring cloud alibaba-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Local Nexus Releases Repository</name>
+            <url>http://192.168.3.233/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Local Nexus Snapshots Repository</name>
+            <url>http://192.168.3.233/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+</project>
