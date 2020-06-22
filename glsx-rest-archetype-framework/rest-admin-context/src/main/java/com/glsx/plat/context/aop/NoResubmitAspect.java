@@ -1,7 +1,7 @@
 package com.glsx.plat.context.aop;
 
 import com.glsx.plat.common.annotation.NoResubmit;
-import com.glsx.plat.context.utils.IpUtils;
+import com.glsx.plat.web.utils.IpUtils;
 import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.core.web.R;
 import lombok.extern.slf4j.Slf4j;

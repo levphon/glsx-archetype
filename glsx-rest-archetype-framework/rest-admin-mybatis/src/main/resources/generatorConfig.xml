@@ -3,8 +3,7 @@
         PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-    <properties resource="jdbc.properties"/>
-    <classPathEntry location="${jdbc_driverLocation}"/>
+    <classPathEntry location="F:\\jdbc\\mysql-connector-java-5.1.30.jar"/>
     <!--指定特定数据库的jdbc驱动jar包的位置-->
 
     <context id="default" targetRuntime="MyBatis3">
@@ -16,10 +15,10 @@
 
         <!--jdbc的数据库连接 -->
         <jdbcConnection
-                driverClass="${jdbc_driverClass}"
-                connectionURL="${jdbc_url}"
-                userId="${jdbc_user}"
-                password="${jdbc_pwd}">
+                driverClass="com.mysql.jdbc.Driver"
+                connectionURL="jdbc:mysql://192.168.0.39:3306/gecc?useUnicode=true&amp;characterEncoding=utf-8"
+                userId="root"
+                password="123456">
         </jdbcConnection>
 
         <!-- 非必需，类型处理器，在数据库类型和java类型之间的转换控制-->

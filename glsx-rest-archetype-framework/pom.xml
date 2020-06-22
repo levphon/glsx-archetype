@@ -30,9 +30,10 @@
     </properties>
 
     <modules>
+        <module>rest-admin-alliance</module>
+
         <module>rest-admin-config</module>
         <module>rest-admin-registry</module>
-
 
         <module>rest-admin-gateway-server</module>
         <module>rest-admin-gateway-client</module>
@@ -40,8 +41,6 @@
         <module>rest-admin-core</module>
         <module>rest-admin-common</module>
         <module>rest-admin-context</module>
-
-        <module>rest-admin-wechat</module>
 
         <module>rest-admin-redis</module>
         <module>rest-admin-dfs</module>
@@ -65,6 +64,8 @@
         <module>rest-admin-dubbo</module>
         <module>rest-admin-feign</module>
         <module>rest-admin-office</module>
+
+        <module>rest-admin-wechat</module>
     </modules>
 
     <dependencies>

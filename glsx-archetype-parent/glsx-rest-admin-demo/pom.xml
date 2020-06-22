@@ -6,17 +6,19 @@
         <groupId>com.glsx</groupId>
         <artifactId>rest-framework-admin</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
-    <artifactId>glsx-rest-parent</artifactId>
+    <artifactId>glsx-rest-admin-demo</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <description>Demo project for Spring Boot</description>
 
     <modules>
-        <module>glsx-rest-admin-gateway-server</module>
-        <module>glsx-rest-admin-monitor-server</module>
+        <module>glsx-rest-service-echocenter</module>
+        <module>glsx-rest-service-echocenter-api</module>
+        <module>glsx-rest-admin-system</module>
     </modules>
 
     <properties>
@@ -30,13 +32,6 @@
     </properties>
 
     <dependencies>
-        <!--lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
