@@ -1,6 +1,6 @@
 package com.glsx.plat.context.aop;
 
-import com.glsx.plat.common.utils.ObjectUtils;
+import com.glsx.plat.jwt.util.ObjectUtils;
 import com.glsx.plat.common.utils.SignUtils;
 import com.glsx.plat.core.web.R;
 import javassist.ClassClassPath;

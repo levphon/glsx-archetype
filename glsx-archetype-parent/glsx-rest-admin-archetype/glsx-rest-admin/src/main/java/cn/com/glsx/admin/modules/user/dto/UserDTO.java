@@ -1,7 +1,7 @@
 package cn.com.glsx.admin.modules.user.dto;
 
-import com.google.common.base.Converter;
 import com.glsx.vasp.modules.entity.User;
+import com.google.common.base.Converter;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

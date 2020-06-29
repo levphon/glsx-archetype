@@ -3,13 +3,12 @@ package cn.com.glsx.admin.modules.user.service;
 import cn.com.glsx.admin.common.exception.AdminException;
 import cn.com.glsx.admin.modules.user.dto.UserSearch;
 import cn.com.glsx.admin.modules.user.utils.JwtUser;
-import cn.hutool.core.lang.UUID;
 import com.github.pagehelper.PageInfo;
-import com.glsx.plat.common.utils.ObjectUtils;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.exception.SystemMessage;
 import com.glsx.plat.jwt.util.JwtUtils;
+import com.glsx.plat.jwt.util.ObjectUtils;
 import com.glsx.plat.web.utils.SessionUtils;
 import com.glsx.vasp.modules.entity.User;
 import com.glsx.vasp.modules.mapper.UserMapper;
@@ -17,9 +16,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
 /**
  * @author liuyf
@@ -79,10 +77,7 @@ public class UserService {
     }
 
     public String createToken(User user) {
-        // 前端有两种登录方式，如果用手机号+短信验证码方式，miniOpenid可能为空
         String jwtId = UUID.randomUUID().toString(); //JWT 随机ID,做为验证的key
-
-        stringRedisTemplate.delete(jwtUtils.JWT_SESSION_PREFIX + jwtId);
 
         JwtUser jwtUser = new JwtUser();
         jwtUser.setJwtId(jwtId);
@@ -92,11 +87,7 @@ public class UserService {
 
         Map<String, String> userMap = (Map<String, String>) ObjectUtils.objectToMap(jwtUser);
 
-        String token = jwtUtils.create(new HashMap<>(), userMap);
-
-        stringRedisTemplate.opsForValue().set(jwtUtils.JWT_SESSION_PREFIX + jwtId, token, jwtUtils.getTtl(), TimeUnit.MILLISECONDS);
-
-        return token;
+        return jwtUtils.createToken(jwtId, userMap);
     }
 
     /**

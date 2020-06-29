@@ -1,4 +1,4 @@
-package com.glsx.plat.common.utils;
+package com.glsx.plat.jwt.util;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;

@@ -1,10 +1,10 @@
-package com.glsx.plat.context;
+package com.glsx.plat.context.configuration;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = {"com.glsx.plat"})
+@ComponentScan({"com.glsx.plat"})
 public class RestAdminAutoConfiguration {
 
 }

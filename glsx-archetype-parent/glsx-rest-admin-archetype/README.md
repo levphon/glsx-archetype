@@ -213,10 +213,11 @@ b. 安装脚手架命令
 c. 发布
 <pre><code>mvn deploy</code></pre>
 or
-<pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=G:\repository\repository\com\glsx\glsx-rest-admin-archetype\1.0-SNAPSHOT\glsx-rest-admin-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
+<pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin-archetype -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=G:\repository\repository\com\glsx\glsx-rest-admin-archetype-archetype\1.0-SNAPSHOT\glsx-rest-admin-archetype-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
 groupId:上传到私服的groupId<br>
 artifactId:上传到私服的artifactId<br>
 version:上传到私服的version<br>
 file:jar包的本地路径<br>
 url: 你的maven私服地址<br>
 repositoryId:setting.xml配置的server id
+

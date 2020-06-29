@@ -7,10 +7,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.glsx.plat.common.utils.DateUtils;
 import com.glsx.plat.context.properties.UploadProperties;
+import com.glsx.plat.web.interceptor.LogInterceptor;
 import com.glsx.plat.web.interceptor.VisitInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,9 +32,23 @@ public class WebConfig implements WebMvcConfigurer {
     @Resource
     private UploadProperties uploadProperties;
 
+    /**
+     * 基于MDC的简单的日志链路
+     */
+    @Resource
+    private LogInterceptor logInterceptor;
+
+    /**
+     * 基于jwt的token认证
+     */
     @Resource
     private VisitInterceptor<JwtUser> visitInterceptor;
 
+    /**
+     * 静态资源
+     *
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
@@ -69,12 +85,14 @@ public class WebConfig implements WebMvcConfigurer {
         converters.add(0, converter);
     }
 
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(visitInterceptor)
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/login");
-//    }
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        //1.加入的顺序就是拦截器执行的顺序，
+        //2.按顺序执行所有拦截器的preHandle
+        //3.所有的preHandle 执行完再执行全部postHandle 最后是postHandle
+        registry.addInterceptor(visitInterceptor).addPathPatterns("/**").excludePathPatterns("/login");
+        registry.addInterceptor(logInterceptor).addPathPatterns("/**");
+    }
 
     /**
      * 有问题，建议用filter
