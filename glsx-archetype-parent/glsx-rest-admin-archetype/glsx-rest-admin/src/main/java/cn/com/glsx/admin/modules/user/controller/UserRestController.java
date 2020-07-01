@@ -4,9 +4,9 @@ import cn.com.glsx.admin.modules.BaseController;
 import cn.com.glsx.admin.modules.user.service.UserService;
 import cn.com.glsx.admin.services.userservice.dto.UserDTO;
 import cn.com.glsx.admin.services.userservice.dto.UserSearch;
+import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import cn.com.glsx.echocenter.api.EchoCenterFeignService;
 import com.glsx.vasp.modules.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -28,11 +28,11 @@ public class UserRestController extends BaseController {
     private UserService userService;
 
     @Resource
-    private EchoCenterFeignService echoCenterFeignService;
+    private EchoCenterFeignClient echoCenterFeignClient;
 
     @GetMapping("/echo")
     public String echo(@RequestParam String message) {
-        String echo = echoCenterFeignService.echo(message);
+        String echo = echoCenterFeignClient.echo(message);
         return echo;
     }
 

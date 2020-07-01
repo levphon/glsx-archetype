@@ -20,9 +20,9 @@ import static java.util.TimeZone.getTimeZone;
  * @author payu
  */
 @EnableRestAdmin
-@EnableFeignClients({"cn.com.glsx.admin.api", "cn.com.glsx.echocenter.api"})
 @MapperScan("com.glsx.vasp.modules.mapper")//如果glsx-rest-system目录结构和glsx-rest-admin一样，这个注解可以省略
 @EnableDiscoveryClient
+@EnableFeignClients(basePackages = {"cn.com.glsx.admin.api", "cn.com.glsx.echocenter.api"})
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 @SpringBootApplication

@@ -1,22 +1,22 @@
 package cn.com.glsx.echocenter.fallback;
 
-import cn.com.glsx.echocenter.api.EchoCenterFeignService;
+import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
 import feign.hystrix.FallbackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EchoCenterFeignFactory implements FallbackFactory<EchoCenterFeignService> {
+public class EchoCenterFeignFactory implements FallbackFactory<EchoCenterFeignClient> {
 
-    private final EchoCenterFeignServiceFallback fallback;
+    private final EchoCenterFeignClientFallback fallback;
 
     @Autowired
-    public EchoCenterFeignFactory(EchoCenterFeignServiceFallback fallback) {
+    public EchoCenterFeignFactory(EchoCenterFeignClientFallback fallback) {
         this.fallback = fallback;
     }
 
     @Override
-    public EchoCenterFeignService create(Throwable cause) {
+    public EchoCenterFeignClient create(Throwable cause) {
         //打印下异常
         cause.printStackTrace();
         return fallback;

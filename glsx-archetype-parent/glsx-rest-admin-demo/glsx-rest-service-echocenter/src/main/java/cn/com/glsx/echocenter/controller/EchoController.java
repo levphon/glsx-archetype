@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController
+@RequestMapping("/demo")
 public class EchoController {
 
     @Resource

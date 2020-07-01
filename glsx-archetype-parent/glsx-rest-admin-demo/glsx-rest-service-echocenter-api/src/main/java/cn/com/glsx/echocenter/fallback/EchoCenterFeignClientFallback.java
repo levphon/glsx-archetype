@@ -1,6 +1,6 @@
 package cn.com.glsx.echocenter.fallback;
 
-import cn.com.glsx.echocenter.api.EchoCenterFeignService;
+import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
 import cn.com.glsx.echocenter.services.echoservice.req.EchoReq;
 import cn.com.glsx.echocenter.services.echoservice.resp.EchoResp;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author payu
  */
 @Component
-public class EchoCenterFeignServiceFallback implements EchoCenterFeignService {
+public class EchoCenterFeignClientFallback implements EchoCenterFeignClient {
 
     @Override
     public String echo(String message) {

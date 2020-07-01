@@ -1,19 +1,20 @@
 package com.glsx.plat.context.aop;
 
-import com.alibaba.fastjson.JSON;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.enums.RequestSaveMethod;
 import com.glsx.plat.common.utils.DateUtils;
 import com.glsx.plat.common.utils.StringUtils;
-import com.glsx.plat.web.utils.IpUtils;
 import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.core.entity.SysLogEntity;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.redis.service.GainIdService;
+import com.glsx.plat.web.utils.IpUtils;
 import com.glsx.plat.web.utils.SessionUtils;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -106,7 +107,7 @@ public class SysLogAspect {
      */
     @AfterReturning(pointcut = "logPointCut()", returning = "returnValue")
     public void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
-        log.info("Returning Args : {}", JSON.toJSONString(returnValue));
+        log.info("Returning Args : {}", new Gson().toJson(returnValue));
         // 处理完请求，返回内容
 
         MDC.clear();
@@ -123,6 +124,8 @@ public class SysLogAspect {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         Object target = joinPoint.getTarget();
+
+        Gson gson = new Gson();
 
         // 日志标识
         SysLog sysLogMark = method.getAnnotation(SysLog.class);
@@ -146,7 +149,7 @@ public class SysLogAspect {
         // 打印请求的 IP
         log.info("IP             : {}", request.getRemoteAddr());
         // 打印请求入参
-        log.info("Request Args   : {}", JSON.toJSONString(joinPoint.getArgs()));
+        log.info("Request Args   : {}", gson.toJson(joinPoint.getArgs()));
 
         String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
         if (StringUtils.isNotEmpty(token)) {
@@ -169,7 +172,7 @@ public class SysLogAspect {
                     RequestSaveMethod requestSaveMethod = sysLogMark.saveRequestMethod();
                     if (requestSaveMethod == RequestSaveMethod.REQUEST) {
                         Map<String, String[]> parameterMap = request.getParameterMap();
-                        sysLog.setRequestData(JSONObject.toJSONString(parameterMap));
+                        sysLog.setRequestData(gson.toJson(parameterMap));
                     } else if (requestSaveMethod == RequestSaveMethod.REFLECT) {
                         //使用反射保存请求数据参数
                         Object[] args = joinPoint.getArgs();

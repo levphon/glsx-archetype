@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author payu
  */
-@FeignClient(name = "glsx-rest-echo-center", fallback = EchoCenterFeignFactory.class)
-public interface EchoCenterFeignService {
+@FeignClient(name = "glsx-rest-echo-center", path = "demo", fallback = EchoCenterFeignFactory.class)
+public interface EchoCenterFeignClient {
 
     @GetMapping(value = "/echo/{message}")
     String echo(@PathVariable("message") String message);

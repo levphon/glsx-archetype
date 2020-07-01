@@ -17,12 +17,6 @@
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-context</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.glsx</groupId>
-                    <artifactId>rest-admin-redis</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
