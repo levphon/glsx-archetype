@@ -1,6 +1,6 @@
-package com.glsx.microservice.fallback;
+package cn.com.glsx.echocenter.fallback;
 
-import com.glsx.microservice.api.EchoCenterFeignService;
+import cn.com.glsx.echocenter.api.EchoCenterFeignService;
 import feign.hystrix.FallbackFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

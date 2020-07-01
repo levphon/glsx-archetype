@@ -1,13 +1,13 @@
-package com.glsx.microservice.services.echoservice.req;
+package cn.com.glsx.echocenter.services.echoservice.resp;
 
 import lombok.Data;
 
 @Data
-public class EchoReq {
+public class EchoResp {
 
     private String title;
     private String message;
     private String user;
-    private String sign;
+    private String remark;
 
 }

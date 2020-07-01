@@ -1,4 +1,4 @@
-package cn.com.glsx.admin.modules.user.dto;
+package cn.com.glsx.admin.services.userservice.dto;
 
 import cn.hutool.db.Page;
 import lombok.Data;

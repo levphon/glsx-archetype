@@ -119,7 +119,7 @@ sh startup.sh -m standalone
 github:https://github.com/openzipkin/zipkin
 
 ```sh
-java -jar zipkin.jar
+nohup java -jar zipkin.jar &
 ```
 
 关于zipkin的基本使用请查看其他文章或者自行百度
@@ -135,7 +135,7 @@ java -jar zipkin.jar
 github:https://github.com/alibaba/Sentinel
 
 ```sh
-java -Dserver.port=8718 -Dcsp.sentinel.dashboard.server=localhost:8718 -Dproject.name=sentinel-dashboard -Dcsp.sentinel.api.port=8719 -jar sentinel-dashboard-1.7.2.jar
+nohup java -Dserver.port=8718 -Dcsp.sentinel.dashboard.server=localhost:8718 -Dproject.name=sentinel-dashboard -Dcsp.sentinel.api.port=8719 -jar sentinel-dashboard-1.7.2.jar &
 ```
 
 开发环境部署地址：/data/sentinel

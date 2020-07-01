@@ -1,8 +1,8 @@
-package com.glsx.microservice.api;
+package cn.com.glsx.echocenter.api;
 
-import com.glsx.microservice.fallback.EchoCenterFeignFactory;
-import com.glsx.microservice.services.echoservice.req.EchoReq;
-import com.glsx.microservice.services.echoservice.resp.EchoResp;
+import cn.com.glsx.echocenter.fallback.EchoCenterFeignFactory;
+import cn.com.glsx.echocenter.services.echoservice.req.EchoReq;
+import cn.com.glsx.echocenter.services.echoservice.resp.EchoResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

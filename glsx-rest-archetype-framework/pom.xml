@@ -15,6 +15,31 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
+    <name>rest-framework-admin</name>
+    <description>基于Spring Cloud微服务架构的框架</description>
+    <url>svn://192.168.3.233/frms/code/glsx-archetype/glsx-archetype/glsx-rest-archetype-framework</url>
+
+    <licenses>
+        <license>
+            <name>The GNU Lesser General Public License, version 3.0</name>
+            <url>http://opensource.org/licenses/LGPL-3.0</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>liuyf</name>
+            <email>liuyf@didihu.com.cn</email>
+        </developer>
+    </developers>
+
+    <!--    <scm>-->
+    <!--        <connection>scm:svn:http://ip:port/svn/xxx</connection>-->
+    <!--        <developerConnection>scm:svn:http://ip:port/svn/xxx</developerConnection>-->
+    <!--        <url>svn://192.168.3.233/frms/code/glsx-archetype/glsx-archetype/glsx-rest-archetype-framework</url>-->
+    <!--        <tag>HEAD</tag>-->
+    <!--    </scm>-->
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -27,6 +52,9 @@
         <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
         <!--        <repo.proxy.url>https://repo1.maven.org/maven2</repo.proxy.url>-->
         <!--        <repo.external.url>https://repo1.maven.org/maven2</repo.external.url>-->
+
+        <!-- 本地发布服务器 -->
+        <local.nexus>192.168.3.233</local.nexus>
     </properties>
 
     <modules>
@@ -141,16 +169,109 @@
         </dependencies>
     </dependencyManagement>
 
-    <distributionManagement>
-        <repository>
-            <id>nexus-releases</id>
-            <name>Local Nexus Releases Repository</name>
-            <url>http://192.168.3.233/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <name>Local Nexus Snapshots Repository</name>
-            <url>http://192.168.3.233/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <profiles>
+        <profile>
+            <id>sonatype</id>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--Javadoc -->
+                    <!--                    <plugin>-->
+                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+                    <!--                        <artifactId>maven-javadoc-plugin</artifactId>-->
+                    <!--                        <version>3.2.0</version>-->
+                    <!--                        <executions>-->
+                    <!--                            <execution>-->
+                    <!--                                <id>attach-javadocs</id>-->
+                    <!--                                <phase>package</phase>-->
+                    <!--                                <goals>-->
+                    <!--                                    <goal>jar</goal>-->
+                    <!--                                </goals>-->
+                    <!--                            </execution>-->
+                    <!--                        </executions>-->
+                    <!--                        <configuration>-->
+                    <!--                            <encoding>UTF-8</encoding>-->
+                    <!--                            <charset>UTF-8</charset>-->
+                    <!--                            <additionalparam>-Xdoclint:none</additionalparam>-->
+                    <!--                        </configuration>-->
+                    <!--                    </plugin>-->
+                    <!--                    &lt;!&ndash; GPG &ndash;&gt;-->
+                    <!--                    <plugin>-->
+                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
+                    <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
+                    <!--                        <version>1.5</version>-->
+                    <!--                        <executions>-->
+                    <!--                            <execution>-->
+                    <!--                                <phase>verify</phase>-->
+                    <!--                                <goals>-->
+                    <!--                                    <goal>sign</goal>-->
+                    <!--                                </goals>-->
+                    <!--                            </execution>-->
+                    <!--                        </executions>-->
+                    <!--                    </plugin>-->
+                </plugins>
+            </build>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+                </snapshotRepository>
+                <repository>
+                    <id>oss</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>nexus-233</id>
+            <build>
+                <plugins>
+                    <!-- Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Javadoc <plugin> <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId> <version>2.9.1</version> <executions>
+                        <execution> <id>attach-javadocs</id> <phase>install</phase> <goals> <goal>jar</goal>
+                        </goals> <configuration> <encoding>UTF-8</encoding> </configuration> </execution>
+                        </executions> </plugin> -->
+                </plugins>
+            </build>
+            <distributionManagement>
+                <repository>
+                    <id>nexus-releases</id>
+                    <name>Local Nexus Releases Repository</name>
+                    <url>http://${local.nexus}/nexus/content/repositories/releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>nexus-snapshots</id>
+                    <name>Local Nexus Snapshots Repository</name>
+                    <url>http://${local.nexus}/nexus/content/repositories/snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

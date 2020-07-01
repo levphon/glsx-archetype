@@ -32,44 +32,46 @@ public class VisitInterceptor<T extends BaseJwtUser> implements HandlerIntercept
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        boolean needLoginFlag = true; // 默认需要登录
+        if (handler instanceof HandlerMethod) {
+            boolean needLoginFlag = true; // 默认需要登录
 
-        NoLogin noLogin = null;
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            // 1.先判断类上是否存在@NoLogin注解[默认无需登录注解]
+            Class<?> targetBean = handlerMethod.getBeanType();
+            NoLogin noLogin = targetBean.getAnnotation(NoLogin.class);
+            if (null != noLogin) {
+                // 如果存在,则根据注解的value()确定是否需要登录访问
+                needLoginFlag = !noLogin.value();
+            }
+            // 2.再判断调用方法上是否存在@NoLogin注解[默认无需登录注解]
+            noLogin = handlerMethod.getMethodAnnotation(NoLogin.class);
+            if (null != noLogin) {
+                // 如果存在,则根据注解的value()确定是否需要登录访问[方法覆盖类]
+                needLoginFlag = !noLogin.value();
+            }
+            // 3.需要登录访问则去验证token,反之,则通过
+            if (!needLoginFlag) return true;
 
-        HandlerMethod handlerMethod = (HandlerMethod) handler;
-        // 1.先判断类上是否存在@NoLogin注解[默认无需登录注解]
-        Class<?> targetBean = handlerMethod.getBeanType();
-        noLogin = targetBean.getAnnotation(NoLogin.class);
-        if (null != noLogin) {
-            // 如果存在,则根据注解的value()确定是否需要登录访问
-            needLoginFlag = !noLogin.value();
-        }
-        // 2.再判断调用方法上是否存在@NoLogin注解[默认无需登录注解]
-        noLogin = handlerMethod.getMethodAnnotation(NoLogin.class);
-        if (null != noLogin) {
-            // 如果存在,则根据注解的value()确定是否需要登录访问[方法覆盖类]
-            needLoginFlag = !noLogin.value();
-        }
-        // 3.需要登录访问则去验证token,反之,则通过
-        if (!needLoginFlag) return true;
+            // 判断是否登录
+            String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
+            // 1.判断请求是否携带token
+            if (StringUtils.isBlank(token)) {
+                // 不存在token数据
+                log.warn("【访问拦截】用户的请求Header中未包含token信息.[请求头Authorization]");
+                needLogin(response);
+                return false;
+            }
 
-        // 判断是否登录
-        String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
-        // 1.判断请求是否携带token
-        if (StringUtils.isBlank(token)) {
-            // 不存在token数据
-            log.warn("【访问拦截】用户的请求Header中未包含token信息.[请求头Authorization]");
+            // 2.验证token
+            if (jwtUtils.verifyToken(token)) return true;
+
+            // 需要登录
             needLogin(response);
+
             return false;
+        } else {
+            return true;
         }
-
-        // 2.验证token
-        if (jwtUtils.verifyToken(token)) return true;
-
-        // 需要登录
-        needLogin(response);
-
-        return false;
     }
 
     private void needLogin(HttpServletResponse response) throws Exception {

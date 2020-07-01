@@ -1,8 +1,8 @@
 package cn.com.glsx.echocenter.service;
 
-import com.glsx.microservice.services.echoservice.EchoService;
-import com.glsx.microservice.services.echoservice.req.EchoReq;
-import com.glsx.microservice.services.echoservice.resp.EchoResp;
+import cn.com.glsx.echocenter.services.echoservice.EchoService;
+import cn.com.glsx.echocenter.services.echoservice.req.EchoReq;
+import cn.com.glsx.echocenter.services.echoservice.resp.EchoResp;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

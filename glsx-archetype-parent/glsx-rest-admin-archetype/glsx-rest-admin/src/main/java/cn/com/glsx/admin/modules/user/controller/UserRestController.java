@@ -7,7 +7,6 @@ import cn.com.glsx.admin.services.userservice.dto.UserSearch;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import cn.com.glsx.echocenter.api.EchoCenterFeignService;
-import com.glsx.plat.core.web.R;
 import com.glsx.vasp.modules.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -16,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * 单体应用Controller处理统一返回体
+ * 微服务应用在网关中处理统一返回体
  *
  * @author payu
  */
 @Slf4j
 @RestController
-@RequestMapping(value = "/user")
-public class UserController extends BaseController {
+@RequestMapping(value = "/rest/user")
+public class UserRestController extends BaseController {
 
     @Resource
     private UserService userService;
@@ -32,45 +31,44 @@ public class UserController extends BaseController {
     private EchoCenterFeignService echoCenterFeignService;
 
     @GetMapping("/echo")
-    public R echo(@RequestParam String message) {
+    public String echo(@RequestParam String message) {
         String echo = echoCenterFeignService.echo(message);
-        return R.ok().data(echo);
+        return echo;
     }
 
     @GetMapping("/search")
-    public R search(UserSearch search) {
+    public PageInfo<User> search(UserSearch search) {
         PageHelper.startPage(search.getPageNumber(), search.getPageSize());
         PageInfo<User> list = userService.search(search);
-        return R.ok().putPageData(list);
+        return list;
     }
 
     @PostMapping(value = "/add")
-    public R add(@RequestBody @Validated UserDTO userDTO) {
+    public UserDTO add(@RequestBody @Validated UserDTO userDTO) {
         User user = userDTO.convertTo();
         User savedUser = userService.addUser(user);
         UserDTO result = userDTO.convertFor(savedUser);
-        return R.ok().data(result);
+        return result;
     }
 
     @PostMapping(value = "/edit")
-    public R edit(@RequestBody @Validated UserDTO userDTO) {
-
+    public UserDTO edit(@RequestBody @Validated UserDTO userDTO) {
         User user = userDTO.convertTo();
         User editUser = userService.editUser(user);
         UserDTO result = userDTO.convertFor(editUser);
-        return R.ok();
+        return result;
     }
 
     @GetMapping(value = "/info/{id}")
-    public R info(@PathVariable("id") Long id) {
+    public User info(@PathVariable("id") Long id) {
         User user = userService.getById(id);
-        return R.ok().data(user);
+        return user;
     }
 
     @GetMapping(value = "/info/phone")
-    public R info(String phone) {
+    public User info(String phone) {
         User user = userService.findByPhone(phone);
-        return R.ok().data(user);
+        return user;
     }
 
 }

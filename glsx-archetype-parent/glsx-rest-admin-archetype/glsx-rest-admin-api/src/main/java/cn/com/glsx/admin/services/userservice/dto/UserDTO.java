@@ -1,4 +1,4 @@
-package cn.com.glsx.admin.modules.user.dto;
+package cn.com.glsx.admin.services.userservice.dto;
 
 import com.glsx.vasp.modules.entity.User;
 import com.google.common.base.Converter;
@@ -12,6 +12,8 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 public class UserDTO {
+
+    private Long id;
 
     @NotBlank
     private String username;

@@ -1,8 +1,8 @@
-package com.glsx.microservice.fallback;
+package cn.com.glsx.echocenter.fallback;
 
-import com.glsx.microservice.api.EchoCenterFeignService;
-import com.glsx.microservice.services.echoservice.req.EchoReq;
-import com.glsx.microservice.services.echoservice.resp.EchoResp;
+import cn.com.glsx.echocenter.api.EchoCenterFeignService;
+import cn.com.glsx.echocenter.services.echoservice.req.EchoReq;
+import cn.com.glsx.echocenter.services.echoservice.resp.EchoResp;
 import org.springframework.stereotype.Component;
 
 /**

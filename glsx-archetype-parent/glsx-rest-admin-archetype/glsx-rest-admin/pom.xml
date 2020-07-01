@@ -22,16 +22,20 @@
         </dependency>
 
         <!-- 接入微服务组件联盟 配置、注册、网关、链路、监控等 ,单体应用无需引入(logback-spring.xml与logstash相关内容需要注释掉)-->
-<!--        <dependency>-->
-<!--            <groupId>com.glsx</groupId>-->
-<!--            <artifactId>rest-admin-alliance</artifactId>-->
-<!--            <version>1.0-SNAPSHOT</version>-->
-<!--        </dependency>-->
-
-        <!-- dao示例 -->
         <dependency>
             <groupId>com.glsx</groupId>
-            <artifactId>glsx-rest-admin-system</artifactId>
+            <artifactId>rest-admin-alliance</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.glsx</groupId>
+            <artifactId>glsx-rest-admin-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.glsx</groupId>
+            <artifactId>glsx-rest-service-echocenter-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

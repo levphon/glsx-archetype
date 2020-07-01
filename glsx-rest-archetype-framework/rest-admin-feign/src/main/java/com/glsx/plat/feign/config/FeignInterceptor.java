@@ -2,7 +2,6 @@ package com.glsx.plat.feign.config;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,7 +12,6 @@ import java.util.Enumeration;
 /**
  * @author payu
  */
-@Configuration
 public class FeignInterceptor implements RequestInterceptor {
 
     /**

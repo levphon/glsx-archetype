@@ -3,6 +3,8 @@ package cn.com.glsx;
 import com.glsx.plat.context.EnableRestAdmin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -18,10 +20,11 @@ import static java.util.TimeZone.getTimeZone;
  * @author payu
  */
 @EnableRestAdmin
-//@EnableDiscoveryClient
+@EnableFeignClients({"cn.com.glsx.admin.api", "cn.com.glsx.echocenter.api"})
+@MapperScan("com.glsx.vasp.modules.mapper")//如果glsx-rest-system目录结构和glsx-rest-admin一样，这个注解可以省略
+@EnableDiscoveryClient
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
-@MapperScan("com.glsx.vasp.modules.mapper")//如果glsx-rest-system目录结构和glsx-rest-admin一样，这个注解可以省略
 @SpringBootApplication
 public class Application {
 
