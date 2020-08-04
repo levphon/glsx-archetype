@@ -83,7 +83,9 @@
 
 ## 项目结构
 
-![]()
+
+## 模块说明
+![架构图](https://images.gitee.com/uploads/images/2019/0528/205306_9a8b8d83_1899222.png "1.png")
 
 
 ## 项目涉及服务组件
@@ -119,7 +121,7 @@ sh startup.sh -m standalone
 github:https://github.com/openzipkin/zipkin
 
 ```sh
-nohup java -jar zipkin.jar &
+nohup java -jar zipkin-server-2.12.9-exec.jar &
 ```
 
 关于zipkin的基本使用请查看其他文章或者自行百度
@@ -157,6 +159,10 @@ svn地址:svn://192.168.3.233/frms/code/glsx-archetype/glsx-archetype/glsx-arche
 svn地址:svn://192.168.3.233/frms/code/glsx-archetype/glsx-archetype/glsx-archetype-parent/glsx-rest-admin-monitor-server
 
 ![](https://oscimg.oschina.net/oscnet/up-a38e9bb6b0d08cccf3ab9c6c99b4b398650.png)
+
+开发环境部署地址：/data/webserver/glsx-rest-admin-monitor-server-1.0-SNAPSHOT
+
+开发环境访问地址：http://192.168.0.63:8769/applications
 
 
 ## 脚手架项目运行调试
@@ -208,16 +214,26 @@ a. 构建脚手架命令
 <pre><code>mvn archetype:create-from-project</code></pre>
 
 b. 安装脚手架命令
-<pre><code>mvn clean install</code></pre>
+<pre><code>
+cd target\generated-sources\archetype
+mvn clean install
+</code></pre>
 
 c. 发布
 <pre><code>mvn deploy</code></pre>
 or
-<pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin-archetype -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=G:\repository\repository\com\glsx\glsx-rest-admin-archetype-archetype\1.0-SNAPSHOT\glsx-rest-admin-archetype-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
+<pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin-archetype-archetype -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=D:\glsx-rest-admin-archetype-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
 groupId:上传到私服的groupId<br>
 artifactId:上传到私服的artifactId<br>
 version:上传到私服的version<br>
 file:jar包的本地路径<br>
 url: 你的maven私服地址<br>
 repositoryId:setting.xml配置的server id
+jar复制到非仓库目录，不然可能会发布失败
 
+
+
+## todo
+1、config refresh
+2、bus
+3、auth

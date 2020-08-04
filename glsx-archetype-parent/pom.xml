@@ -17,6 +17,7 @@
     <modules>
         <module>glsx-rest-admin-gateway-server</module>
         <module>glsx-rest-admin-monitor-server</module>
+        <module>glsx-rest-admin-auth</module>
     </modules>
 
     <properties>

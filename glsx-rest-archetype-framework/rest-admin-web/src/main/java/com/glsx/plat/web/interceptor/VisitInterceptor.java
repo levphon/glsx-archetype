@@ -1,6 +1,7 @@
 package com.glsx.plat.web.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import com.glsx.plat.common.annotation.CheckSign;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.core.constant.BasicConstants;
@@ -27,6 +28,9 @@ import java.io.PrintWriter;
 @Component
 public class VisitInterceptor<T extends BaseJwtUser> implements HandlerInterceptor {
 
+//    private final RateLimiter limiter = RateLimiter.create(Runtime.getRuntime().availableProcessors() * 2 + 1);
+//    private final ThreadLocal<ExecuteRecordDto> executeRecord = new ThreadLocal<>();
+
     @Resource
     private JwtUtils<T> jwtUtils;
 
@@ -36,23 +40,30 @@ public class VisitInterceptor<T extends BaseJwtUser> implements HandlerIntercept
             boolean needLoginFlag = true; // 默认需要登录
 
             HandlerMethod handlerMethod = (HandlerMethod) handler;
-            // 1.先判断类上是否存在@NoLogin注解[默认无需登录注解]
+            //##判断是否需要登录
+            // 1.先判断类上是否存在@NoLogin，@CheckSign注解[默认无需登录注解]
             Class<?> targetBean = handlerMethod.getBeanType();
-            NoLogin noLogin = targetBean.getAnnotation(NoLogin.class);
-            if (null != noLogin) {
+
+            //验签无需登录校验
+            if (targetBean.isAnnotationPresent(CheckSign.class) || handlerMethod.hasMethodAnnotation(CheckSign.class))
+                return true;
+
+            if (targetBean.isAnnotationPresent(NoLogin.class)) {
                 // 如果存在,则根据注解的value()确定是否需要登录访问
+                NoLogin noLogin = targetBean.getAnnotation(NoLogin.class);
                 needLoginFlag = !noLogin.value();
             }
+
             // 2.再判断调用方法上是否存在@NoLogin注解[默认无需登录注解]
-            noLogin = handlerMethod.getMethodAnnotation(NoLogin.class);
-            if (null != noLogin) {
+            if (handlerMethod.hasMethodAnnotation(NoLogin.class)) {
                 // 如果存在,则根据注解的value()确定是否需要登录访问[方法覆盖类]
+                NoLogin noLogin = handlerMethod.getMethod().getAnnotation(NoLogin.class);
                 needLoginFlag = !noLogin.value();
             }
             // 3.需要登录访问则去验证token,反之,则通过
             if (!needLoginFlag) return true;
 
-            // 判断是否登录
+            //##判断是否登录
             String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
             // 1.判断请求是否携带token
             if (StringUtils.isBlank(token)) {

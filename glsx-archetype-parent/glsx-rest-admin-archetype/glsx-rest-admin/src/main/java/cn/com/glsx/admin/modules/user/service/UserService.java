@@ -2,7 +2,7 @@ package cn.com.glsx.admin.modules.user.service;
 
 import cn.com.glsx.admin.common.exception.AdminException;
 import cn.com.glsx.admin.modules.user.utils.JwtUser;
-import cn.com.glsx.admin.services.userservice.dto.UserSearch;
+import cn.com.glsx.admin.services.userservice.model.UserSearch;
 import com.github.pagehelper.PageInfo;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.core.constant.BasicConstants;

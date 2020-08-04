@@ -27,6 +27,12 @@ public class BusinessException extends RuntimeException {
         }
     }
 
+    /**
+     * 内部系统用，对外api接口不能使用随机错误码
+     *
+     * @param message
+     * @return
+     */
     public static BusinessException create(String message) {
         int value = (int) (MIN_AUTO_CODE + Math.round((Integer.MAX_VALUE - MIN_AUTO_CODE) * Math.random()));
         return create(value, message);

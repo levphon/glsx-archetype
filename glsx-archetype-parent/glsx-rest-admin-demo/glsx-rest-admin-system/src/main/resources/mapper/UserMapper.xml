@@ -8,8 +8,8 @@
         <result column="mini_openid" jdbcType="VARCHAR" property="miniOpenid"/>
         <result column="enable_status" jdbcType="TINYINT" property="enableStatus"/>
         <result column="delete_status" jdbcType="TINYINT" property="deleteStatus"/>
-        <result column="created_date" jdbcType="TIMESTAMP" property="createDate"/>
-        <result column="updated_date" jdbcType="TIMESTAMP" property="updateDate"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+        <result column="updated_date" jdbcType="TIMESTAMP" property="updatedDate"/>
     </resultMap>
 
 

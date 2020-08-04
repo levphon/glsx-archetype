@@ -1,9 +1,9 @@
-/**
- * 版权声明： 版权所有 违者必究 2012
- * 日    期：12-6-2
- */
 package com.glsx.plat.common.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -149,6 +149,38 @@ public class SignUtils {
     public static String getUUID() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString().toUpperCase();
+    }
+
+    /**
+     * 获取整个json结构排序的map
+     *
+     * @param obj
+     * @return
+     */
+    public static TreeMap<String, String> getSignTreeMap(Object obj) {
+        TreeMap<String, String> tParams = new TreeMap<>();
+        Gson gson = new GsonBuilder().create();
+        JsonElement jsonTree = gson.toJsonTree(obj);
+        JsonSortUtil.sort(jsonTree);
+        JsonObject reqJO = jsonTree.getAsJsonObject();
+        Set<Map.Entry<String, JsonElement>> paramsSet = reqJO.entrySet();
+        Iterator<Map.Entry<String, JsonElement>> iterator = paramsSet.iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, JsonElement> entry = iterator.next();
+            String key = entry.getKey();
+            JsonElement value = entry.getValue();
+            if (value == null) continue;
+
+            if (value.isJsonObject()) {
+                tParams.put(key, value.toString());
+            } else if (value.isJsonArray()) {
+                tParams.put(key, value.toString());
+            } else {
+                //注意String类型用value.toString()，转的字符串会带双引号
+                tParams.put(key, value.getAsString());
+            }
+        }
+        return tParams;
     }
 
 //    public static void main(String[] args) throws Exception {

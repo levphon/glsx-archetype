@@ -29,8 +29,9 @@ public enum SystemMessage implements ExceptionCause<BusinessException> {
 
     REPEAT_DATA(801, "数据重复 %s"),
     DATA_TO_LARGE(802, "数据过大"),
-    NETWORK_ERROR(803, "网络连接错误或磁盘不可读"),
-    NOT_SUPPORT_MIME(804, "不支持的 MIME类型,当前类型为:%s"),
+    FILE_TO_LARGE(803, "文件过大"),
+    NETWORK_ERROR(804, "网络连接错误或磁盘不可读"),
+    NOT_SUPPORT_MIME(805, "不支持的 MIME类型,当前类型为:%s"),
 
     SERVICE_CALL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "后台服务内部错误"),
     MICROSERVICE_CALL_FAIL(HttpStatus.SERVICE_UNAVAILABLE.value(), "服务调用异常");

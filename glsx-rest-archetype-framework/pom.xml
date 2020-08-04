@@ -94,6 +94,7 @@
         <module>rest-admin-office</module>
 
         <module>rest-admin-wechat</module>
+        <module>rest-admin-bus</module>
     </modules>
 
     <dependencies>

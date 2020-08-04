@@ -13,7 +13,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.PersistenceException;
@@ -108,7 +107,6 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = BindException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R bindException(BindException ex) {
         // ex.getFieldError():随机返回一个对象属性的异常信息。如果要一次性返回所有对象属性异常信息，则调用ex.getAllErrors()
         FieldError fieldError = ex.getFieldError();
@@ -141,7 +139,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = ValidateException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R validateException(ValidateException e) {
         log.error("数据校验异常", e);
         saveException(e, ExceptionLevel.normal);
@@ -149,7 +146,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R handleServiceException(ConstraintViolationException e) {
         log.error("参数验证失败", e);
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
@@ -161,7 +157,6 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         StringBuilder sb = new StringBuilder();
         for (FieldError error : e.getBindingResult().getFieldErrors()) {
@@ -187,7 +182,6 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public R otherException(Exception e) {
         log.error("后台服务异常", e);
         saveException(e, ExceptionLevel.fatal);

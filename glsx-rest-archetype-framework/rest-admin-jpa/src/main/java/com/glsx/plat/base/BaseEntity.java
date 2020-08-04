@@ -4,10 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.glsx.plat.core.enums.SysConstants;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Accessors(chain = true)
 @Data
@@ -37,27 +41,31 @@ public abstract class BaseEntity implements Serializable {
      * 创建人
      */
     @Column(name = "created_by", length = 10)
-    private Integer createBy;
+    private Integer createdBy;
 
     /**
      * 操作者
      */
     @Column(name = "updated_by", length = 10)
-    private Integer updateBy;
+    private Integer updatedBy;
 
     /**
      * 创建时间
      */
+    @CreatedDate
+    @Temporal(TIMESTAMP)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "created_date", length = 19, updatable = false)
-    private Date createDate = new Date();
+    private Date createdDate = new Date();
 
     /**
      * 更新时间
      */
+    @LastModifiedDate
+    @Temporal(TIMESTAMP)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "updated_date", length = 19)
-    private Date updateDate;
+    private Date updatedDate;
 
     @Override
     public boolean equals(Object o) {

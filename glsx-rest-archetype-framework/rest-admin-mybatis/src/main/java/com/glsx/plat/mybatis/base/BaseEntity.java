@@ -37,27 +37,27 @@ public abstract class BaseEntity implements Serializable {
      * 创建人
      */
     @Column(name = "created_by", length = 10)
-    private Integer createBy;
+    private Long createdBy;
 
     /**
      * 操作者
      */
     @Column(name = "updated_by", length = 10)
-    private Integer updateBy;
+    private Long updatedBy;
 
     /**
      * 创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "created_date", length = 19, updatable = false)
-    private Date createDate = new Date();
+    private Date createdDate;
 
     /**
      * 更新时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @Column(name = "updated_date", length = 19)
-    private Date updateDate;
+    private Date updatedDate;
 
     @Override
     public boolean equals(Object o) {

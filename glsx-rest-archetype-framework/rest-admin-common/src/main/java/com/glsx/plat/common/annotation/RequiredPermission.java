@@ -5,9 +5,12 @@ import java.lang.annotation.*;
 /**
  * @author payu
  */
-@NoLogin
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CheckSign {
+@Inherited
+@Documented
+public @interface RequiredPermission {
+
+    String value();
 
 }

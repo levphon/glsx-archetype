@@ -1,10 +1,10 @@
 package cn.com.glsx.admin.api;
 
 import cn.com.glsx.admin.fallback.UserCenterFeignFactory;
-import cn.com.glsx.admin.services.userservice.dto.UserDTO;
-import cn.com.glsx.admin.services.userservice.dto.UserSearch;
+import cn.com.glsx.admin.services.userservice.model.User;
+import cn.com.glsx.admin.services.userservice.model.UserDTO;
+import cn.com.glsx.admin.services.userservice.model.UserSearch;
 import com.github.pagehelper.PageInfo;
-import com.glsx.vasp.modules.entity.User;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author payu
  */
-@FeignClient(name = "glsx-rest-admin", fallbackFactory = UserCenterFeignFactory.class, decode404 = true)
+@FeignClient(name = "glsx-rest-admin", path = "/api/user/", fallbackFactory = UserCenterFeignFactory.class, decode404 = true)
 public interface UserCenterFeignClient {
 
     /**
@@ -41,22 +41,22 @@ public interface UserCenterFeignClient {
      * 测试Feign Get ，普通处理
      * 注意： @RequestParam("xx") 注解一定要写，而且属性名xx不能省略
      */
-    @GetMapping("/rest/user/echo")
+    @GetMapping("/echo")
     String echo(@RequestParam("message") String message);
 
     @GetMapping("/search")
     PageInfo<User> search(UserSearch search);
 
-    @PostMapping(value = "/rest/user/add")
-    UserDTO add(@RequestBody @Validated UserDTO userDTO);
+    @PostMapping(value = "/add")
+    User add(@RequestBody @Validated UserDTO userDTO);
 
-    @PostMapping(value = "/rest/user/edit")
-    UserDTO edit(@RequestBody @Validated UserDTO userDTO);
+    @PostMapping(value = "/edit")
+    User edit(@RequestBody @Validated UserDTO userDTO);
 
-    @GetMapping(value = "/rest/user/info/{id}")
+    @GetMapping(value = "/info/{id}")
     User info(@PathVariable("id") Long id);
 
-    @GetMapping(value = "/rest/user/info/phone")
+    @GetMapping(value = "/info/phone")
     User info(@RequestParam("phone") String phone);
 
 }
