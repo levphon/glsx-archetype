@@ -18,6 +18,7 @@ public enum SystemMessage implements ExceptionCause<BusinessException> {
     ARGS_ERROR(601, "参数错误"),
     ARGS_NULL(602, "参数错误,必填参数 [%s]"),
     NOT_LOGIN(603, "未登录或登录失效"),
+    NO_LOGIN_INVALID(604, "免登录失效"),
 
     SIGN_ERROR(701, "签名验证失败"),
     ILLEGAL_ACCESS(702, "非法访问"),
@@ -34,7 +35,7 @@ public enum SystemMessage implements ExceptionCause<BusinessException> {
     NOT_SUPPORT_MIME(805, "不支持的 MIME类型,当前类型为:%s"),
 
     SERVICE_CALL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR.value(), "后台服务内部错误"),
-    MICROSERVICE_CALL_FAIL(HttpStatus.SERVICE_UNAVAILABLE.value(), "服务调用异常");
+    MICROSERVICE_CALL_FAIL(HttpStatus.SERVICE_UNAVAILABLE.value(), "服务调用异常 ");
 
     R r = new R();
 

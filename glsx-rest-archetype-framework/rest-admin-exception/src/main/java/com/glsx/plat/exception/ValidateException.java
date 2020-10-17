@@ -16,17 +16,17 @@ import lombok.Setter;
 public class ValidateException extends RuntimeException {
 
     private String msg;
-    private String code = "600";
+    private Integer code = SystemMessage.ARGS_ERROR.getCode();
 
     public ValidateException(String msg) {
         super(msg);
         this.msg = msg;
     }
 
-    public ValidateException(String msg, String code) {
+    public ValidateException(Integer code, String msg) {
         super(msg);
-        this.msg = msg;
         this.code = code;
+        this.msg = msg;
     }
 
     public ValidateException(String msg, Throwable e) {
@@ -34,7 +34,7 @@ public class ValidateException extends RuntimeException {
         this.msg = msg;
     }
 
-    public ValidateException(String code, String msg, Throwable e) {
+    public ValidateException(Integer code, String msg, Throwable e) {
         super(msg, e);
         this.msg = msg;
         this.code = code;

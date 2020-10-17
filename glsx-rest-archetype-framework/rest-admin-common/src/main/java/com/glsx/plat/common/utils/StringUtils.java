@@ -255,6 +255,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Object obj) {
+        return (T) obj;
+    }
+
 //    public static void main(String[] args) throws UnsupportedEncodingException {
 //        System.out.println("中文a".getBytes("UTF-8").length); //7
 //        System.out.println(getStrLength("中文a")); //7

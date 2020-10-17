@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -40,7 +39,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
      */
     @Bean(name = "threadPoolTaskExecutor")
     @Override
-    public Executor getAsyncExecutor() {
+    public ThreadPoolTaskExecutor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(corePoolSize);
         threadPoolTaskExecutor.setKeepAliveSeconds(500);    // 0.5 秒允许空闲 最大允许空闲时间,超过时间并且当前池中线程数大于 corePoolSize 的时候会销毁

@@ -2,7 +2,8 @@ package cn.com.glsx.admin.modules.user.controller;
 
 import cn.com.glsx.admin.modules.BaseController;
 import cn.com.glsx.admin.modules.user.service.UserService;
-import cn.com.glsx.admin.services.userservice.model.UserSearch;
+import cn.com.glsx.admin.services.userservice.model.UserDTO;
+import com.glsx.vasp.modules.model.UserSearch;
 import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -38,7 +39,7 @@ public class UserController extends BaseController {
     @GetMapping("/search")
     public R search(UserSearch search) {
         PageHelper.startPage(search.getPageNumber(), search.getPageSize());
-        PageInfo<User> list = userService.search(search);
+        PageInfo<UserDTO> list = userService.search(search);
         return R.ok().putPageData(list);
     }
 

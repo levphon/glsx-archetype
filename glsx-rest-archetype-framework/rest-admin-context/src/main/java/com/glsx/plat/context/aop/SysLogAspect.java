@@ -1,39 +1,34 @@
 package com.glsx.plat.context.aop;
 
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.glsx.plat.common.annotation.SysLog;
-import com.glsx.plat.common.enums.RequestSaveMethod;
-import com.glsx.plat.common.utils.DateUtils;
 import com.glsx.plat.common.utils.StringUtils;
+import com.glsx.plat.context.thread.LogginTask;
 import com.glsx.plat.core.constant.BasicConstants;
-import com.glsx.plat.core.entity.SysLogEntity;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
+import com.glsx.plat.loggin.LogginStrategyFactory;
 import com.glsx.plat.redis.service.GainIdService;
 import com.glsx.plat.web.utils.IpUtils;
 import com.glsx.plat.web.utils.SessionUtils;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
-import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @author payu
@@ -43,37 +38,41 @@ import java.util.Map;
 @Component
 public class SysLogAspect {
 
+    final static GsonBuilder builder = new GsonBuilder();
+
+    final static Gson gson = builder.create();
+
     @Resource
     private GainIdService gainIdService;
 
     @Resource
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private ThreadPoolTaskExecutor executor;
+
+    @Autowired
+    private LogginStrategyFactory logginStrategyFactory;
+
     private final static String LOG_REQ_ID = "REQ_ID";
-
-    /**
-     * 换行符
-     */
-    private static final String LINE_SEPARATOR = System.lineSeparator();
-
-//    @Resource
-//    private MongoTemplate mongoTemplate;
-
-//    @Autowired
-//    private KafkaTemplate<String, Object> kafkaTemplate;
+    private final static String MONGO_LOG_ID = "MONGO_LOG_ID";
 
     @Pointcut("@annotation(com.glsx.plat.common.annotation.SysLog)")
     public void logPointCut() {
     }
 
-    ParameterNameDiscoverer parameterNameDiscoverer = new LocalVariableTableParameterNameDiscoverer();
 
     @Before("logPointCut()")
-    public void saveLog(JoinPoint joinPoint) {
+    public void webpre(JoinPoint joinPoint) {
         String traceId = gainIdService.gainId(LOG_REQ_ID);
         MDC.put(LOG_REQ_ID, traceId);
 
-        saveSysLog(joinPoint);
+        // 处理日志
+        try {
+            saveSysLog(joinPoint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -109,7 +108,14 @@ public class SysLogAspect {
     public void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
         log.info("Returning Args : {}", new Gson().toJson(returnValue));
         // 处理完请求，返回内容
+        String logTraceId = MDC.get(MONGO_LOG_ID);
 
+        com.glsx.plat.core.web.R r = (com.glsx.plat.core.web.R) returnValue;
+        try {
+            logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         MDC.clear();
     }
 
@@ -118,14 +124,12 @@ public class SysLogAspect {
      *
      * @param joinPoint
      */
-    public void saveSysLog(JoinPoint joinPoint) {
+    public void saveSysLog(JoinPoint joinPoint) throws Exception {
 
         //获取方法信息
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         Object target = joinPoint.getTarget();
-
-        Gson gson = new Gson();
 
         // 日志标识
         SysLog sysLogMark = method.getAnnotation(SysLog.class);
@@ -147,134 +151,31 @@ public class SysLogAspect {
         // 打印调用 controller 的全路径以及执行方法
         log.info("Class Method   : {}.{}", methodSignature.getDeclaringTypeName(), methodSignature.getName());
         // 打印请求的 IP
-        log.info("IP             : {}", request.getRemoteAddr());
+        log.info("IP             : {}", IpUtils.getIpAddr(request));
         // 打印请求入参
-        log.info("Request Args   : {}", gson.toJson(joinPoint.getArgs()));
+        Object[] args = joinPoint.getArgs();
+        log.info("Request Args   : {}", gson.toJson(args));
+        // 操作人
+        Map<String, Object> userInfo = parseUserInfoByToken(request);
+        log.info("OperatorInfo   : {}", userInfo.toString());
 
-        String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
-        if (StringUtils.isNotEmpty(token)) {
-            // TODO: 2020/5/27 jwt解析token
-            Map<String, Object> claimMap = jwtUtils.parseClaim(BaseJwtUser.class, token);
-            log.info(claimMap.toString());
-        }
+        String application = jwtUtils.getApplication();
 
         if (sysLogMark.saveLog()) {
-            String modul = target.getClass().getName() + "." + methodSignature.getName();
-            //创建日志类
-            SysLogEntity sysLog = new SysLogEntity();
-            sysLog.setModul(modul);
-
-            String remortIP = IpUtils.getIpAddr(request);
-            sysLog.setIp(remortIP);
-            try {
-                //保存特定信息
-                if (sysLogMark.saveRequest()) {
-                    RequestSaveMethod requestSaveMethod = sysLogMark.saveRequestMethod();
-                    if (requestSaveMethod == RequestSaveMethod.REQUEST) {
-                        Map<String, String[]> parameterMap = request.getParameterMap();
-                        sysLog.setRequestData(gson.toJson(parameterMap));
-                    } else if (requestSaveMethod == RequestSaveMethod.REFLECT) {
-                        //使用反射保存请求数据参数
-                        Object[] args = joinPoint.getArgs();
-                        String[] parameterNames = parameterNameDiscoverer.getParameterNames(method);
-                        if (ArrayUtils.isNotEmpty(args)) {
-                            JSONObject argsJO = new JSONObject();
-                            for (int i = 0; i < args.length; i++) {
-                                Object arg = args[i];
-                                String argName = parameterNames[i];
-                                if (arg == null) {//空参记录
-                                    argsJO.put(argName, null);
-                                } else {
-                                    //只取项目中的类或原始型和基本类型
-                                    saveClassRequestData(argsJO, arg, argName);
-                                }
-                            }
-                            sysLog.setRequestData(argsJO.toJSONString());
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                log.error("保存日志出错", e);
-            } finally {
-                log.info("记录日志,保存DB、MQ等 TODO :{}", sysLog);
-
-//                sysLogMapper.insert(sysLog);
-//                mongoTemplate.insert(sysLog);
-//                kafkaTemplate.send(sysLog);
-            }
-        }
-
-    }
-
-
-    /**
-     * 只保存本类的,或原始型数据到请求数据
-     *
-     * @param jsonObject
-     * @param arg
-     * @param argName
-     */
-    private void saveClassRequestData(JSONObject jsonObject, Object arg, String argName) {
-        Class<?> clazz = arg.getClass();
-        boolean primitiveOrWrapper = org.apache.commons.lang3.ClassUtils.isPrimitiveOrWrapper(clazz);
-        if (primitiveOrWrapper || clazz == String.class) {
-            jsonObject.put(argName, arg);
-        } else if (clazz == Date.class) {
-            Date date = (Date) arg;
-            jsonObject.put(argName, DateUtils.formatNormal(date));
-        } else if (clazz.isArray() || (arg instanceof List) || (arg instanceof Map)) {
-            if (clazz.isArray()) {
-                Object[] array = (Object[]) arg;
-                if (ArrayUtils.isEmpty(array)) {
-                    jsonObject.put(argName, arg);
-                    return;
-                }
-                JSONArray jsonArray = new JSONArray();
-                jsonObject.put(argName, jsonArray);
-
-                //解析  jsonArray
-                saveClassRequestData(jsonArray, array);
-            } else if (arg instanceof List) {
-                List<Object> list = (List<Object>) arg;
-                if (CollectionUtils.isEmpty(list)) {
-                    jsonObject.put(argName, arg);
-                    return;
-                }
-                JSONArray jsonArray = new JSONArray();
-                jsonObject.put(argName, jsonArray);
-
-                //解析  jsonArray
-                saveClassRequestData(jsonArray, list.toArray());
-            } else if (arg instanceof Map) {
-                // map 不处理了,直接放进去
-                jsonObject.put(argName, arg);
-            }
+            Future<String> future = executor.submit(new LogginTask(request, application, method, args, userInfo, sysLogMark, logginStrategyFactory.getStrategy()));
+            String logId = future.get();
+            log.info("LogginTask future.get:::" + logId);
+            MDC.put(MONGO_LOG_ID, logId);
         }
     }
 
-    /**
-     * 保存数组数据
-     *
-     * @param jsonArray
-     * @param array
-     */
-    private void saveClassRequestData(JSONArray jsonArray, Object[] array) {
-        if (ArrayUtils.isEmpty(array)) return;
-        for (Object o : array) {
-            if (o == null) {
-                jsonArray.add(null);
-                continue;
-            }
-
-            Class<?> clazz = o.getClass();
-            boolean primitiveOrWrapper = org.apache.commons.lang3.ClassUtils.isPrimitiveOrWrapper(clazz);
-            if (primitiveOrWrapper || clazz == String.class) {
-                jsonArray.add(o);
-            } else if (clazz == Date.class) {
-                Date date = (Date) o;
-                jsonArray.add(DateUtils.formatNormal(date));
-            }
+    public Map<String, Object> parseUserInfoByToken(HttpServletRequest request) {
+        String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
+        if (StringUtils.isNotEmpty(token)) {
+            // jwt解析token,提取用户id
+            return (Map<String, Object>) jwtUtils.parseClaim(token, BaseJwtUser.class);
         }
+        return Maps.newHashMap();
     }
 
 }

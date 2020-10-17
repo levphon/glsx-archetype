@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
+        <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.glsx</groupId>
@@ -42,10 +42,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-cloud.version>Hoxton.SR2</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.2.0.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
+        <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
         <fastjson.version>1.2.70</fastjson.version>
 
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
@@ -62,6 +63,10 @@
 
         <module>rest-admin-config</module>
         <module>rest-admin-registry</module>
+        <module>rest-admin-sleuth</module>
+        <module>rest-admin-monitor</module>
+        <module>rest-admin-bus</module>
+        <module>rest-admin-sentinel</module>
 
         <module>rest-admin-gateway-server</module>
         <module>rest-admin-gateway-client</module>
@@ -71,30 +76,40 @@
         <module>rest-admin-context</module>
 
         <module>rest-admin-redis</module>
-        <module>rest-admin-dfs</module>
         <module>rest-admin-jpa</module>
         <module>rest-admin-mybatis</module>
-        <module>rest-admin-document</module>
-        <module>rest-admin-jwt</module>
-        <module>rest-admin-kafka</module>
-        <module>rest-admin-exception</module>
-        <module>rest-admin-container</module>
         <module>rest-admin-datasource</module>
-        <module>rest-admin-sms</module>
-        <module>rest-admin-mail</module>
-        <module>rest-admin-sleuth</module>
-        <module>rest-admin-security</module>
-        <module>rest-admin-webflux</module>
-        <module>rest-admin-web</module>
-        <module>rest-admin-swagger2</module>
-        <module>rest-admin-elasticsearch</module>
-        <module>rest-admin-monitor</module>
+
         <module>rest-admin-dubbo</module>
         <module>rest-admin-feign</module>
+
+        <module>rest-admin-dfs</module>
+
+        <module>rest-admin-security</module>
+        <module>rest-admin-jwt</module>
+
+        <module>rest-admin-container</module>
+        <module>rest-admin-webflux</module>
+        <module>rest-admin-web</module>
+        <module>rest-admin-exception</module>
+
+        <module>rest-admin-kafka</module>
+        <module>rest-admin-sms</module>
+        <module>rest-admin-mail</module>
+
+        <module>rest-admin-elasticsearch</module>
+
+        <module>rest-admin-document</module>
+        <module>rest-admin-swagger2</module>
         <module>rest-admin-office</module>
 
         <module>rest-admin-wechat</module>
-        <module>rest-admin-bus</module>
+        <module>rest-admin-dynamic-datasource</module>
+        <module>rest-admin-seata</module>
+        <module>rest-admin-im</module>
+        <module>rest-admin-disruptor</module>
+        <module>rest-admin-mongodb</module>
+        <module>rest-admin-loggin</module>
     </modules>
 
     <dependencies>
@@ -119,12 +134,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
-            <scope>provided</scope>
+            <version>1.18.12</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
     <build>
+        <defaultGoal>compile</defaultGoal>
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -166,6 +182,23 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.26.0-GA</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>22.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

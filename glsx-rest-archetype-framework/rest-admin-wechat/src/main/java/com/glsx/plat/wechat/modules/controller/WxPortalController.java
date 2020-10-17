@@ -30,7 +30,7 @@ import java.util.UUID;
 @RequestMapping("/wx/portal/{appid}")
 public class WxPortalController {
 
-    private final WxMpService wxService;
+    private final WxMpService wxMpService;
 
     @GetMapping(produces = "text/plain;charset=utf-8")
     public String authGet(@PathVariable String appid,
@@ -110,11 +110,11 @@ public class WxPortalController {
 
     @GetMapping("config")
     public R config(@PathVariable String appid, String url) throws WxErrorException {
-        if (!this.wxService.switchover(appid)) {
+        if (!this.wxMpService.switchover(appid)) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
 
-        String ticket = wxService.getJsapiTicket();
+        String ticket = wxMpService.getJsapiTicket();
 
         Map<String, String> rtn = sign(ticket, url);
 
@@ -136,9 +136,7 @@ public class WxPortalController {
             crypt.reset();
             crypt.update(str.getBytes("UTF-8"));
             signature = Encrypter.byteToHexString(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 

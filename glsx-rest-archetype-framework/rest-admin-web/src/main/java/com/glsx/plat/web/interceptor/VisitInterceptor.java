@@ -9,6 +9,7 @@ import com.glsx.plat.core.web.R;
 import com.glsx.plat.exception.SystemMessage;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
+import com.glsx.plat.web.utils.IpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -67,8 +68,10 @@ public class VisitInterceptor<T extends BaseJwtUser> implements HandlerIntercept
             String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
             // 1.判断请求是否携带token
             if (StringUtils.isBlank(token)) {
+                String ip = IpUtils.getIpAddr(request);
+                String uri = request.getRequestURI();
                 // 不存在token数据
-                log.warn("【访问拦截】用户的请求Header中未包含token信息.[请求头Authorization]");
+                log.warn("【访问拦截】来自{}的请求[{}] Header中未包含授权信息.[请求头{}]", ip, uri, BasicConstants.REQUEST_HEADERS_TOKEN);
                 needLogin(response);
                 return false;
             }
@@ -83,6 +86,11 @@ public class VisitInterceptor<T extends BaseJwtUser> implements HandlerIntercept
         } else {
             return true;
         }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+
     }
 
     private void needLogin(HttpServletResponse response) throws Exception {

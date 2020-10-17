@@ -55,6 +55,15 @@ public interface SysConstants {
                 return "停用";
             }
         };
+
+        public static String getValueByCode(Integer code) {
+            for (EnableStatus status : EnableStatus.values()) {
+                if (status.getCode().equals(code)) {
+                    return status.getValue();
+                }
+            }
+            return null;
+        }
     }
 
     /**
@@ -82,6 +91,15 @@ public interface SysConstants {
                 return "删除";
             }
         };
+
+        public static String getValueByCode(Integer code) {
+            for (DeleteStatus status : DeleteStatus.values()) {
+                if (status.getCode().equals(code)) {
+                    return status.getValue();
+                }
+            }
+            return null;
+        }
     }
 
 }

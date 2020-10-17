@@ -90,9 +90,13 @@ public class WebConfig implements WebMvcConfigurer {
         //1.加入的顺序就是拦截器执行的顺序，
         //2.按顺序执行所有拦截器的preHandle
         //3.所有的preHandle 执行完再执行全部postHandle 最后是postHandle
-        registry.addInterceptor(visitInterceptor).addPathPatterns("/**")
+        registry.addInterceptor(visitInterceptor)
+                .addPathPatterns("/**")
                 .excludePathPatterns("/")
-                .excludePathPatterns("/login");
+                .excludePathPatterns("/login")
+                .excludePathPatterns("/actuator/**")
+                .excludePathPatterns("/api/**")
+                .excludePathPatterns(uploadProperties.getFilepath());
         registry.addInterceptor(logInterceptor).addPathPatterns("/**");
     }
 

@@ -27,4 +27,9 @@ public class JwtConfigProperties {
      */
     private String key;
 
+    /**
+     * token黑名单前缀
+     */
+    private String blacklistKey;
+
 }

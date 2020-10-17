@@ -4,6 +4,7 @@ import com.glsx.plat.core.web.R;
 import com.netflix.client.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -81,7 +82,6 @@ public class GlobalExceptionHandler {
         } else {
             log.error("业务异常,没有调用栈 " + e.getMessage());
         }
-
         saveException(businessException, ExceptionLevel.business);
         return businessException.getResultEntity();
     }
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
         sb.append(fieldError.getField())
                 .append("=[").append(fieldError.getRejectedValue()).append("]")
                 .append(fieldError.getDefaultMessage());
-
+        log.error("参数错误：{}", sb.toString());
         saveException(ex, ExceptionLevel.business);
         return R.error(SystemMessage.ARGS_NULL.getCode(), sb.toString());
     }
@@ -125,16 +125,15 @@ public class GlobalExceptionHandler {
         if (cause instanceof BusinessException) {
             return businessExceptionHandler(request, e);
         }
-
-        saveException(e, ExceptionLevel.fatal);
-
         log.error("数据存储出错", e);
+        saveException(e, ExceptionLevel.fatal);
         return R.error(9999, "数据存储异常");
     }
 
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public R methodNotSupport(HttpRequestMethodNotSupportedException e) {
         log.error("Http请求异常", e);
+        saveException(e, ExceptionLevel.fatal);
         return SystemMessage.ACCESS_DENIED.result(e.getMessage());
     }
 
@@ -153,6 +152,7 @@ public class GlobalExceptionHandler {
         for (ConstraintViolation<?> violation : violations) {
             buf.append(violation.getMessage()).append(",");
         }
+        saveException(e, ExceptionLevel.fatal);
         return R.error(HttpStatus.BAD_REQUEST.value(), buf.deleteCharAt(buf.length() - 1).toString());
     }
 
@@ -162,16 +162,20 @@ public class GlobalExceptionHandler {
         for (FieldError error : e.getBindingResult().getFieldErrors()) {
             sb.append(error.getDefaultMessage() + ",");
         }
+        log.error("参数错误：{}", sb.toString());
+        saveException(e, ExceptionLevel.fatal);
         return R.error(HttpStatus.BAD_REQUEST.value(), sb.length() > 0 ? sb.deleteCharAt(sb.length() - 1).toString() : "参数异常！");
     }
 
     @ExceptionHandler(ServiceException.class)
     public R handleServiceException(ServiceException e) {
+        saveException(e, ExceptionLevel.fatal);
         return R.error(e.getCode(), e.getMsg());
     }
 
     @ExceptionHandler(ClientException.class)
     public R handleClientException(ClientException e) {
+        saveException(e, ExceptionLevel.fatal);
         return R.error(e.getErrorCode(), e.getErrorMessage());
     }
 
@@ -195,7 +199,10 @@ public class GlobalExceptionHandler {
      * @param level
      */
     protected void saveException(Exception e, ExceptionLevel level) {
+        //清除日志
+        MDC.clear();
 
+        // TODO: 2020/10/15 异常信息入库
     }
 
 }

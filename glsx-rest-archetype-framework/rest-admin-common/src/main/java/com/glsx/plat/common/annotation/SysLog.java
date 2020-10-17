@@ -1,5 +1,6 @@
 package com.glsx.plat.common.annotation;
 
+import com.glsx.plat.common.enums.OperateType;
 import com.glsx.plat.common.enums.RequestSaveMethod;
 
 import java.lang.annotation.*;
@@ -14,7 +15,26 @@ import java.lang.annotation.*;
 @Documented
 public @interface SysLog {
 
+    /**
+     * 说明描述
+     *
+     * @return
+     */
     String value() default "";
+
+    /**
+     * 模块
+     *
+     * @return
+     */
+    String module() default "";
+
+    /**
+     * 操作
+     *
+     * @return
+     */
+    OperateType action() default OperateType.QUERY;
 
     /**
      * 打印方法执行时间
@@ -24,20 +44,12 @@ public @interface SysLog {
     boolean printSpendTime() default false;
 
     /**
-     * 打印方法参数
-     *
-     * @return
-     */
-    boolean printRequestParams() default true;
-
-    /**
      * 记录请求数据,对于 base64 等数据需设置为 false
      * 文件流数据不会存储
      *
      * @return
      */
     boolean saveRequest() default true;
-
 
     /**
      * 保存参数方法,默认使用 request 中拿

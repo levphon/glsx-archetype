@@ -18,13 +18,21 @@
     <modules>
         <module>glsx-rest-service-echocenter</module>
         <module>glsx-rest-service-echocenter-api</module>
-        <module>glsx-rest-admin-system</module>
+        <module>glsx-rest-seata-order</module>
+        <module>glsx-rest-seata-storage</module>
+        <module>glsx-rest-seata-account</module>
+        <module>glsx-rest-seata-account-api</module>
+        <module>glsx-rest-seata-order-api</module>
+        <module>glsx-rest-seata-storage-api</module>
+        <module>glsx-rest-seata-business</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
+        <spring-cloud-alibaba.version>2.2.1.RELEASE</spring-cloud-alibaba.version>
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
         <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
         <!--        <repo.proxy.url>https://repo1.maven.org/maven2</repo.proxy.url>-->
@@ -50,6 +58,11 @@
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.seata</groupId>
+                <artifactId>seata-spring-boot-starter</artifactId>
+                <version>1.3.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

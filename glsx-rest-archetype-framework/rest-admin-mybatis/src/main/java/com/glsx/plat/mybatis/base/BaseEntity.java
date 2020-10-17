@@ -30,8 +30,8 @@ public abstract class BaseEntity implements Serializable {
     /**
      * 启用状态：0初始，1启用，2停用，默认启用
      */
-    @Column(name = "enable_status", length = 2)
-    private Integer enableStatus = SysConstants.EnableStatus.enable.getCode();
+//    @Column(name = "enable_status", length = 2)
+//    private Integer enableStatus = SysConstants.EnableStatus.enable.getCode();
 
     /**
      * 创建人

@@ -4,6 +4,7 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
+import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.wechat.common.config.WxMaConfiguration;
@@ -22,7 +23,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/wx/user/{appid}")
-public class WxMaUserController {
+public abstract class WxMaUserController {
 
     /**
      * 登陆接口
@@ -32,6 +33,7 @@ public class WxMaUserController {
      * @return
      */
     @SysLog
+    @NoLogin
     @PostMapping(value = "/login", produces = "application/json")
     public R login(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
         if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
@@ -40,7 +42,8 @@ public class WxMaUserController {
 
         WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(js_code);
         log.info(session.toString());
-        //可以增加自己的逻辑，关联业务相关数据
+
+        //增加自己的逻辑，关联业务相关数据
         //todo openid入库
         //todo 设置session
         //todo ...
@@ -54,9 +57,7 @@ public class WxMaUserController {
      *
      * @param session
      */
-    protected Map<String, Object> cacheUser(WxMaJscode2SessionResult session) {
-        return null;
-    }
+    protected abstract Map<String, Object> cacheUser(WxMaJscode2SessionResult session);
 
     /**
      * 登陆接口
@@ -66,6 +67,7 @@ public class WxMaUserController {
      * @return
      */
     @SysLog
+    @NoLogin
     @PostMapping(value = "/loginByOpenid", produces = "application/json")
     public R loginByOpenid(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
         if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
@@ -84,9 +86,7 @@ public class WxMaUserController {
      *
      * @param session
      */
-    protected Map<String, Object> loginByOpenid(WxMaJscode2SessionResult session) {
-        return null;
-    }
+    protected abstract Map<String, Object> loginByOpenid(WxMaJscode2SessionResult session);
 
     /**
      * <pre>
@@ -118,18 +118,14 @@ public class WxMaUserController {
      *
      * @param userInfo
      */
-    protected Map<String, Object> linkUser(WxMaUserInfo userInfo) {
-        return null;
-    }
+    protected abstract Map<String, Object> linkUser(WxMaUserInfo userInfo);
 
     /**
      * 从jwt中获取sessionKey（或redis）
      *
      * @return
      */
-    protected String getSessionKeyFromCache() {
-        return "";
-    }
+    protected abstract String getSessionKeyFromCache();
 
     /**
      * <pre>
@@ -160,9 +156,7 @@ public class WxMaUserController {
      *
      * @param phoneNoInfo
      */
-    protected Map<String, Object> updatePhone(WxMaPhoneNumberInfo phoneNoInfo) {
-        return null;
-    }
+    protected abstract Map<String, Object> updatePhone(WxMaPhoneNumberInfo phoneNoInfo);
 
     /**
      * <pre>

@@ -18,22 +18,22 @@ public abstract class BaseJwtUser {
     /**
      * 用户标识
      */
-    private String userId;
+    private Long userId;
 
     /**
-     * 用户账号（如：管理系统admin，消费者系统手机号,openid等）
+     * 用户账号（如：管理系统admin，消费者系统手机号等）
      */
     private String account;
 
     /**
-     * 角色id，多个英文逗号分割
+     * 租户
      */
-    private String roleIds;
+    private String tenant;
 
     /**
-     * 终端系统：如：管理系后台，小程序后台，H5后台等应用服务名
+     * 归属（组织、机构、部门、个体等等）
      */
-    private String application;
+    private String belong;
 
     /**
      * 子类的class全限定名

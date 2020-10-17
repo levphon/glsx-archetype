@@ -1,6 +1,5 @@
 package cn.com.glsx.echocenter.api;
 
-import cn.com.glsx.echocenter.fallback.EchoCenterFeignFactory;
 import cn.com.glsx.echocenter.services.echoservice.req.EchoReq;
 import cn.com.glsx.echocenter.services.echoservice.resp.EchoResp;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,16 +13,16 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author payu
  */
-@FeignClient(name = "glsx-rest-echo-center", path = "demo", fallback = EchoCenterFeignFactory.class)
+@FeignClient(name = "glsx-rest-echo-center", contextId = "echo", path = "echo", decode404 = true)
 public interface EchoCenterFeignClient {
 
-    @GetMapping(value = "/echo/{message}")
+    @GetMapping(value = "/{message}")
     String echo(@PathVariable("message") String message);
 
     @GetMapping("/echo2")
-    public String echo2(@RequestParam("title") String title, @RequestParam("message") String message);
+    String echo2(@RequestParam("title") String title, @RequestParam("message") String message);
 
     @PostMapping("/echo3")
-    public EchoResp echo3(@RequestBody EchoReq req);
+    EchoResp echo3(@RequestBody EchoReq req);
 
 }

@@ -64,6 +64,9 @@ public class IpUtils {
                 ip = request.getHeader("HTTP_X_FORWARDED_FOR");
             }
             if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("X-Real-IP");
+            }
+            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
                 ip = request.getRemoteAddr();
             }
         } catch (Exception e) {
@@ -72,6 +75,7 @@ public class IpUtils {
 
         //使用代理，则获取第一个IP地址
         if (StringUtils.isNotEmpty(ip)) {
+            log.info("ip:" + ip);
             String[] ips = ip.split(",");
             if (ips.length > 0) return ips[0];
         }

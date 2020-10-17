@@ -12,7 +12,7 @@ import java.util.Optional;
 @Component
 public class LogConsumer {
 
-    @KafkaListener(topics = {"test_kafka"})
+    @KafkaListener(topics = {"test_topic"})
     public void consumer(ConsumerRecord<?, ?> consumerRecord) {
         //判断是否为null
         Optional<?> kafkaMessage = Optional.ofNullable(consumerRecord.value());
@@ -20,7 +20,7 @@ public class LogConsumer {
         if (kafkaMessage.isPresent()) {
             //得到Optional实例中的值
             Object message = kafkaMessage.get();
-            System.err.println("消费消息:" + message);
+            System.out.println("消费消息:" + message);
         }
     }
 

@@ -221,8 +221,6 @@ mvn clean install
 
 c. 发布
 <pre><code>mvn deploy</code></pre>
-or
-<pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin-archetype-archetype -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=D:\glsx-rest-admin-archetype-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
 groupId:上传到私服的groupId<br>
 artifactId:上传到私服的artifactId<br>
 version:上传到私服的version<br>
@@ -231,6 +229,9 @@ url: 你的maven私服地址<br>
 repositoryId:setting.xml配置的server id
 jar复制到非仓库目录，不然可能会发布失败
 
+OR
+
+<pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin-archetype-archetype -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=D:\glsx-rest-admin-archetype-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
 
 
 ## todo

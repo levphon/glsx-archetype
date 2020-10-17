@@ -11,8 +11,8 @@ import java.io.IOException;
 /**
  * 编码 过滤器
  */
-@Component
-@WebFilter(urlPatterns = "/**", filterName = "encodeFilter")
+//@Component
+//@WebFilter(urlPatterns = "/**", filterName = "encodeFilter")
 public class EncodeFilter implements Filter {
 
     @Override

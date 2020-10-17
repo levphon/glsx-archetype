@@ -18,6 +18,7 @@
         <module>glsx-rest-admin-gateway-server</module>
         <module>glsx-rest-admin-monitor-server</module>
         <module>glsx-rest-admin-auth</module>
+        <module>gslx-rest-admin-kafka</module>
     </modules>
 
     <properties>
@@ -31,13 +32,6 @@
     </properties>
 
     <dependencies>
-        <!--lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.22</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>

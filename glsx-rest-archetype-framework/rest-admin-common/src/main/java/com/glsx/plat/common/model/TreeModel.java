@@ -3,19 +3,20 @@ package com.glsx.plat.common.model;
 import java.util.List;
 
 public interface TreeModel<T> {
+
     /**
      * 获取编号
      *
      * @return
      */
-    Integer getId();
+    Long getId();
 
     /**
      * 父级编号
      *
      * @return
      */
-    Integer getParentId();
+    Long getParentId();
 
     /**
      * 获取文本
@@ -23,6 +24,20 @@ public interface TreeModel<T> {
      * @return
      */
     String getLabel();
+
+    /**
+     * 层级深度
+     *
+     * @return
+     */
+    Integer getDepth();
+
+    /**
+     * 排序
+     *
+     * @return
+     */
+    Integer getOrder();
 
     /**
      * 选中状态：true选中，false未选中

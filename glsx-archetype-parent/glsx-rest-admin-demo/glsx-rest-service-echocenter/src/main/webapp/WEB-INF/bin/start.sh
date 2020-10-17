@@ -10,10 +10,10 @@
 
 ###########init variable#############
 JAVA_HOME="/app/soft/jdk1.8.0_144"
-SERVER_PORT="8114"
+SERVER_PORT="8831"
 DUBBO_PORT=""
 JMX_ARG="-Xmx1024m -Xms512m -Xmn256m"
-MAIN="com.glsx.gecc.Application"
+MAIN="cn.com.glsx.Application"
 SERVER_NAME="glsx-rest-echo-center"
 
 ###########end#######################

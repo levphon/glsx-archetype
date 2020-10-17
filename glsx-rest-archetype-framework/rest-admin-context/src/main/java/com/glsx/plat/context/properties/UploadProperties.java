@@ -1,5 +1,6 @@
 package com.glsx.plat.context.properties;
 
+import com.glsx.plat.common.utils.StringUtils;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,8 @@ import java.util.Map;
 @Component
 @ConfigurationProperties("upload")
 public class UploadProperties {
+
+    public String filepath;
 
     /**
      * 获取存放位置
@@ -30,6 +33,11 @@ public class UploadProperties {
             }
         }
         return location;
+    }
+
+    public String getFilepath() {
+        if (StringUtils.isEmpty(filepath)) filepath = "files";
+        return "/" + filepath + "/";
     }
 
 }

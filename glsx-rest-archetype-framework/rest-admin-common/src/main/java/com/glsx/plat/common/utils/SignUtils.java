@@ -9,6 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.*;
@@ -24,7 +25,11 @@ import java.util.*;
 @Slf4j
 public class SignUtils {
 
-    private final static String SIGN = "sign";
+    public final static String SIGN = "sign";
+
+    final static GsonBuilder builder = new GsonBuilder();
+
+    final static Gson gson = builder.create();
 
     /**
      * 使用<code>secret</code>对paramValues按以下算法进行签名： <br/>
@@ -86,8 +91,28 @@ public class SignUtils {
             }
             sb.append(secret);
             log.info("加密前拼装的字符串:::" + sb);
-//            return MD5.convert32(sb.toString());
+            byte[] sha1Digest = getMD5Digest(sb.toString());
+            return byte2hex(sha1Digest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
+        return "";
+    }
 
+    /**
+     * @param secret
+     * @param stringSignTemp
+     * @param secret
+     * @return
+     */
+    public static String sign(String secret, String stringSignTemp, String salt) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(secret);
+            sb.append(stringSignTemp);
+            sb.append(salt);
+            log.info("加密前拼装的字符串:::" + sb);
             byte[] sha1Digest = getMD5Digest(sb.toString());
             return byte2hex(sha1Digest);
         } catch (IOException e) {
@@ -99,7 +124,7 @@ public class SignUtils {
 
     public static String utf8Encoding(String value, String sourceCharsetName) {
         try {
-            return new String(value.getBytes(sourceCharsetName), "UTF-8");
+            return new String(value.getBytes(sourceCharsetName), StandardCharsets.UTF_8);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e);
         }
@@ -109,7 +134,7 @@ public class SignUtils {
         byte[] bytes = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
-            bytes = md.digest(data.getBytes("UTF-8"));
+            bytes = md.digest(data.getBytes(StandardCharsets.UTF_8));
         } catch (GeneralSecurityException gse) {
             throw new IOException(gse);
         }
@@ -121,7 +146,7 @@ public class SignUtils {
         byte[] bytes = null;
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            bytes = md.digest(data.getBytes("UTF-8"));
+            bytes = md.digest(data.getBytes(StandardCharsets.UTF_8));
         } catch (GeneralSecurityException gse) {
             throw new IOException(gse);
         }
@@ -152,6 +177,34 @@ public class SignUtils {
     }
 
     /**
+     * 获取按key排序的json串
+     *
+     * @param obj
+     * @param isSortByKey
+     * @return
+     */
+    public static String getSignJson(Object obj, boolean isSortByKey) {
+        JsonElement jsonTree = gson.toJsonTree(obj);
+        if (isSortByKey) JsonSortUtil.sort(jsonTree);
+        JsonObject reqJO = jsonTree.getAsJsonObject();
+        return reqJO.toString();
+    }
+
+    /**
+     * 获取按key排序的json串
+     *
+     * @param obj
+     * @return
+     */
+    public static String getSignTreeJson(Object obj) {
+        JsonElement jsonTree = gson.toJsonTree(obj);
+        JsonSortUtil.sort(jsonTree);
+        JsonObject reqJO = jsonTree.getAsJsonObject();
+        reqJO.remove(SIGN);
+        return reqJO.toString();
+    }
+
+    /**
      * 获取整个json结构排序的map
      *
      * @param obj
@@ -159,7 +212,6 @@ public class SignUtils {
      */
     public static TreeMap<String, String> getSignTreeMap(Object obj) {
         TreeMap<String, String> tParams = new TreeMap<>();
-        Gson gson = new GsonBuilder().create();
         JsonElement jsonTree = gson.toJsonTree(obj);
         JsonSortUtil.sort(jsonTree);
         JsonObject reqJO = jsonTree.getAsJsonObject();

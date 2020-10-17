@@ -1,5 +1,8 @@
 package com.glsx.plat.core.web;
 
+import com.glsx.plat.core.constant.ResultConstants;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,14 +15,17 @@ public class R extends HashMap<String, Object> {
 
     public final static String CODE_KEY = "code";
     public final static String MSG_KEY = "message";
+
     private final static String DATA_KEY = "data";
     private final static String LIST_KEY = "list";
+    private final static String ITEMS_KEY = "items";
     private final static String PAGE_KEY = "page";
     private final static String TOTAL_PAGES_KEY = "totalPages";
     private final static String TOTAL_ELEMENTS_KEY = "totalElements";
+    private final static int SUCCESS_CODE = 200;
 
     public R() {
-        put(CODE_KEY, 200);
+        put(CODE_KEY, SUCCESS_CODE);
         put(MSG_KEY, "success");
     }
 
@@ -35,6 +41,13 @@ public class R extends HashMap<String, Object> {
         R r = new R();
         r.put(CODE_KEY, code);
         r.put(MSG_KEY, msg);
+        return r;
+    }
+
+    public static R error(ResultConstants resultConstants){
+        R r = new R();
+        r.put(CODE_KEY, resultConstants.getCode());
+        r.put(MSG_KEY, resultConstants.getMsg());
         return r;
     }
 
@@ -118,6 +131,20 @@ public class R extends HashMap<String, Object> {
     }
 
     /**
+     * mybatis pagehelper分页信息
+     *
+     * @param page
+     * @return
+     */
+    public R putPageData(com.github.pagehelper.Page<?> page, Collection<?> coll) {
+        Map data = new HashMap(2);
+        data.put(PAGE_KEY, page);//分页信息
+        data.put(ITEMS_KEY, coll);//分页数据
+        super.put(DATA_KEY, data);
+        return this;
+    }
+
+    /**
      * 分页信息，需要前端自己算分页数
      *
      * @param page
@@ -160,6 +187,14 @@ public class R extends HashMap<String, Object> {
 
     public int getCode() {
         return (int) this.get(CODE_KEY);
+    }
+
+    public Object getData() {
+        return this.get(DATA_KEY);
+    }
+
+    public boolean isSuccess() {
+        return SUCCESS_CODE == this.getCode();
     }
 
 }
