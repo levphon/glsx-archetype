@@ -757,15 +757,15 @@ public class RedisUtils {
 
     public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByXY(String key, double longitude, double latitude, long limit) {
         Circle circle = new Circle(longitude, latitude, Metrics.KILOMETERS.getMultiplier());
-        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(5);
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
         GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, circle, args);
         return results;
     }
 
-    public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByPlace(String key, double distanceVal, long limit) {
+    public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByPlace(String key, double distanceVal, String place, long limit) {
         Distance distance = new Distance(distanceVal, Metrics.KILOMETERS);
         RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
-        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, "北京", distance, args);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, place, distance, args);
         return results;
     }
 
