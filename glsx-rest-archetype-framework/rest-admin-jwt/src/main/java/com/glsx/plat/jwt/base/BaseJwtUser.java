@@ -16,6 +16,11 @@ public abstract class BaseJwtUser {
     private String jwtId;
 
     /**
+     * 应用/服务名称
+     */
+    private String application;
+
+    /**
      * 用户标识
      */
     private Long userId;

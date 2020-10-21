@@ -1,5 +1,6 @@
 package cn.com.glsx.admin.common.exception;
 
+import com.glsx.plat.exception.SystemMessage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +23,10 @@ public class AdminException extends RuntimeException {
     public AdminException(int errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
+    }
+
+    public AdminException of(SystemMessage message) {
+        return new AdminException(message.getCode(), message.getMsg());
     }
 
     public AdminException(Throwable cause) {

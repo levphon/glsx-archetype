@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 public enum SystemMessage implements ExceptionCause<BusinessException> {
 
     SUCCESS(HttpStatus.OK.value(), "成功"),
+    FAILURE(244, "失败"),
 
     ARGS_ERROR(601, "参数错误"),
     ARGS_NULL(602, "参数错误,必填参数 [%s]"),
