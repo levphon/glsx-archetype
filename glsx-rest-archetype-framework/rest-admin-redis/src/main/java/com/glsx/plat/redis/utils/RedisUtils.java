@@ -2,6 +2,8 @@ package com.glsx.plat.redis.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.*;
+import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -126,17 +128,13 @@ public class RedisUtils {
      * 释放锁的时候，有可能因为持锁之后方法执行时间大于锁的有效期，此时有可能已经被另外一个线程持有锁，所以不能直接删除
      *
      * @param key
-     * @param requestId
+     * @param value
      */
-    public boolean unlock(String key, String requestId) {
+    public boolean unlock(String key, String value) {
+        Long RELEASE_SUCCESS = 1L;
         //lua script
         String lua_script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
         try {
-            List<String> keys = new ArrayList<>();
-            keys.add(key);
-            List<String> args = new ArrayList<>();
-            args.add(requestId);
-
             // 使用lua脚本删除redis中匹配value的key，可以避免由于方法执行时间过长而redis锁自动过期失效的时候误删其他线程的锁
             // spring自带的执行脚本方法中，集群模式直接抛出不支持执行脚本的异常，所以只能拿到原redis的connection来执行脚本
             RedisCallback<Long> callback = (connection) -> {
@@ -144,17 +142,19 @@ public class RedisUtils {
                 // 集群模式和单机模式虽然执行脚本的方法一样，但是没有共同的接口，所以只能分开执行
                 // 集群模式
                 if (nativeConnection instanceof JedisCluster) {
-                    return (Long) ((JedisCluster) nativeConnection).eval(lua_script, keys, args);
+                    return (Long) ((JedisCluster) nativeConnection).eval(lua_script, Collections.singletonList(key), Collections.singletonList(value));
                 }
                 // 单机模式
                 else if (nativeConnection instanceof Jedis) {
-                    return (Long) ((Jedis) nativeConnection).eval(lua_script, keys, args);
+                    return (Long) ((Jedis) nativeConnection).eval(lua_script, Collections.singletonList(key), Collections.singletonList(value));
                 }
                 return 0L;
             };
             Object result = redisTemplate.execute(callback);
 
-            return result != null && (Long) result > 0;
+            if (RELEASE_SUCCESS.equals(result)) {
+                return true;
+            }
         } catch (Exception e) {
             log.error("release lock occured an exception", e);
         } finally {
@@ -738,6 +738,40 @@ public class RedisUtils {
         //SET key value [EX seconds] [PX milliseconds] [NX|XX]
         Boolean present = redisTemplate.opsForValue().setIfPresent(key, value, seconds, TimeUnit.SECONDS);
         return present;
+    }
+
+    public Long geoAdd(String key, double longitude, double latitude, String place) {
+        Long addedCnt = redisTemplate.opsForGeo().add(key, new Point(longitude, latitude), place);
+        return addedCnt;
+    }
+
+    public List<Point> geoPosition(String key, String... places) {
+        List<Point> points = redisTemplate.opsForGeo().position(key, places);
+        return points;
+    }
+
+    public Distance geoDistance(String key, String place1, String place2) {
+        Distance distance = redisTemplate.opsForGeo().distance(key, place1, place2, RedisGeoCommands.DistanceUnit.KILOMETERS);
+        return distance;
+    }
+
+    public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByXY(String key, double longitude, double latitude, long limit) {
+        Circle circle = new Circle(longitude, latitude, Metrics.KILOMETERS.getMultiplier());
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(5);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, circle, args);
+        return results;
+    }
+
+    public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByPlace(String key, double distanceVal, long limit) {
+        Distance distance = new Distance(distanceVal, Metrics.KILOMETERS);
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, "北京", distance, args);
+        return results;
+    }
+
+    public List<String> geoHash(String key, String... places) {
+        List<String> results = redisTemplate.opsForGeo().hash(key, places);
+        return results;
     }
 
 }

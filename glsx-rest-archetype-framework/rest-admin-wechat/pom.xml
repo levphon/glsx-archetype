@@ -12,7 +12,7 @@
     <artifactId>rest-admin-wechat</artifactId>
 
     <properties>
-        <binarywang.version>3.8.1</binarywang.version>
+        <binarywang.version>3.9.0</binarywang.version>
     </properties>
 
     <dependencies>
