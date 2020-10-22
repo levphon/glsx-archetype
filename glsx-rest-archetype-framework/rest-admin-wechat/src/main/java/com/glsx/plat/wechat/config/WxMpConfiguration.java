@@ -1,7 +1,6 @@
-package com.glsx.plat.wechat.common.config;
+package com.glsx.plat.wechat.config;
 
-import com.glsx.plat.wechat.common.config.mphandler.*;
-import com.glsx.plat.wechat.common.config.mphandler.*;
+import com.glsx.plat.wechat.common.handler.*;
 import lombok.AllArgsConstructor;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -49,7 +48,7 @@ public class WxMpConfiguration {
     @Bean
     public WxMpService wxMpService() {
         // 代码里 getConfigs()处报错的同学，请注意仔细阅读项目说明，你的IDE需要引入lombok插件！！！！
-        final List<WxMpProperties.MpConfig> configs = this.properties.getConfigs();
+        final List<WxMpProperties.MpConfig> configs = properties.getConfigs();
         if (configs == null) {
             throw new RuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
         }

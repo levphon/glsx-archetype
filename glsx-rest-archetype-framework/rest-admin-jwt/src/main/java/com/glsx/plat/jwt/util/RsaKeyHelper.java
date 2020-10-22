@@ -1,8 +1,5 @@
 package com.glsx.plat.jwt.util;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
 import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +7,7 @@ import java.io.InputStream;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,11 +145,11 @@ public class RsaKeyHelper {
     }
 
     public static String toHexString(byte[] b) {
-        return (new BASE64Encoder()).encodeBuffer(b);
+        return Base64.getEncoder().encodeToString(b);
     }
 
-    public static final byte[] toBytes(String s) throws IOException {
-        return (new BASE64Decoder()).decodeBuffer(s);
+    public static final byte[] toBytes(String s) {
+        return Base64.getDecoder().decode(s);
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {

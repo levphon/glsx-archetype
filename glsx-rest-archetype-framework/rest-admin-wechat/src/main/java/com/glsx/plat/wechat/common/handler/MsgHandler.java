@@ -1,12 +1,12 @@
-package com.glsx.plat.wechat.common.config.mphandler;
+package com.glsx.plat.wechat.common.handler;
 
-import com.alibaba.fastjson.JSON;
-import com.glsx.plat.wechat.common.config.mpbuilder.TextBuilder;
+import com.glsx.plat.wechat.common.utils.JsonUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import me.chanjar.weixin.mp.builder.outxml.TextBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -32,20 +32,20 @@ public class MsgHandler extends AbstractHandler {
         //当用户输入关键词如“你好”，“客服”等，并且有客服在线时，把消息转发给在线客服
         try {
             if (StringUtils.startsWithAny(wxMessage.getContent(), "你好", "客服")
-                    && weixinService.getKefuService().kfOnlineList()
-                    .getKfOnlineList().size() > 0) {
+                && weixinService.getKefuService().kfOnlineList()
+                .getKfOnlineList().size() > 0) {
                 return WxMpXmlOutMessage.TRANSFER_CUSTOMER_SERVICE()
-                        .fromUser(wxMessage.getToUser())
-                        .toUser(wxMessage.getFromUser()).build();
+                    .fromUser(wxMessage.getToUser())
+                    .toUser(wxMessage.getFromUser()).build();
             }
         } catch (WxErrorException e) {
             e.printStackTrace();
         }
 
         //TODO 组装回复消息
-        String content = "收到信息内容：" + JSON.toJSONString(wxMessage);
+        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage);
 
-        return new TextBuilder().build(content, wxMessage, weixinService);
+        return new TextBuilder().content(content).build();
 
     }
 

@@ -5,7 +5,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaMessage;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import com.glsx.plat.common.utils.encryption.Encrypter;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.wechat.common.config.WxMaConfiguration;
+import com.glsx.plat.wechat.config.WxMaConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -119,6 +119,7 @@ public class WxPortalController {
         Map<String, String> rtn = sign(ticket, url);
 
         rtn.put("appId", appid);
+
         return R.ok().data(rtn);
     }
 

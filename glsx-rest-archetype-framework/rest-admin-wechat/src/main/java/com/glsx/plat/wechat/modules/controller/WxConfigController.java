@@ -1,9 +1,9 @@
 package com.glsx.plat.wechat.modules.controller;
 
+import com.binarywang.spring.starter.wxjava.miniapp.properties.WxMaProperties;
+import com.binarywang.spring.starter.wxjava.mp.properties.WxMpProperties;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.wechat.common.config.WxMaProperties;
-import com.glsx.plat.wechat.common.config.WxMpProperties;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +49,7 @@ public class WxConfigController {
     public R getMpAppid(@PathVariable("idx") Integer idx) {
         if (idx == null || idx < 0) return R.error("error index");
         // TODO: 2020/5/26  越界检查
-        String appid = wxMpProperties.getConfigs().get(idx).getAppId();
+        String appid = wxMpProperties.getAppId();
         return R.ok().data(appid);
     }
 
@@ -62,7 +62,7 @@ public class WxConfigController {
     public R getMaAppid(@PathVariable("idx") Integer idx) {
         if (idx == null || idx < 0) return R.error("error index");
         // TODO: 2020/5/26  越界检查
-        String appid = wxMaProperties.getConfigs().get(idx).getAppid();
+        String appid = wxMaProperties.getAppid();
         return R.ok().data(appid);
     }
 

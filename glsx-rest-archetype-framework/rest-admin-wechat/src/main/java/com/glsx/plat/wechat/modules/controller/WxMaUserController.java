@@ -7,7 +7,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.wechat.common.config.WxMaConfiguration;
+import com.glsx.plat.wechat.config.WxMaConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;

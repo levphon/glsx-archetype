@@ -2,7 +2,7 @@ package com.glsx.plat.wechat.modules.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
-import com.glsx.plat.wechat.common.config.WxMaConfiguration;
+import com.glsx.plat.wechat.config.WxMaConfiguration;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import lombok.extern.slf4j.Slf4j;

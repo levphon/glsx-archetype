@@ -1,10 +1,10 @@
-package com.glsx.plat.wechat.common.config;
+package com.glsx.plat.wechat.config;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.api.impl.WxMaServiceImpl;
 import cn.binarywang.wx.miniapp.bean.WxMaKefuMessage;
 import cn.binarywang.wx.miniapp.bean.WxMaTemplateData;
-import cn.binarywang.wx.miniapp.bean.WxMaTemplateMessage;
+import cn.binarywang.wx.miniapp.bean.WxMaUniformMessage;
 import cn.binarywang.wx.miniapp.config.impl.WxMaDefaultConfigImpl;
 import cn.binarywang.wx.miniapp.message.WxMaMessageHandler;
 import cn.binarywang.wx.miniapp.message.WxMaMessageRouter;
@@ -27,15 +27,12 @@ import java.util.stream.Collectors;
 @EnableConfigurationProperties(WxMaProperties.class)
 public class WxMaConfiguration {
 
+    @Autowired
     private WxMaProperties properties;
 
     private static Map<String, WxMaMessageRouter> routers = Maps.newHashMap();
-    private static Map<String, WxMaService> maServices = Maps.newHashMap();
 
-    @Autowired
-    public WxMaConfiguration(WxMaProperties properties) {
-        this.properties = properties;
-    }
+    private static Map<String, WxMaService> maServices = Maps.newHashMap();
 
     public static WxMaService getMaService(String appid) {
         WxMaService wxService = maServices.get(appid);
@@ -51,7 +48,7 @@ public class WxMaConfiguration {
 
     @PostConstruct
     public void init() {
-        List<WxMaProperties.Config> configs = this.properties.getConfigs();
+        List<WxMaProperties.Config> configs = properties.getConfigs();
         if (configs == null) {
             throw new RuntimeException("大哥，拜托先看下项目首页的说明（readme文件），添加下相关配置，注意别配错了！");
         }
@@ -84,7 +81,7 @@ public class WxMaConfiguration {
     }
 
     private final WxMaMessageHandler templateMsgHandler = (wxMessage, context, service, sessionManager) -> {
-        service.getMsgService().sendTemplateMsg(WxMaTemplateMessage.builder()
+        service.getMsgService().sendUniformMsg(WxMaUniformMessage.builder()
                 .templateId("此处更换为自己的模板id")
                 .formId("自己替换可用的formid")
                 .data(Lists.newArrayList(

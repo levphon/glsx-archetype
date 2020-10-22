@@ -53,7 +53,7 @@ public abstract class WxMpUserController {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
 
-        WxMpOAuth2AccessToken accessToken = wxMpService.oauth2getAccessToken(code);
+        WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
         return R.ok().data(accessToken.getOpenId());
     }
 
@@ -63,8 +63,9 @@ public abstract class WxMpUserController {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
 
-        WxMpOAuth2AccessToken accessToken = wxMpService.oauth2getAccessToken(code);
-        WxMpUser user = wxMpService.oauth2getUserInfo(accessToken, null);
+        WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+
+        WxMpUser user = wxMpService.getUserService().userInfo(accessToken.getOpenId());
 
         Map<String, Object> rtnMap = linkUser(user);
 
@@ -94,7 +95,7 @@ public abstract class WxMpUserController {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
 
-        WxMpOAuth2AccessToken accessToken = wxMpService.oauth2getAccessToken(code);
+        WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
 
         Map<String, Object> rtnMap = loginByOpenid(accessToken);
         if (CollectionUtils.isEmpty(rtnMap)) {

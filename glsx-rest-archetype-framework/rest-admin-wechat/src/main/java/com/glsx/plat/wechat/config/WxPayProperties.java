@@ -1,4 +1,4 @@
-package com.glsx.plat.wechat.common.config;
+package com.glsx.plat.wechat.config;
 
 import lombok.Data;
 import lombok.ToString;
