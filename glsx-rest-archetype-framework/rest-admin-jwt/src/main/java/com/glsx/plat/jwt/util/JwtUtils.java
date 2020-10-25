@@ -264,11 +264,11 @@ public class JwtUtils<T extends BaseJwtUser> {
      */
     public String createToken(String jwtId, Map<String, Object> userMap) {
 
-        stringRedisTemplate.delete(JWT_SESSION_PREFIX + jwtId);
+        stringRedisTemplate.delete(jwtId);
 
         String token = create(new HashMap<>(), userMap);
 
-        stringRedisTemplate.opsForValue().set(JWT_SESSION_PREFIX + jwtId, token, properties.getTtl(), TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(jwtId, token, properties.getTtl(), TimeUnit.SECONDS);
 
         return token;
     }
@@ -293,14 +293,15 @@ public class JwtUtils<T extends BaseJwtUser> {
             T user = (T) ObjectUtils.mapToObject(userMap, clazz);
 
             //1 . 根据token解密，解密出jwt-id , 先从redis中查找出redisToken，匹配是否相同
-            String redisToken = stringRedisTemplate.opsForValue().get(JWT_SESSION_PREFIX + user.getJwtId());
+            String redisToken = stringRedisTemplate.opsForValue().get(user.getJwtId());
+
             if (!token.equals(redisToken)) return false;
 
             //2 . 验证token
             DecodedJWT decodedJWT = verify(token, userMap);
 
             //3 . Redis缓存JWT续期
-            stringRedisTemplate.opsForValue().set(JWT_SESSION_PREFIX + user.getJwtId(), redisToken, properties.getTtl(), TimeUnit.SECONDS);
+            stringRedisTemplate.opsForValue().set(user.getJwtId(), redisToken, properties.getTtl(), TimeUnit.SECONDS);
 
             return true;
         } catch (TokenExpiredException e) {

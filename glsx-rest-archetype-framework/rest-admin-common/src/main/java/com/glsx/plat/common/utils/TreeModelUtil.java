@@ -1,6 +1,7 @@
 package com.glsx.plat.common.utils;
 
 import com.glsx.plat.common.model.TreeModel;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -28,7 +29,7 @@ public class TreeModelUtil {
         //查找树的根
         List<TreeModel> roots = findRoots(treeModels, rootNo);
         if (CollectionUtils.isNotEmpty(roots)) {
-            roots.stream().forEach(root -> findChildrens(root, treeModels));
+            roots.stream().forEach(root -> findChildren(root, treeModels));
         }
         stopWatch.stop();
         log.debug("线程结构转换树结构[递归]耗时:" + stopWatch.getTime() + " ms");
@@ -42,14 +43,47 @@ public class TreeModelUtil {
      * @param treeModels
      * @return
      */
-    private static List<TreeModel> findChildrens(TreeModel root, List<? extends TreeModel> treeModels) {
+    public static List<TreeModel> findChildren(TreeModel root, List<? extends TreeModel> treeModels) {
         if (CollectionUtils.isNotEmpty(treeModels)) {
             List<TreeModel> children = treeModels.stream().filter(treeModel -> root.getId().equals(treeModel.getParentId())).collect(Collectors.toList());
             root.setChildren(children);
-            children.stream().forEach(c -> findChildrens(c, treeModels));
+            children.stream().forEach(c -> findChildren(c, treeModels));
             return children;
         }
         return null;
+    }
+
+    /**
+     * 查找所有子节点
+     *
+     * @param rootNo
+     * @param treeModels
+     * @return
+     */
+    public static List<TreeModel> findChildren(Long rootNo, List<? extends TreeModel> treeModels) {
+        if (CollectionUtils.isNotEmpty(treeModels)) {
+            List<TreeModel> children = treeModels.stream().filter(treeModel -> rootNo.equals(treeModel.getParentId())).collect(Collectors.toList());
+            children.stream().forEach(c -> findChildren(c, treeModels));
+            return children;
+        }
+        return Lists.newArrayList();
+    }
+
+    /**
+     * 查找所有子节点id
+     *
+     * @param rootNo
+     * @param treeModels
+     * @return
+     */
+    public static void findChildrenIds(Long rootNo, List<? extends TreeModel> treeModels, List<Long> ids) {
+        if (CollectionUtils.isNotEmpty(treeModels)) {
+            List<TreeModel> children = treeModels.stream().filter(treeModel -> rootNo.equals(treeModel.getParentId())).collect(Collectors.toList());
+            children.stream().forEach(c -> {
+                ids.add(c.getId());
+                findChildrenIds(c.getId(), c.getChildren(), ids);
+            });
+        }
     }
 
     /**
@@ -188,9 +222,7 @@ public class TreeModelUtil {
         List<? extends TreeModel> rootTreeModel = treeModels.stream()
                 .filter(treeModel -> rootIdList.contains(treeModel.getId())).collect(Collectors.toList());
         stopWatch.stop();
-
         log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
-
         return rootTreeModel;
     }
 }
