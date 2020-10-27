@@ -46,7 +46,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud-alibaba.version>2.2.3.RELEASE</spring-cloud-alibaba.version>
         <fastjson.version>1.2.70</fastjson.version>
 
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
@@ -205,72 +205,7 @@
 
     <profiles>
         <profile>
-            <id>sonatype</id>
-            <build>
-                <plugins>
-                    <!-- Source -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!--Javadoc -->
-                    <!--                    <plugin>-->
-                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
-                    <!--                        <artifactId>maven-javadoc-plugin</artifactId>-->
-                    <!--                        <version>3.2.0</version>-->
-                    <!--                        <executions>-->
-                    <!--                            <execution>-->
-                    <!--                                <id>attach-javadocs</id>-->
-                    <!--                                <phase>package</phase>-->
-                    <!--                                <goals>-->
-                    <!--                                    <goal>jar</goal>-->
-                    <!--                                </goals>-->
-                    <!--                            </execution>-->
-                    <!--                        </executions>-->
-                    <!--                        <configuration>-->
-                    <!--                            <encoding>UTF-8</encoding>-->
-                    <!--                            <charset>UTF-8</charset>-->
-                    <!--                            <additionalparam>-Xdoclint:none</additionalparam>-->
-                    <!--                        </configuration>-->
-                    <!--                    </plugin>-->
-                    <!--                    &lt;!&ndash; GPG &ndash;&gt;-->
-                    <!--                    <plugin>-->
-                    <!--                        <groupId>org.apache.maven.plugins</groupId>-->
-                    <!--                        <artifactId>maven-gpg-plugin</artifactId>-->
-                    <!--                        <version>1.5</version>-->
-                    <!--                        <executions>-->
-                    <!--                            <execution>-->
-                    <!--                                <phase>verify</phase>-->
-                    <!--                                <goals>-->
-                    <!--                                    <goal>sign</goal>-->
-                    <!--                                </goals>-->
-                    <!--                            </execution>-->
-                    <!--                        </executions>-->
-                    <!--                    </plugin>-->
-                </plugins>
-            </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
-        </profile>
-        <profile>
-            <id>nexus-233</id>
+            <id>nexus</id>
             <build>
                 <plugins>
                     <!-- Source -->
@@ -298,12 +233,12 @@
                 <repository>
                     <id>nexus-releases</id>
                     <name>Local Nexus Releases Repository</name>
-                    <url>http://${local.nexus}/nexus/content/repositories/releases/</url>
+                    <url>http://127.0.0.1:8081/repository/maven-releases/</url>
                 </repository>
                 <snapshotRepository>
                     <id>nexus-snapshots</id>
                     <name>Local Nexus Snapshots Repository</name>
-                    <url>http://${local.nexus}/nexus/content/repositories/snapshots/</url>
+                    <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>
