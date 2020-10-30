@@ -8,10 +8,14 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>glsx-rest-authentication-server</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>glsx-rest-authentication-server</name>
     <description>Demo Oauth2 project for Spring Cloud Oauth2 Authentication Server</description>
+
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
 
     <dependencies>
         <dependency>

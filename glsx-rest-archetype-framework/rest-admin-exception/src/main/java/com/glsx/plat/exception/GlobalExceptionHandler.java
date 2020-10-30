@@ -6,14 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.PersistenceException;
@@ -39,21 +38,6 @@ public class GlobalExceptionHandler {
 
     @Value("${spring.application.name}")
     protected String moduleName;
-
-//    @Resource
-//    private MongoTemplate mongoTemplate;
-
-//    @Resource
-//    private KafkaTemplate<String, Object> kafkaTemplate;
-
-    /**
-     * 应用到所有@RequestMapping注解方法，在其执行之前初始化数据绑定器
-     *
-     * @param binder 绑定器
-     */
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-    }
 
     /**
      * 业务异常处理
@@ -127,7 +111,18 @@ public class GlobalExceptionHandler {
         }
         log.error("数据存储出错", e);
         saveException(e, ExceptionLevel.fatal);
-        return R.error(9999, "数据存储异常");
+        return SystemMessage.DATA_PERSISTENCE_ERROR.result();
+    }
+
+    @ExceptionHandler(value = DuplicateKeyException.class)
+    public R duplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
+        Throwable cause = e.getCause();
+        if (cause instanceof BusinessException) {
+            return businessExceptionHandler(request, e);
+        }
+        log.error("数据存储出错", e);
+        saveException(e, ExceptionLevel.fatal);
+        return SystemMessage.DATA_PERSISTENCE_ERROR.result();
     }
 
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)

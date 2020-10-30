@@ -63,7 +63,7 @@ public class TreeModelUtil {
     public static List<TreeModel> findChildren(Long rootNo, List<? extends TreeModel> treeModels) {
         if (CollectionUtils.isNotEmpty(treeModels)) {
             List<TreeModel> children = treeModels.stream().filter(treeModel -> rootNo.equals(treeModel.getParentId())).collect(Collectors.toList());
-            children.stream().forEach(c -> findChildren(c, treeModels));
+            children.stream().forEach(c -> findChildren(c.getId(), treeModels));
             return children;
         }
         return Lists.newArrayList();
@@ -160,7 +160,7 @@ public class TreeModelUtil {
         Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
         treeModels.stream().forEach(treeModel -> {
             TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
-            if (parentTreeModel != null) {
+            if (parentTreeModel != null && !treeModel.getDepth().equals(depth)) {
                 parentTreeModel.getChildren().add(treeModel);
             }
         });

@@ -1,7 +1,5 @@
 package com.glsx.plat.core.web;
 
-import com.glsx.plat.core.constant.ResultConstants;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,13 +39,6 @@ public class R extends HashMap<String, Object> {
         R r = new R();
         r.put(CODE_KEY, code);
         r.put(MSG_KEY, msg);
-        return r;
-    }
-
-    public static R error(ResultConstants resultConstants){
-        R r = new R();
-        r.put(CODE_KEY, resultConstants.getCode());
-        r.put(MSG_KEY, resultConstants.getMsg());
         return r;
     }
 

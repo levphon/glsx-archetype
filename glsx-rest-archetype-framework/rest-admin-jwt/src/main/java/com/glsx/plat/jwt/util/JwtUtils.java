@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,8 @@ public class JwtUtils<T extends BaseJwtUser> {
     public final String JWT_SESSION_PREFIX = "JWT-SESSION-";
 
     public final String CLAZZ = "clazz";
+
+    private Class<T> jwtUserClass;
 
     public final String BEARER = "Bearer ";
 
@@ -313,8 +317,32 @@ public class JwtUtils<T extends BaseJwtUser> {
         return false;
     }
 
+    public T getJwtUserFromToken(String token) {
+        Class<T> tClass = getGenericTypeClass();
+        //解析token，反转成JwtUser对象
+        Map<String, Object> userMap = this.parseClaim(token, tClass);
+        T jwtUser = null;
+        try {
+            jwtUser = (T) ObjectUtils.mapToObject(userMap, tClass);
+        } catch (Exception e) {
+            throw new JWTVerificationException("解析token异常");
+        }
+        return jwtUser;
+    }
+
+    public Class<T> getGenericTypeClass() {
+        Type genType = getClass().getGenericSuperclass();
+        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
+        jwtUserClass = (Class) params[0];
+        return jwtUserClass;
+    }
+
     public void refreshToken(String token) {
 
+    }
+
+    public void removeToken(String jwtId) {
+        stringRedisTemplate.delete(jwtId);
     }
 
 }

@@ -2,6 +2,7 @@ package com.glsx.plat.loggin.entity;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -90,6 +91,7 @@ public class SysLogEntity implements Serializable {
     /**
      * 时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ExcelProperty(value = "操作时间", index = 6)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdDate;

@@ -110,6 +110,7 @@
         <module>rest-admin-disruptor</module>
         <module>rest-admin-mongodb</module>
         <module>rest-admin-loggin</module>
+        <module>rest-admin-ai</module>
     </modules>
 
     <dependencies>

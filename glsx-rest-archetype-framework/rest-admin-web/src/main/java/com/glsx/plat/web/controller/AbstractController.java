@@ -81,10 +81,12 @@ public abstract class AbstractController {
      * @throws IOException
      */
     protected void preview(InputStream input, MimeType mime, HttpServletResponse response) throws IOException {
-        if (input == null) return;
+        if (input == null) {
+            return;
+        }
 
         if (mime == MimeType.AUTO) {
-            throw SystemMessage.NOT_SUPPORT_OPERATOR.exception("预览需要设置 mime 类型,无法自动获取");
+            throw SystemMessage.NOT_SUPPORT_OPERATE.exception("预览需要设置 mime 类型,无法自动获取");
         }
         response.setContentType(mime.getContentType());
         response.setHeader("Set-Cookie", "fileDownload=true; path=/");

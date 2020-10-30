@@ -10,8 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.glsx.plat.core.constant.BasicConstants.REQUEST_HEADERS_CAPTCHA;
+import static com.glsx.plat.core.constant.BasicConstants.REQUEST_HEADERS_TOKEN;
+
 /**
  * 跨域
+ *
+ * @author payu
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)//控制过滤器的级别
@@ -31,7 +36,8 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Origin", reqs.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Authorization, Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
+        // TODO: 2020/10/29 可以搞成配置和网关那边共同控制
+        response.setHeader("Access-Control-Allow-Headers", REQUEST_HEADERS_TOKEN + ", Accept, Origin, X-Requested-With, Content-Type, Last-Modified, " + REQUEST_HEADERS_CAPTCHA);
         response.setHeader("Access-Control-Max-Age", "3600");
         if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
