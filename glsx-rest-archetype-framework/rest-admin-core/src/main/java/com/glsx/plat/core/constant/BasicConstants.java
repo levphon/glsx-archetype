@@ -17,5 +17,6 @@ public class BasicConstants {
     public static final int CONFIG_DELETE = -1;
 
     public static final String REQUEST_HEADERS_TOKEN = "Authorization";
+    public static final String REQUEST_HEADERS_CAPTCHA = "Captcha-ID";
 
 }
