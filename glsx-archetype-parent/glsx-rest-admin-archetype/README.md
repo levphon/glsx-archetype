@@ -136,6 +136,8 @@ nohup java -jar zipkin-server-2.12.9-exec.jar &
 
 github:https://github.com/alibaba/Sentinel
 
+https://dl.bintray.com/openzipkin/maven/io/zipkin/java/zipkin-server/2.12.9/
+
 ```sh
 nohup java -Dserver.port=8718 -Dcsp.sentinel.dashboard.server=localhost:8718 -Dproject.name=sentinel-dashboard -Dcsp.sentinel.api.port=8719 -jar sentinel-dashboard-1.7.2.jar &
 ```
