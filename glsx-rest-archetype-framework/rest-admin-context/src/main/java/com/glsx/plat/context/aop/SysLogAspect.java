@@ -3,7 +3,7 @@ package com.glsx.plat.context.aop;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.context.thread.LogginTask;
-import com.glsx.plat.core.constant.BasicConstants;
+import com.glsx.plat.core.web.R;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.loggin.LogginStrategyFactory;
@@ -21,6 +21,7 @@ import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +49,7 @@ public class SysLogAspect {
     @Resource
     private JwtUtils jwtUtils;
 
+    @Qualifier("threadPoolTaskExecutor")
     @Autowired
     private ThreadPoolTaskExecutor executor;
 
@@ -110,7 +112,7 @@ public class SysLogAspect {
         // 处理完请求，返回内容
         String logTraceId = MDC.get(MONGO_LOG_ID);
 
-        com.glsx.plat.core.web.R r = (com.glsx.plat.core.web.R) returnValue;
+        R r = (R) returnValue;
         try {
             logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
         } catch (Exception e) {
@@ -170,7 +172,7 @@ public class SysLogAspect {
     }
 
     public Map<String, Object> parseUserInfoByToken(HttpServletRequest request) {
-        String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
+        String token = request.getHeader(jwtUtils.getProperties().getHeader());
         if (StringUtils.isNotEmpty(token)) {
             // jwt解析token,提取用户id
             return (Map<String, Object>) jwtUtils.parseClaim(token, BaseJwtUser.class);
