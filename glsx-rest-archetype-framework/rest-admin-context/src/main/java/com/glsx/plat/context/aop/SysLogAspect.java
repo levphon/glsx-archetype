@@ -175,7 +175,7 @@ public class SysLogAspect {
         String token = request.getHeader(jwtUtils.getProperties().getHeader());
         if (StringUtils.isNotEmpty(token)) {
             // jwt解析token,提取用户id
-            return (Map<String, Object>) jwtUtils.parseClaim(token, BaseJwtUser.class);
+            return (Map<String, Object>) jwtUtils.parseClaim(token);
         }
         return Maps.newHashMap();
     }

@@ -1,13 +1,11 @@
 package com.glsx.plat.jwt.base;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * @author payu
  */
-@Setter
-@Getter
+@Data
 public abstract class BaseJwtUser {
 
     /**
@@ -31,12 +29,7 @@ public abstract class BaseJwtUser {
     private String account;
 
     /**
-     * 租户
-     */
-    private String tenant;
-
-    /**
-     * 归属（组织、机构、部门、个体等等）
+     * 归属（租户、组织、机构、部门、个体等等）
      */
     private String belong;
 

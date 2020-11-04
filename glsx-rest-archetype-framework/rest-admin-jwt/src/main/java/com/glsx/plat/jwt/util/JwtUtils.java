@@ -6,15 +6,12 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.base.ComJwtUser;
 import com.glsx.plat.jwt.config.JwtConfigProperties;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +19,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -55,14 +48,12 @@ public class JwtUtils<T extends BaseJwtUser> {
 
     public final String CLAZZ = "clazz";
 
-    private Class<T> jwtUserClass;
-
     public final String BEARER = "Bearer ";
 
-    /**
-     * 定义JWT的发布者，这里可以起项目的拥有者
-     */
-    private final static String TOKEN_ISSUER = "issuer";
+    private final static String PAYLOAD_MAP = "payloadMap";
+
+    private Class<T> jwtUserClass;
+
 
     /**
      * 根据用户的登录时间生成动态私钥
@@ -74,181 +65,6 @@ public class JwtUtils<T extends BaseJwtUser> {
         return String.valueOf(instant.getEpochSecond());
     }
 
-    public String create(Map<String, Object> claims) {
-        return create(new HashMap<>(), claims, properties.getTtl());
-    }
-
-    public String create(Map<String, Object> header, Map<String, Object> claims) {
-        return create(header, claims, properties.getTtl());
-    }
-
-    /**
-     * 生成jwt
-     *
-     * @param header
-     * @param claims
-     * @param timeout
-     * @return
-     */
-    public String create(Map<String, Object> header, Map<String, Object> claims, long timeout) {
-        String token;
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(properties.getKey());
-            JWTCreator.Builder builder = JWT.create()
-                    .withIssuer(TOKEN_ISSUER)
-                    .withHeader(header)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + timeout * 1000));
-            for (String key : claims.keySet()) {
-                if ("class".equals(key)) {
-                    continue;//跳过转换时多加的类型字段，claims.get("class")为java.lang.Class类型
-                }
-                buildClaims(builder, claims);
-            }
-            token = builder.sign(algorithm);
-        } catch (JWTVerificationException e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-            return null;
-        }
-        return token;
-    }
-
-    /**
-     * 构建Claims
-     *
-     * @param builder
-     * @param claims
-     */
-    private void buildClaims(JWTCreator.Builder builder, Map<String, Object> claims) {
-        for (Map.Entry<String, Object> entry : claims.entrySet()) {
-            if (entry.getValue() != null) {
-                Object val = entry.getValue();
-                Class type = val.getClass();
-                if (type == boolean.class || type == Boolean.class) {
-                    builder.withClaim(entry.getKey(), (Boolean) entry.getValue());
-                } else if (type == int.class || type == Integer.class) {
-                    builder.withClaim(entry.getKey(), (Integer) entry.getValue());
-                } else if (type == long.class || type == Long.class) {
-                    builder.withClaim(entry.getKey(), (Long) entry.getValue());
-                } else if (type == double.class || type == Double.class) {
-                    builder.withClaim(entry.getKey(), (Double) entry.getValue());
-                } else if (type == String.class) {
-                    builder.withClaim(entry.getKey(), (String) entry.getValue());
-                } else if (type == Date.class) {
-                    builder.withClaim(entry.getKey(), (Date) entry.getValue());
-                } else if (type == Map.class) {
-
-                } else if (type == List.class) {
-//                            builder.withClaim(entry.getKey(), claim.asList(type.getComponentType()));
-                } else if (type.isArray()) {
-                    Class componentType = type.getComponentType();
-                    if (componentType == int.class || componentType == Integer.class) {
-                        builder.withArrayClaim(entry.getKey(), (Integer[]) entry.getValue());
-                    } else if (componentType == long.class || componentType == Long.class) {
-                        builder.withArrayClaim(entry.getKey(), (Long[]) entry.getValue());
-                    } else if (componentType == String.class) {
-                        builder.withArrayClaim(entry.getKey(), (String[]) entry.getValue());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 获取jwt用户类
-     *
-     * @param token
-     * @return
-     * @throws Exception
-     */
-    public Class getJwtUserClass(String token) throws Exception {
-        DecodedJWT jwt = decode(token);
-        String jwtUserClazz = jwt.getClaim(CLAZZ).asString();
-        Class clazz = Class.forName(jwtUserClazz);
-        return clazz;
-    }
-
-    /**
-     * 验证jwt
-     *
-     * @param token
-     * @return
-     */
-    public DecodedJWT decode(String token) {
-        if (token.startsWith(BEARER)) {
-            token = token.replace(BEARER, "");
-        }
-        DecodedJWT jwtToken = null;
-        try {
-            jwtToken = JWT.decode(token);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return jwtToken;
-    }
-
-    /**
-     * 验证jwt
-     *
-     * @param token
-     * @return
-     */
-    public DecodedJWT verify(String token) {
-        if (token.startsWith(BEARER)) {
-            token = token.replace(BEARER, "");
-        }
-        Algorithm algorithm = Algorithm.HMAC256(properties.getKey());
-        Verification verification = JWT.require(algorithm);
-        //JWT 正确的配置续期姿势
-        JWTVerifier verifier = verification.acceptExpiresAt(System.currentTimeMillis() + properties.getTtl() * 1000)
-                .build();
-        DecodedJWT jwt = verifier.verify(token);
-        return jwt;
-    }
-
-    /**
-     * 根据Token 获取Claim Map
-     */
-    public Map<String, Object> parseClaim(String token, Class clazz) {
-        if (token.startsWith(BEARER)) {
-            token = token.replace(BEARER, "");
-        }
-        Map<String, Object> claimMap = new HashMap<>();
-        Class superClazz = clazz.getSuperclass();
-        Field[] fields1 = superClazz.getDeclaredFields();
-        Field[] fields2 = clazz.getDeclaredFields();
-        Field[] fields = ArrayUtils.addAll(fields1, fields2);
-        for (Field field : fields) {
-            field.setAccessible(true);
-            String fieldName = field.getName();
-
-            Claim claim = JWT.decode(token).getClaim(fieldName);
-            if (!claim.isNull()) {
-                Class type = field.getType();
-                if (type == boolean.class || type == Boolean.class) {
-                    claimMap.put(fieldName, claim.asBoolean());
-                } else if (type == int.class || type == Integer.class) {
-                    claimMap.put(fieldName, claim.asInt());
-                } else if (type == long.class || type == Long.class) {
-                    claimMap.put(fieldName, claim.asLong());
-                } else if (type == double.class || type == Double.class) {
-                    claimMap.put(fieldName, claim.asDouble());
-                } else if (type == String.class) {
-                    claimMap.put(fieldName, claim.asString());
-                } else if (type == Date.class) {
-                    claimMap.put(fieldName, claim.asDate());
-                } else if (type == Map.class) {
-                    claimMap.put(fieldName, claim.asMap());
-//                } else if (type == List.class) {
-//                    claimMap.put(fieldName, claim.asList(type.getComponentType()));
-                } else if (type.isArray()) {
-                    claimMap.put(fieldName, claim.asArray(type.getComponentType()));
-                }
-            }
-        }
-        return claimMap;
-    }
-
     /**
      * 创建token
      *
@@ -256,7 +72,10 @@ public class JwtUtils<T extends BaseJwtUser> {
      * @return
      */
     public String createToken(Map<String, Object> userMap) {
-        return create(userMap);
+        String jwtId = userMap.get("jwtId") == null ? UUID.randomUUID().toString() : (String) userMap.get("jwtId");
+        String token = create(jwtId, userMap, Instant.now());
+        log.debug("create id {} token [" + token + "]", jwtId);
+        return token;
     }
 
     /**
@@ -270,12 +89,116 @@ public class JwtUtils<T extends BaseJwtUser> {
 
         stringRedisTemplate.delete(jwtId);
 
-        String token = createToken(userMap);
+        String token = create(jwtId, userMap, Instant.now());
 
         stringRedisTemplate.opsForValue().set(jwtId, token, properties.getTtl(), TimeUnit.SECONDS);
-
+        log.debug("create id {} token [" + token + "]", jwtId);
         return token;
     }
+
+    /**
+     * 生成token
+     *
+     * @param jwtId   JWT中自定义的id
+     * @param claims  JWT中payload部分自定义的内容
+     * @param issueAt 用户登录的时间，也就是申请令牌的时间
+     * @return
+     */
+    private String create(String jwtId, Map<String, Object> claims, Instant issueAt) {
+        Algorithm algorithm = Algorithm.HMAC256(properties.getKey());
+        Instant exp = issueAt.plusSeconds(properties.getTtl());
+
+        Map<String, Object> newClaims = new HashMap<>();
+
+        for (Map.Entry<String, Object> entry : claims.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ("class".equals(key) || Objects.isNull(value)) {
+                continue;//跳过转换时多加的类型字段，claims.get("class")为java.lang.Class类型
+            }
+            newClaims.put(key, value);
+        }
+        JWTCreator.Builder builder = JWT.create()
+                .withJWTId(jwtId)
+                .withClaim("iat", Date.from(issueAt))
+                .withClaim("exp", Date.from(exp))
+                .withClaim(PAYLOAD_MAP, newClaims);
+
+        if (newClaims.get("account") != null) {
+            builder.withSubject(newClaims.get("account").toString());
+        }
+
+        String token = builder.sign(algorithm);
+        log.trace("create token [" + token + "]; iat: " + Date.from(exp) + " exp: " + Date.from(exp));
+        return token;
+    }
+
+    /**
+     * 验证jwt
+     *
+     * @param token
+     * @return
+     */
+    public DecodedJWT decode(String token) {
+        if (token.startsWith(BEARER)) {
+            token = token.replace(BEARER, "");
+        }
+        return JWT.decode(token);
+    }
+
+    /**
+     * 验证jwt
+     *
+     * @param token
+     * @return
+     */
+    public DecodedJWT verify(String token) {
+        if (token.startsWith(BEARER)) {
+            token = token.replace(BEARER, "");
+        }
+        return verify(properties.getKey(), token);
+    }
+
+    /**
+     * 验证jwt
+     *
+     * @param token
+     * @return
+     */
+    public DecodedJWT verify(String secretKey, String token) {
+        if (token.startsWith(BEARER)) {
+            token = token.replace(BEARER, "");
+        }
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT jwt = verifier.verify(token);
+        return jwt;
+    }
+
+    /**
+     * 根据Token 获取Claim Map
+     */
+    public Map<String, Object> parseClaim(String token) {
+        if (token.startsWith(BEARER)) {
+            token = token.replace(BEARER, "");
+        }
+        return JWT.decode(token).getClaim(PAYLOAD_MAP).asMap();
+    }
+
+    /**
+     * 获取jwt用户类
+     *
+     * @param token
+     * @return
+     * @throws Exception
+     */
+    public Class getJwtUserClass(String token) throws ClassNotFoundException {
+        String jwtUserClazz = (String) parseClaim(token).get(CLAZZ);
+        log.debug("token jwt user clazz [" + jwtUserClazz + "]");
+        Class clazz = Class.forName(jwtUserClazz);
+        return clazz;
+    }
+
 
     /**
      * 验证token
@@ -284,11 +207,8 @@ public class JwtUtils<T extends BaseJwtUser> {
      */
     public boolean verifyToken(String token) {
         log.debug("verify token [" + token + "]");
-        Algorithm algorithm = Algorithm.HMAC256(properties.getKey());
-        //校验Token
-        JWTVerifier verifier = JWT.require(algorithm).withIssuer(TOKEN_ISSUER).build();
         try {
-            verifier.verify(token);
+            DecodedJWT decodedJWT = this.verify(token);
             return true;
         } catch (JWTVerificationException e) {
             log.error(e.getMessage());
@@ -317,25 +237,18 @@ public class JwtUtils<T extends BaseJwtUser> {
         }
 
         try {
-            Class clazz = getJwtUserClass(token);
+            //1 . 验证token
+            DecodedJWT decodedJWT = verify(token);
 
-            //解析token，反转成JwtUser对象
-            Map<String, Object> userMap = parseClaim(token, clazz);
-
-            T user = (T) ObjectUtils.mapToObject(userMap, clazz);
-
-            //1 . 根据token解密，解密出jwt-id , 先从redis中查找出redisToken，匹配是否相同
-            String redisToken = stringRedisTemplate.opsForValue().get(user.getJwtId());
+            //2 . 根据token解密，解密出jwt-id , 先从redis中查找出redisToken，匹配是否相同
+            String redisToken = stringRedisTemplate.opsForValue().get(decodedJWT.getId());
 
             if (!token.equals(redisToken)) {
                 return false;
             }
 
-            //2 . 验证token
-            DecodedJWT decodedJWT = verify(token);
-
             //3 . Redis缓存JWT续期
-            stringRedisTemplate.opsForValue().set(user.getJwtId(), redisToken, properties.getTtl(), TimeUnit.SECONDS);
+            stringRedisTemplate.opsForValue().set(decodedJWT.getId(), redisToken, properties.getTtl(), TimeUnit.SECONDS);
 
             return true;
         } catch (TokenExpiredException e) {
@@ -347,14 +260,25 @@ public class JwtUtils<T extends BaseJwtUser> {
         return false;
     }
 
-    //刷新Token
-    public String getRefreshToken(String secretKey, DecodedJWT jwtToken) {
-        return getRefreshToken(secretKey, jwtToken, properties.getTtl());
+    /**
+     * 重载的刷新Token
+     *
+     * @param jwtToken
+     * @return
+     */
+    public String refreshToken(DecodedJWT jwtToken) {
+        return refreshToken(properties.getKey(), jwtToken, properties.getTtl(), properties.getRefreshTtl());
     }
 
-    //重载的刷新Token
-    public String getRefreshToken(String secretKey, DecodedJWT jwtToken, Long validityTime) {
-        return getRefreshToken(secretKey, jwtToken, validityTime, properties.getRefreshTtl());
+    /**
+     * 重载的刷新Token
+     *
+     * @param secretKey
+     * @param jwtToken
+     * @return
+     */
+    public String refreshToken(String secretKey, DecodedJWT jwtToken) {
+        return refreshToken(secretKey, jwtToken, properties.getTtl(), properties.getRefreshTtl());
     }
 
     /**
@@ -365,37 +289,7 @@ public class JwtUtils<T extends BaseJwtUser> {
      * @param allowExpiresTime 允许过期的时间
      * @return
      */
-    public String getRefreshToken(DecodedJWT jwtToken, long validityTime, Long allowExpiresTime) {
-        Instant now = Instant.now();
-        Instant exp = jwtToken.getExpiresAt().toInstant();
-        //如果当前时间减去JWT过期时间，大于可以重新申请JWT的时间，说明不可以重新申请了，就得重新登录了，此时返回null，否则就是可以重新申请，开始在后台重新生成新的JWT。
-        if (allowExpiresTime != null && (now.getEpochSecond() - exp.getEpochSecond()) > allowExpiresTime) {
-            return null;
-        }
-        Algorithm algorithm = Algorithm.HMAC256(properties.getKey());
-        //在原有的JWT的过期时间的基础上，加上这次的有效时间，得到新的JWT的过期时间
-        Instant newExp = exp.plusSeconds(validityTime);
-        //创建JWT
-        String token = JWT.create()
-                .withIssuer(TOKEN_ISSUER)
-                .withClaim("sub", jwtToken.getSubject())
-                .withClaim("iat", Date.from(exp))
-                .withClaim("exp", Date.from(newExp))
-                .sign(algorithm);
-        log.trace("create refresh token [" + token + "]; iat: " + Date.from(exp) + " exp: " + Date.from(newExp));
-        return token;
-    }
-
-    /**
-     * 根据要过期的token获取新token
-     *
-     * @param secretKey        根据用户上次登录时的时间，生成的密钥
-     * @param jwtToken         上次的JWT经过解析后的对象
-     * @param validityTime     有效时间
-     * @param allowExpiresTime 允许过期的时间
-     * @return
-     */
-    public String getRefreshToken(String secretKey, DecodedJWT jwtToken, long validityTime, Long allowExpiresTime) {
+    public String refreshToken(String secretKey, DecodedJWT jwtToken, Long validityTime, Long allowExpiresTime) {
         Instant now = Instant.now();
         Instant exp = jwtToken.getExpiresAt().toInstant();
         //如果当前时间减去JWT过期时间，大于可以重新申请JWT的时间，说明不可以重新申请了，就得重新登录了，此时返回null，否则就是可以重新申请，开始在后台重新生成新的JWT。
@@ -407,12 +301,13 @@ public class JwtUtils<T extends BaseJwtUser> {
         Instant newExp = exp.plusSeconds(validityTime);
         //创建JWT
         String token = JWT.create()
-                .withIssuer(TOKEN_ISSUER)
+                .withJWTId(jwtToken.getId())
                 .withClaim("sub", jwtToken.getSubject())
                 .withClaim("iat", Date.from(exp))
                 .withClaim("exp", Date.from(newExp))
+                .withClaim(PAYLOAD_MAP, jwtToken.getClaim(PAYLOAD_MAP).asMap())
                 .sign(algorithm);
-        log.trace("create refresh token [" + token + "]; iat: " + Date.from(exp) + " exp: " + Date.from(newExp));
+        log.debug("create refresh token [" + token + "]; iat: " + Date.from(exp) + " exp: " + Date.from(newExp));
         return token;
     }
 
@@ -425,22 +320,36 @@ public class JwtUtils<T extends BaseJwtUser> {
         stringRedisTemplate.delete(jwtId);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
         String secretKey = "5371f568a45e5ab1f442c38e0932aef24447139c";
 
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJiZWxvbmciOiLlub_ogZTotZvorq8iLCJhcHBsaWNhdGlvbiI6Imdsc3gtbmUtc2hpZWxkLXVzZXJjZW50ZXIiLCJkZXB0SWQiOjEsImV4cCI6MTYwNDU1OTgzNywidXNlcklkIjoxLCJjbGF6eiI6ImNvbS5nbHN4LnBsYXQuand0LmJhc2UuQ29tSnd0VXNlciIsImFjY291bnQiOiJhZG1pbiIsImp3dElkIjoiZ2xzeC1uZS1zaGllbGQtdXNlcmNlbnRlcjo2MDc5NzE3Yy03NTA1LTQxNzQtYTgxZi02MzEwMDMyY2NlM2NfSldULVNFU1NJT04tMSJ9.y6nc342oSqB48pNBuuiX7nShx0wjs_S-QUK4AgX4JYE";
+        JwtUtils<BaseJwtUser> jwtUtils = new JwtUtils<>();
 
-        JwtUtils<ComJwtUser> jwtUtils = new JwtUtils<>();
+        ComJwtUser jwtUser = new ComJwtUser();
+        jwtUser.setApplication(jwtUtils.getApplication());
+        jwtUser.setUserId(1L);
+        jwtUser.setJwtId(UUID.randomUUID().toString());
+        Map<String, Object> userMap = (Map<String, Object>) ObjectUtils.objectToMap(jwtUser);
 
-        Map<String, Object> claimMap = jwtUtils.parseClaim(token, ComJwtUser.class);
+        String token = jwtUtils.createToken(userMap);
 
-        System.out.println(claimMap.size());
+        System.out.println(token);
+
+        jwtUtils.verify(secretKey, token);
+
+//        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXlsb2FkTWFwIjp7ImNsYXp6IjoiY29tLmdsc3gucGxhdC5qd3QuYmFzZS5Db21Kd3RVc2VyIiwidXNlcklkIjoxLCJqd3RJZCI6ImY0MWI5ODUzLTE1NzItNDVkMS1hODQzLWFjZWEwYzdiYjMwNyJ9LCJleHAiOjE2MDQ1NDA5NzQsImlhdCI6MTYwNDU0MDc5NCwianRpIjoiZjQxYjk4NTMtMTU3Mi00NWQxLWE4NDMtYWNlYTBjN2JiMzA3In0.9eu8m5HHfAXmbLkvqUGnpra1VCGqeRLuufrRfRksYM4";
+
+        Map<String, Object> claimMap = jwtUtils.parseClaim(token);
+
+        Class clazz = jwtUtils.getJwtUserClass(token);
 
         DecodedJWT decodedJWT = jwtUtils.decode(token);
 
-        String newToken = jwtUtils.getRefreshToken(secretKey, decodedJWT, 28800L, 86400L);
+        String newToken = jwtUtils.refreshToken(secretKey, decodedJWT, 180L, 360L);
 
-        System.out.printf(newToken);
+        System.out.println(newToken);
+
+        jwtUtils.verify(secretKey, newToken);
     }
 
 }

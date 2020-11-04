@@ -37,6 +37,7 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, DELETE, OPTIONS");
         // TODO: 2020/10/29 可以搞成配置和网关那边共同控制
         response.setHeader("Access-Control-Allow-Headers", REQUEST_HEADERS_TOKEN + ", Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
+        response.setHeader("Access-Control-Expose-Headers", REQUEST_HEADERS_TOKEN);
         response.setHeader("Access-Control-Max-Age", "3600");
         if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
