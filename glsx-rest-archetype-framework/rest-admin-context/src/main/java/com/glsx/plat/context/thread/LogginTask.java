@@ -72,7 +72,14 @@ public class LogginTask implements Callable<String> {
         sysLog.setModule(sysLogMark.module());
         sysLog.setAction(sysLogMark.action().getType());
         sysLog.setApplication(application);
-        sysLog.setOperator((Long) userInfo.get("userId"));
+        Long operatorId = 0L;
+        try {
+            operatorId = Long.valueOf(String.valueOf(userInfo.get("userId")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("操作人标识转换异常");
+        }
+        sysLog.setOperator(operatorId);
         sysLog.setOperatorName((String) userInfo.get("account"));
         sysLog.setBelongOrg((String) userInfo.get("belong"));
         sysLog.setIp(IpUtils.getIpAddr(request));

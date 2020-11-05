@@ -4,7 +4,6 @@ import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.context.thread.LogginTask;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.loggin.LogginStrategyFactory;
 import com.glsx.plat.redis.service.GainIdService;
@@ -22,6 +21,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -172,10 +172,10 @@ public class SysLogAspect {
     }
 
     public Map<String, Object> parseUserInfoByToken(HttpServletRequest request) {
-        String token = request.getHeader(jwtUtils.getProperties().getHeader());
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.isNotEmpty(token)) {
             // jwt解析token,提取用户id
-            return (Map<String, Object>) jwtUtils.parseClaim(token);
+            return jwtUtils.parseClaim(token);
         }
         return Maps.newHashMap();
     }

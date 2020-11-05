@@ -10,7 +10,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.base.ComJwtUser;
 import com.glsx.plat.jwt.config.JwtConfigProperties;
-import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
  * @author payu
  * @desc jwt工具类
  */
-@Data
 @Slf4j
+@Getter
 @Component
 public class JwtUtils<T extends BaseJwtUser> {
 
@@ -105,8 +105,22 @@ public class JwtUtils<T extends BaseJwtUser> {
      * @return
      */
     private String create(String jwtId, Map<String, Object> claims, Instant issueAt) {
-        Algorithm algorithm = Algorithm.HMAC256(properties.getKey());
-        Instant exp = issueAt.plusSeconds(properties.getTtl());
+        return create(properties.getKey(), jwtId, claims, issueAt, properties.getTtl());
+    }
+
+    /**
+     * 生成token
+     *
+     * @param secretKey    密钥
+     * @param jwtId        JWT中自定义的id
+     * @param claims       JWT中payload部分自定义的内容
+     * @param issueAt      用户登录的时间，也就是申请令牌的时间
+     * @param validityTime 令牌有效时间
+     * @return
+     */
+    private String create(String secretKey, String jwtId, Map<String, Object> claims, Instant issueAt, Long validityTime) {
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        Instant exp = issueAt.plusSeconds(validityTime);
 
         Map<String, Object> newClaims = new HashMap<>();
 
@@ -153,9 +167,6 @@ public class JwtUtils<T extends BaseJwtUser> {
      * @return
      */
     public DecodedJWT verify(String token) {
-        if (token.startsWith(BEARER)) {
-            token = token.replace(BEARER, "");
-        }
         return verify(properties.getKey(), token);
     }
 
@@ -171,7 +182,16 @@ public class JwtUtils<T extends BaseJwtUser> {
         }
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         JWTVerifier verifier = JWT.require(algorithm).build();
-        DecodedJWT jwt = verifier.verify(token);
+
+        DecodedJWT jwt = null;
+        try {
+            jwt = verifier.verify(token);
+        } catch (JWTVerificationException ve) {
+            log.error(ve.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
         return jwt;
     }
 
@@ -179,10 +199,7 @@ public class JwtUtils<T extends BaseJwtUser> {
      * 根据Token 获取Claim Map
      */
     public Map<String, Object> parseClaim(String token) {
-        if (token.startsWith(BEARER)) {
-            token = token.replace(BEARER, "");
-        }
-        return JWT.decode(token).getClaim(PAYLOAD_MAP).asMap();
+        return this.decode(token).getClaim(PAYLOAD_MAP).asMap();
     }
 
     /**
@@ -210,8 +227,8 @@ public class JwtUtils<T extends BaseJwtUser> {
         try {
             DecodedJWT decodedJWT = this.verify(token);
             return true;
-        } catch (JWTVerificationException e) {
-            log.error(e.getMessage());
+        } catch (JWTVerificationException ve) {
+            log.error(ve.getMessage());
         } catch (Exception e) {//捕捉到其他任何异常都视为校验失败
             e.printStackTrace();
             log.error(e.getMessage());
@@ -224,7 +241,7 @@ public class JwtUtils<T extends BaseJwtUser> {
      * 1 . 根据token解密，解密出jwt-id , 先从redis中查找出redisToken，匹配是否相同
      * 2 . 然后再对redisToken进行解密，解密成功则 继续流程 和 进行token续期
      *
-     * @param token 密钥
+     * @param token
      * @return 返回是否校验通过
      */
     public boolean verifyCachedToken(String token) {
@@ -261,6 +278,59 @@ public class JwtUtils<T extends BaseJwtUser> {
     }
 
     /**
+     * 判断是否超出允许续期时间
+     *
+     * @param jwtToken
+     * @param instant
+     * @return
+     */
+    public boolean isTokenOutAllowExpires(DecodedJWT jwtToken, Instant instant) {
+        Instant exp = jwtToken.getExpiresAt().toInstant();
+        Long allowExpiresTime = properties.getRefreshTtl();
+        return allowExpiresTime != null && (instant.getEpochSecond() - exp.getEpochSecond()) > allowExpiresTime;
+    }
+
+    /**
+     * 判断token是否过期
+     *
+     * @param jwtToken
+     * @param instant
+     * @return
+     */
+    public boolean isTokenOutExpiresAt(DecodedJWT jwtToken, Instant instant) {
+        Instant exp = jwtToken.getExpiresAt().toInstant();
+        return instant.compareTo(exp) >= 0;
+    }
+
+    /**
+     * 判断是否需要刷新token
+     *
+     * @param jwtToken
+     * @return
+     */
+    public boolean isNeedRefreshToken(DecodedJWT jwtToken) {
+        Instant now = Instant.now();
+        Instant iat = jwtToken.getIssuedAt().toInstant();
+        //Instant exp = jwtToken.getExpiresAt().toInstant();
+        //ExpiresAt之后允许刷新的标识
+        boolean outAllowExpiredFlag = isTokenOutAllowExpires(jwtToken, now);
+        if (!outAllowExpiredFlag) {
+            boolean outExpiredAtFlag = isTokenOutExpiresAt(jwtToken, now);
+            if (!outExpiredAtFlag) {
+                // 判断时间,如果token达到exp的4分之3，就刷新token
+                Long ttl = properties.getTtl();
+                Float ratioTtl = ttl * 0.75F;
+                Long diffEpochSeconds = now.getEpochSecond() - iat.getEpochSecond();
+                log.debug("ttl={}, ratioTtl={}, differenceEpochSeconds={}", ttl, ratioTtl, diffEpochSeconds);
+                if (diffEpochSeconds > ratioTtl) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 重载的刷新Token
      *
      * @param jwtToken
@@ -273,17 +343,23 @@ public class JwtUtils<T extends BaseJwtUser> {
     /**
      * 重载的刷新Token
      *
-     * @param secretKey
      * @param jwtToken
      * @return
      */
-    public String refreshToken(String secretKey, DecodedJWT jwtToken) {
-        return refreshToken(secretKey, jwtToken, properties.getTtl(), properties.getRefreshTtl());
+    public String refreshCachedToken(DecodedJWT jwtToken) {
+        String jwtId = jwtToken.getId();
+
+        String refreshToken = refreshToken(properties.getKey(), jwtToken, properties.getTtl(), properties.getRefreshTtl());
+
+        stringRedisTemplate.opsForValue().set(jwtId, refreshToken, properties.getTtl(), TimeUnit.SECONDS);
+
+        return refreshToken;
     }
 
     /**
      * 根据要过期的token获取新token
      *
+     * @param secretKey        密钥
      * @param jwtToken         上次的JWT经过解析后的对象
      * @param validityTime     有效时间
      * @param allowExpiresTime 允许过期的时间
@@ -314,10 +390,20 @@ public class JwtUtils<T extends BaseJwtUser> {
     /**
      * 删除缓存token
      *
-     * @param jwtId
+     * @param token
      */
-    public void removeCachedToken(String jwtId) {
-        stringRedisTemplate.delete(jwtId);
+    public void destroyToken(String token) {
+        DecodedJWT decodedJWT = this.decode(token);
+    }
+
+    /**
+     * 删除缓存token
+     *
+     * @param token
+     */
+    public void destroyCachedToken(String token) {
+        DecodedJWT decodedJWT = this.decode(token);
+        stringRedisTemplate.delete(decodedJWT.getId());
     }
 
     public static void main(String[] args) throws ClassNotFoundException {
@@ -326,30 +412,30 @@ public class JwtUtils<T extends BaseJwtUser> {
         JwtUtils<BaseJwtUser> jwtUtils = new JwtUtils<>();
 
         ComJwtUser jwtUser = new ComJwtUser();
-        jwtUser.setApplication(jwtUtils.getApplication());
-        jwtUser.setUserId(1L);
+        jwtUser.setApplication("test");
+        jwtUser.setUserId("1");
         jwtUser.setJwtId(UUID.randomUUID().toString());
         Map<String, Object> userMap = (Map<String, Object>) ObjectUtils.objectToMap(jwtUser);
 
-        String token = jwtUtils.createToken(userMap);
+//        String token = jwtUtils.create(secretKey, jwtUser.getJwtId(), userMap, Instant.now(), 100L);
+//
+//        System.out.println(token);
+//
+//        jwtUtils.verify(secretKey, token);
 
-        System.out.println(token);
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXlsb2FkTWFwIjp7ImNsYXp6IjoiY29tLmdsc3gucGxhdC5qd3QuYmFzZS5Db21Kd3RVc2VyIiwidXNlcklkIjoiMSIsImp3dElkIjoiMTIyMzE5ZTAtMDQyMS00MDNjLTkyYzctMGU0MzU2MWU0ZjNkIn0sImV4cCI6MTYwNDU2NTQzNCwiaWF0IjoxNjA0NTY1MzM0LCJqdGkiOiIxMjIzMTllMC0wNDIxLTQwM2MtOTJjNy0wZTQzNTYxZTRmM2QifQ.MH_ie-zX6GqM4JWrCEevgNRorMwhzNurL60t6RoiYZs";
 
-        jwtUtils.verify(secretKey, token);
-
-//        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXlsb2FkTWFwIjp7ImNsYXp6IjoiY29tLmdsc3gucGxhdC5qd3QuYmFzZS5Db21Kd3RVc2VyIiwidXNlcklkIjoxLCJqd3RJZCI6ImY0MWI5ODUzLTE1NzItNDVkMS1hODQzLWFjZWEwYzdiYjMwNyJ9LCJleHAiOjE2MDQ1NDA5NzQsImlhdCI6MTYwNDU0MDc5NCwianRpIjoiZjQxYjk4NTMtMTU3Mi00NWQxLWE4NDMtYWNlYTBjN2JiMzA3In0.9eu8m5HHfAXmbLkvqUGnpra1VCGqeRLuufrRfRksYM4";
-
-        Map<String, Object> claimMap = jwtUtils.parseClaim(token);
-
-        Class clazz = jwtUtils.getJwtUserClass(token);
+//        Map<String, Object> claimMap = jwtUtils.parseClaim(token);
+//        Class clazz = jwtUtils.getJwtUserClass(token);
 
         DecodedJWT decodedJWT = jwtUtils.decode(token);
 
-        String newToken = jwtUtils.refreshToken(secretKey, decodedJWT, 180L, 360L);
+        if (jwtUtils.isNeedRefreshToken(decodedJWT)) {
+            token = jwtUtils.refreshToken(secretKey, decodedJWT, 100L, 200L);
 
-        System.out.println(newToken);
-
-        jwtUtils.verify(secretKey, newToken);
+            System.out.println(token);
+        }
+        jwtUtils.verify(secretKey, token);
     }
 
 }

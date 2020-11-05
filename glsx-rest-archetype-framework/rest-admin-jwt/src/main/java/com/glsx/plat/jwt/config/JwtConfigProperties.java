@@ -13,11 +13,6 @@ import org.springframework.stereotype.Component;
 public class JwtConfigProperties {
 
     /**
-     * token请求头key
-     */
-    private String header;
-
-    /**
      * 签名的有效时间
      */
     private Long ttl;

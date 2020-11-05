@@ -2,6 +2,7 @@ package com.glsx.plat.web.filter;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -9,8 +10,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static com.glsx.plat.core.constant.BasicConstants.REQUEST_HEADERS_TOKEN;
 
 /**
  * 跨域
@@ -36,8 +35,8 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, DELETE, OPTIONS");
         // TODO: 2020/10/29 可以搞成配置和网关那边共同控制
-        response.setHeader("Access-Control-Allow-Headers", REQUEST_HEADERS_TOKEN + ", Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
-        response.setHeader("Access-Control-Expose-Headers", REQUEST_HEADERS_TOKEN);
+        response.setHeader("Access-Control-Allow-Headers", HttpHeaders.AUTHORIZATION + ", Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
+        response.setHeader("Access-Control-Expose-Headers", HttpHeaders.AUTHORIZATION);
         response.setHeader("Access-Control-Max-Age", "3600");
         if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);

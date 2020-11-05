@@ -19,9 +19,9 @@ public abstract class BaseJwtUser {
     private String application;
 
     /**
-     * 用户标识
+     * 用户标识（用long，）
      */
-    private Long userId;
+    private String userId;
 
     /**
      * 用户账号（如：管理系统admin，消费者系统手机号等）

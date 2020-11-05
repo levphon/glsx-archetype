@@ -6,7 +6,6 @@ import cn.com.glsx.admin.modules.user.utils.JwtUser;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
 import com.github.pagehelper.PageInfo;
 import com.glsx.plat.common.utils.StringUtils;
-import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.exception.SystemMessage;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.jwt.util.ObjectUtils;
@@ -16,6 +15,7 @@ import com.glsx.vasp.modules.mapper.UserMapper;
 import com.glsx.vasp.modules.model.UserSearch;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -99,24 +99,24 @@ public class UserService {
 
         JwtUser jwtUser = new JwtUser();
         jwtUser.setJwtId(jwtId);
-        jwtUser.setUserId(user.getId());
+        jwtUser.setUserId(String.valueOf(user.getId()));
         jwtUser.setPhone(user.getPhone());
 
         Map<String, String> userMap = (Map<String, String>) ObjectUtils.objectToMap(jwtUser);
 
-        return jwtUtils.createToken(jwtId, userMap);
+        return jwtUtils.createCachedToken(jwtId, userMap);
     }
 
     /**
      * 根据Token获取Customer
      */
     public User getByToken() {
-        String token = SessionUtils.request().getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
+        String token = SessionUtils.request().getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.isNullOrEmpty(token)) throw new AdminException(SystemMessage.ILLEGAL_ACCESS.getCode(), "登录已失效");
 
         //解析token，反转成JwtUser对象
-        Map<String, Object> userMap = jwtUtils.parseClaim(token, JwtUser.class);
+        Map<String, Object> userMap = jwtUtils.parseClaim(token);
         JwtUser jwtUser = null;
         try {
             jwtUser = (JwtUser) ObjectUtils.mapToObject(userMap, JwtUser.class);
@@ -124,7 +124,7 @@ public class UserService {
             throw new AdminException(SystemMessage.ILLEGAL_ACCESS.getCode(), "登录已失效");
         }
         User user = new User();
-        user.setId(jwtUser.getUserId());
+        user.setId(Long.valueOf(jwtUser.getUserId()));
         user.setPhone(jwtUser.getPhone());
         return user;
     }

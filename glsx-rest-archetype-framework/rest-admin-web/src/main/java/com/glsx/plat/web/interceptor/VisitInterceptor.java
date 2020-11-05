@@ -4,13 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.glsx.plat.common.annotation.CheckSign;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.utils.StringUtils;
-import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.exception.SystemMessage;
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.web.utils.IpUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -46,8 +46,9 @@ public class VisitInterceptor<T extends BaseJwtUser> implements HandlerIntercept
             Class<?> targetBean = handlerMethod.getBeanType();
 
             //验签无需登录校验
-            if (targetBean.isAnnotationPresent(CheckSign.class) || handlerMethod.hasMethodAnnotation(CheckSign.class))
+            if (targetBean.isAnnotationPresent(CheckSign.class) || handlerMethod.hasMethodAnnotation(CheckSign.class)) {
                 return true;
+            }
 
             if (targetBean.isAnnotationPresent(NoLogin.class)) {
                 // 如果存在,则根据注解的value()确定是否需要登录访问
@@ -62,22 +63,26 @@ public class VisitInterceptor<T extends BaseJwtUser> implements HandlerIntercept
                 needLoginFlag = !noLogin.value();
             }
             // 3.需要登录访问则去验证token,反之,则通过
-            if (!needLoginFlag) return true;
+            if (!needLoginFlag) {
+                return true;
+            }
 
             //##判断是否登录
-            String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
+            String token = request.getHeader(HttpHeaders.AUTHORIZATION);
             // 1.判断请求是否携带token
             if (StringUtils.isBlank(token)) {
                 String ip = IpUtils.getIpAddr(request);
                 String uri = request.getRequestURI();
                 // 不存在token数据
-                log.warn("【访问拦截】来自{}的请求[{}] Header中未包含授权信息.[请求头{}]", ip, uri, BasicConstants.REQUEST_HEADERS_TOKEN);
+                log.warn("【访问拦截】来自{}的请求[{}] Header中未包含授权信息.[请求头{}]", ip, uri, HttpHeaders.AUTHORIZATION);
                 needLogin(response);
                 return false;
             }
 
             // 2.验证token
-            if (jwtUtils.verifyToken(token)) return true;
+            if (jwtUtils.verifyToken(token)) {
+                return true;
+            }
 
             // 需要登录
             needLogin(response);

@@ -1,7 +1,6 @@
 package com.glsx.plat.context.aop;
 
 import com.glsx.plat.common.annotation.NoResubmit;
-import com.glsx.plat.core.constant.BasicConstants;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.web.utils.IpUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -53,7 +53,7 @@ public class NoResubmitAspect {
             // 拿到ip地址、请求路径、token
             String ip = IpUtils.getIpAddr(request);
             String url = request.getRequestURL().toString();
-            String token = request.getHeader(BasicConstants.REQUEST_HEADERS_TOKEN);
+            String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
             // 现在时间
             long now = System.currentTimeMillis();
