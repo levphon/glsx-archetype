@@ -10,7 +10,6 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,50 +18,34 @@ import java.util.Map;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/wx/mp/{appid}")
+@RequestMapping("/wx/mp/")
 public abstract class WxMpUserController {
 
     private final WxMpService wxMpService;
 
     @NoLogin
     @RequestMapping("/getToken")
-    public R getToken(@PathVariable String appid) throws WxErrorException {
-        if (!this.wxMpService.switchover(appid)) {
-            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
-        }
-
+    public R getToken() throws WxErrorException {
         String token = wxMpService.getAccessToken();
         return R.ok().data(token);
     }
 
     @NoLogin
     @RequestMapping("/getTicket")
-    public R getTicket(@PathVariable String appid) throws WxErrorException {
-        if (!this.wxMpService.switchover(appid)) {
-            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
-        }
-
+    public R getTicket() throws WxErrorException {
         String ticket = wxMpService.getJsapiTicket();
         return R.ok().data(ticket);
     }
 
     @NoLogin
     @RequestMapping("/getOpenid")
-    public R getOpenid(@PathVariable String appid, @RequestParam String code) throws WxErrorException {
-        if (!this.wxMpService.switchover(appid)) {
-            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
-        }
-
+    public R getOpenid(@RequestParam String code) throws WxErrorException {
         WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
         return R.ok().data(accessToken.getOpenId());
     }
 
     @RequestMapping("/getUser")
-    public R getUser(@PathVariable String appid, @RequestParam String code) throws WxErrorException {
-        if (!this.wxMpService.switchover(appid)) {
-            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
-        }
-
+    public R getUser(@RequestParam String code) throws WxErrorException {
         WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
 
         WxMpUser user = wxMpService.getUserService().userInfo(accessToken.getOpenId());
@@ -82,19 +65,13 @@ public abstract class WxMpUserController {
     /**
      * 登陆接口
      *
-     * @param appid
      * @param code
      * @return
      */
     @SysLog
     @NoLogin
     @RequestMapping(value = "/loginByOpenid")
-    public R loginByOpenid(@PathVariable String appid, @RequestParam String code) throws WxErrorException {
-
-        if (!this.wxMpService.switchover(appid)) {
-            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
-        }
-
+    public R loginByOpenid(@RequestParam String code) throws WxErrorException {
         WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
 
         Map<String, Object> rtnMap = loginByOpenid(accessToken);

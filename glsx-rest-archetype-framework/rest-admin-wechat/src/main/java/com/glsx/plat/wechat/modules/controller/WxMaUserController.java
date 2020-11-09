@@ -7,10 +7,10 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.wechat.config.WxMaConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -25,6 +25,9 @@ import java.util.Map;
 @RequestMapping("/wx/user/{appid}")
 public abstract class WxMaUserController {
 
+    @Autowired
+    private WxMaService wxMaService;
+
     /**
      * 登陆接口
      *
@@ -37,8 +40,6 @@ public abstract class WxMaUserController {
     @PostMapping(value = "/login", produces = "application/json")
     public R login(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
         if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
-
-        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
 
         WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(js_code);
         log.info(session.toString());
@@ -72,8 +73,6 @@ public abstract class WxMaUserController {
     public R loginByOpenid(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
         if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
 
-        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
-
         WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(js_code);
         log.info(session.toString());
         //登录
@@ -96,7 +95,6 @@ public abstract class WxMaUserController {
     @GetMapping("/info")
     public R info(@PathVariable String appid,
                   String signature, String rawData, String encryptedData, String iv) {
-        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
 
         String sessionKey = getSessionKeyFromCache();
 
@@ -135,7 +133,6 @@ public abstract class WxMaUserController {
     @SysLog
     @GetMapping("/phone")
     public R phone(@PathVariable String appid, String signature, String rawData, String encryptedData, String iv) {
-        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
 
         String sessionKey = getSessionKeyFromCache();
 

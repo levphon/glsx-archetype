@@ -17,7 +17,6 @@
     <modules>
         <module>glsx-rest-admin-gateway-server</module>
         <module>glsx-rest-admin-monitor-server</module>
-        <module>glsx-rest-admin-auth</module>
         <module>gslx-rest-admin-kafka</module>
     </modules>
 
@@ -93,16 +92,4 @@
         </pluginManagement>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>nexus-releases</id>
-            <name>Local Nexus Releases Repository</name>
-            <url>http://192.168.3.233/nexus/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <name>Local Nexus Snapshots Repository</name>
-            <url>http://192.168.3.233/nexus/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

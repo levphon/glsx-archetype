@@ -5,15 +5,15 @@ import cn.binarywang.wx.miniapp.bean.WxMaMessage;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import com.glsx.plat.common.utils.encryption.Encrypter;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.wechat.config.WxMaConfiguration;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -32,6 +32,9 @@ public class WxPortalController {
 
     private final WxMpService wxMpService;
 
+    @Autowired
+    private WxMaService wxMaService;
+
     @GetMapping(produces = "text/plain;charset=utf-8")
     public String authGet(@PathVariable String appid,
                           @RequestParam(name = "signature", required = false) String signature,
@@ -44,10 +47,10 @@ public class WxPortalController {
         if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
             throw new IllegalArgumentException("请求参数非法，请核实!");
         }
-
-        final WxMaService wxService = WxMaConfiguration.getMaService(appid);
-
-        if (wxService.checkSignature(timestamp, nonce, signature)) {
+        if (!this.wxMpService.switchover(appid)) {
+            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
+        }
+        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
             return echostr;
         }
 
@@ -66,9 +69,11 @@ public class WxPortalController {
                         " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
                 msgSignature, encryptType, signature, timestamp, nonce, requestBody);
 
-        final WxMaService wxService = WxMaConfiguration.getMaService(appid);
+        if (!this.wxMpService.switchover(appid)) {
+            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
+        }
 
-        final boolean isJson = Objects.equals(wxService.getWxMaConfig().getMsgDataFormat(),
+        final boolean isJson = Objects.equals(wxMaService.getWxMaConfig().getMsgDataFormat(),
                 WxMaConstants.MsgDataFormat.JSON);
         if (StringUtils.isBlank(encryptType)) {
             // 明文传输的消息
@@ -87,9 +92,9 @@ public class WxPortalController {
             // 是aes加密的消息
             WxMaMessage inMessage;
             if (isJson) {
-                inMessage = WxMaMessage.fromEncryptedJson(requestBody, wxService.getWxMaConfig());
+                inMessage = WxMaMessage.fromEncryptedJson(requestBody, wxMaService.getWxMaConfig());
             } else {//xml
-                inMessage = WxMaMessage.fromEncryptedXml(requestBody, wxService.getWxMaConfig(),
+                inMessage = WxMaMessage.fromEncryptedXml(requestBody, wxMaService.getWxMaConfig(),
                         timestamp, nonce, msgSignature);
             }
 
@@ -102,7 +107,7 @@ public class WxPortalController {
 
     private void route(WxMaMessage message, String appid) {
         try {
-            WxMaConfiguration.getRouter(appid).route(message);
+//            WxMaConfiguration.getRouter(appid).route(message);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -135,9 +140,9 @@ public class WxPortalController {
         try {
             MessageDigest crypt = MessageDigest.getInstance("SHA-1");
             crypt.reset();
-            crypt.update(str.getBytes("UTF-8"));
+            crypt.update(str.getBytes(StandardCharsets.UTF_8));
             signature = Encrypter.byteToHexString(crypt.digest());
-        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
 

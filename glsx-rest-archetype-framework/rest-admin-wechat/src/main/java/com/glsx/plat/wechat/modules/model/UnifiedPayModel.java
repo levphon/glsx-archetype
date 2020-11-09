@@ -21,7 +21,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class UnifiedOrderModel {
+public class UnifiedPayModel {
 
     private Integer type;
 

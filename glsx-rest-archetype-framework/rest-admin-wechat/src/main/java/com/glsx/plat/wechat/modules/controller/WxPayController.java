@@ -13,7 +13,7 @@ import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.utils.SnowFlake;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.web.utils.IpUtils;
-import com.glsx.plat.wechat.modules.model.UnifiedOrderModel;
+import com.glsx.plat.wechat.modules.model.UnifiedPayModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -58,7 +58,7 @@ public class WxPayController {
 
     @SysLog
     @PostMapping("unifiedOrder")
-    public R unifiedOrder(UnifiedOrderModel model) throws WxPayException {
+    public R unifiedOrder(UnifiedPayModel model) throws WxPayException {
 //        Customer user = getSessionUser();
 //        if (StringUtils.isNullOrEmpty(user.getWxOpenId()))
 //            throw BusinessException.create(ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getCode(), ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getMsg());
@@ -96,7 +96,7 @@ public class WxPayController {
      * @return
      * @throws WxPayException
      */
-    private WxPayMpOrderResult unifiedOrder(String openid, String tradeFlowNo, UnifiedOrderModel model) throws WxPayException {
+    private WxPayMpOrderResult unifiedOrder(String openid, String tradeFlowNo, UnifiedPayModel model) throws WxPayException {
         final WxPayUnifiedOrderRequest unifiedOrderRequest = WxPayUnifiedOrderRequest.newBuilder()
                 .body(model.getBody())
                 .totalFee(model.getTotalFee())
