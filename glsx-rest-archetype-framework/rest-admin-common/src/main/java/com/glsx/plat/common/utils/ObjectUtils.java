@@ -1,4 +1,6 @@
-package com.glsx.plat.jwt.util;
+package com.glsx.plat.common.utils;
+
+import com.google.common.collect.Maps;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -153,7 +155,7 @@ public class ObjectUtils {
      */
     public static Map<?, ?> objectToMap(Object obj) {
         if (obj == null) {
-            return null;
+            return Maps.newHashMap();
         }
         return new org.apache.commons.beanutils.BeanMap(obj);
     }
