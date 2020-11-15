@@ -740,37 +740,86 @@ public class RedisUtils {
         return present;
     }
 
-    public Long geoAdd(String key, double longitude, double latitude, String place) {
-        Long addedCnt = redisTemplate.opsForGeo().add(key, new Point(longitude, latitude), place);
+    /**
+     * 添加指令：geoadd 指令携带集合名称以及多个经纬度名称三元组，注意这里可以加入多个三元组
+     *
+     * @param key
+     * @param longitude
+     * @param latitude
+     * @param member
+     * @return
+     */
+    public Long geoadd(String key, double longitude, double latitude, String member) {
+        Long addedCnt = redisTemplate.opsForGeo().add(key, new Point(longitude, latitude), member);
         return addedCnt;
     }
 
-    public List<Point> geoPosition(String key, String... places) {
-        List<Point> points = redisTemplate.opsForGeo().position(key, places);
+    /**
+     * 获取元素位置：geopos 指令可以获取集合中任意元素的经纬度坐标，可以一次获取多个
+     *
+     * @param key
+     * @param members
+     * @return
+     */
+    public List<Point> geopos(String key, String... members) {
+        List<Point> points = redisTemplate.opsForGeo().position(key, members);
         return points;
     }
 
-    public Distance geoDistance(String key, String place1, String place2) {
-        Distance distance = redisTemplate.opsForGeo().distance(key, place1, place2, RedisGeoCommands.DistanceUnit.KILOMETERS);
+    /**
+     * 计算距离：geodist 指令可以用来计算两个元素之间的距离，携带集合名称、2 个名称和距离单位
+     *
+     * @param key
+     * @param member1
+     * @param member2
+     * @return
+     */
+    public Distance geodist(String key, String member1, String member2) {
+        Distance distance = redisTemplate.opsForGeo().distance(key, member1, member2, RedisGeoCommands.DistanceUnit.KILOMETERS);
         return distance;
     }
 
-    public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByXY(String key, double longitude, double latitude, long limit) {
+    /**
+     * 获取元素的 hash 值：geohash 可以获取元素的经纬度编码字符串，上面已经提到，它是 base32 编码。 你可以使用这个编码值去 geohash.org/${hash}中进行直… geohash 的标准编码值
+     *
+     * @param key
+     * @param places
+     * @return
+     */
+    public List<String> geohash(String key, String... places) {
+        List<String> results = redisTemplate.opsForGeo().hash(key, places);
+        return results;
+    }
+
+    /**
+     * 查询附近的公司：georadiusbymember 指令是最为关键的指令，它可以用来查询指定元素附近的其它元素
+     *
+     * @param key
+     * @param distanceVal
+     * @param member
+     * @param limit
+     * @return
+     */
+    public GeoResults<RedisGeoCommands.GeoLocation<String>> georadius(String key, double distanceVal, String member, long limit) {
+        Distance distance = new Distance(distanceVal, Metrics.KILOMETERS);
+        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
+        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, member, distance, args);
+        return results;
+    }
+
+    /**
+     * 根据坐标查询附近的元素：它可以根据用户的定位来计算「附近的车」，「附近的餐馆」等。它的参数和 georadiusbymember 基本一致，除了将目标元素改成经纬度坐标值
+     *
+     * @param key
+     * @param longitude
+     * @param latitude
+     * @param limit
+     * @return
+     */
+    public GeoResults<RedisGeoCommands.GeoLocation<String>> georadius(String key, double longitude, double latitude, long limit) {
         Circle circle = new Circle(longitude, latitude, Metrics.KILOMETERS.getMultiplier());
         RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
         GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, circle, args);
-        return results;
-    }
-
-    public GeoResults<RedisGeoCommands.GeoLocation<String>> geoNearByPlace(String key, double distanceVal, String place, long limit) {
-        Distance distance = new Distance(distanceVal, Metrics.KILOMETERS);
-        RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
-        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, place, distance, args);
-        return results;
-    }
-
-    public List<String> geoHash(String key, String... places) {
-        List<String> results = redisTemplate.opsForGeo().hash(key, places);
         return results;
     }
 
