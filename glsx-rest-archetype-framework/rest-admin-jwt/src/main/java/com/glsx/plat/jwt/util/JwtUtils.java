@@ -415,7 +415,7 @@ public class JwtUtils<T extends BaseJwtUser> {
         jwtUser.setApplication("test");
         jwtUser.setUserId("1");
         jwtUser.setJwtId(UUID.randomUUID().toString());
-        Map<String, Object> userMap = (Map<String, Object>) ObjectUtils.objectToMap(jwtUser);
+//        Map<String, Object> userMap = (Map<String, Object>) ObjectUtils.objectToMap(jwtUser);
 
 //        String token = jwtUtils.create(secretKey, jwtUser.getJwtId(), userMap, Instant.now(), 100L);
 //
