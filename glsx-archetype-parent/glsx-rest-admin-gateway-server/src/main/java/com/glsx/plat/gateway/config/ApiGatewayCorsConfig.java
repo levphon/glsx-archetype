@@ -16,15 +16,10 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * @author zhanghj
- * @version 1.0.0
- * @Title CorsConfig.java
- * @Package com.glsx.gateway.config
- * @Description 跨域配置
- * @date 2019年2月19日 上午11:43:35
+ * 跨域配置
  */
 @Configuration
-public class CorsConfig {
+public class ApiGatewayCorsConfig {
 
     private static final String MAX_AGE = "18000L";
 
@@ -35,8 +30,7 @@ public class CorsConfig {
             if (CorsUtils.isCorsRequest(request)) {
                 HttpHeaders requestHeaders = request.getHeaders();
                 ServerHttpResponse response = ctx.getResponse();
-                HttpMethod requestMethod = requestHeaders
-                        .getAccessControlRequestMethod();
+                HttpMethod requestMethod = requestHeaders.getAccessControlRequestMethod();
                 HttpHeaders headers = response.getHeaders();
                 headers.add(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, requestHeaders.getOrigin());
                 headers.addAll(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, requestHeaders.getAccessControlRequestHeaders());

@@ -38,8 +38,8 @@ import java.util.*;
  * @author payu
  */
 @Slf4j
-@Component
-public class CheckSignFilter implements GlobalFilter, Ordered {
+//@Component
+public class CheckSignGlobalFilter implements GlobalFilter, Ordered {
 
     @Value("${gateway.sign.switch:off}")
     private String signSwitch;
