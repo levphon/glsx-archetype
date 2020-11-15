@@ -5,6 +5,7 @@ import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.context.thread.LogginTask;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.jwt.util.JwtUtils;
+import com.glsx.plat.loggin.LogginConstants;
 import com.glsx.plat.loggin.LogginStrategyFactory;
 import com.glsx.plat.redis.service.GainIdService;
 import com.glsx.plat.web.utils.IpUtils;
@@ -56,9 +57,6 @@ public class SysLogAspect {
     @Autowired
     private LogginStrategyFactory logginStrategyFactory;
 
-    private final static String LOG_REQ_ID = "REQ_ID";
-    private final static String MONGO_LOG_ID = "MONGO_LOG_ID";
-
     @Pointcut("@annotation(com.glsx.plat.common.annotation.SysLog)")
     public void logPointCut() {
     }
@@ -66,8 +64,8 @@ public class SysLogAspect {
 
     @Before("logPointCut()")
     public void webpre(JoinPoint joinPoint) {
-        String traceId = gainIdService.gainId(LOG_REQ_ID);
-        MDC.put(LOG_REQ_ID, traceId);
+        String traceId = gainIdService.gainId(LogginConstants.LOG_REQ_ID);
+        MDC.put(LogginConstants.LOG_REQ_ID, traceId);
 
         // 处理日志
         try {
@@ -110,7 +108,7 @@ public class SysLogAspect {
     public void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
         log.info("Returning Args : {}", new Gson().toJson(returnValue));
         // 处理完请求，返回内容
-        String logTraceId = MDC.get(MONGO_LOG_ID);
+        String logTraceId = MDC.get(LogginConstants.MDC_LOG_DB_ID);
 
         R r = (R) returnValue;
         try {
@@ -167,7 +165,7 @@ public class SysLogAspect {
             Future<String> future = executor.submit(new LogginTask(request, application, method, args, userInfo, sysLogMark, logginStrategyFactory.getStrategy()));
             String logId = future.get();
             log.info("LogginTask future.get:::" + logId);
-            MDC.put(MONGO_LOG_ID, logId);
+            MDC.put(LogginConstants.MDC_LOG_DB_ID, logId);
         }
     }
 
