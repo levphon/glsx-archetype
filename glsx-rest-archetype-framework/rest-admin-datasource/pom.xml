@@ -13,7 +13,7 @@
 
     <properties>
         <mysql.version>8.0.18</mysql.version>
-        <druid.starter.version>1.1.22</druid.starter.version>
+        <druid.starter.version>1.2.3</druid.starter.version>
     </properties>
 
     <dependencies>
