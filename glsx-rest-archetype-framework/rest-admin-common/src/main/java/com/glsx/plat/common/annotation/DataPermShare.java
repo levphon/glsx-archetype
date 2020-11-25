@@ -11,14 +11,14 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface DataPerm {
+public @interface DataPermShare {
 
     /**
-     * 需要进行过滤的连表
+     * 需要进行过滤的连表后缀，完整表面为 业务表名_suffix
      *
      * @return
      */
-    String linkTable() default "";
+    String permSuffix() default "_permit";
 
     /**
      * 需要进行过滤的连表id(增删改操作不需要)

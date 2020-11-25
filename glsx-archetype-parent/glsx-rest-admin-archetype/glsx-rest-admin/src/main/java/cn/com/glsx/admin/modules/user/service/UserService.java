@@ -5,10 +5,10 @@ import cn.com.glsx.admin.modules.user.converter.UserConverter;
 import cn.com.glsx.admin.modules.user.utils.JwtUser;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
 import com.github.pagehelper.PageInfo;
+import com.glsx.plat.common.utils.ObjectUtils;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.exception.SystemMessage;
 import com.glsx.plat.jwt.util.JwtUtils;
-import com.glsx.plat.jwt.util.ObjectUtils;
 import com.glsx.plat.web.utils.SessionUtils;
 import com.glsx.vasp.modules.entity.User;
 import com.glsx.vasp.modules.mapper.UserMapper;
@@ -113,7 +113,9 @@ public class UserService {
     public User getByToken() {
         String token = SessionUtils.request().getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (StringUtils.isNullOrEmpty(token)) throw new AdminException(SystemMessage.ILLEGAL_ACCESS.getCode(), "登录已失效");
+        if (StringUtils.isNullOrEmpty(token)) {
+            throw new AdminException(SystemMessage.ILLEGAL_ACCESS.getCode(), "登录已失效");
+        }
 
         //解析token，反转成JwtUser对象
         Map<String, Object> userMap = jwtUtils.parseClaim(token);

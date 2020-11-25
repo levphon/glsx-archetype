@@ -1,8 +1,8 @@
 package com.glsx.plat.context.aop;
 
+import com.glsx.plat.common.utils.ObjectUtils;
 import com.glsx.plat.common.utils.SignUtils;
 import com.glsx.plat.core.web.R;
-import com.glsx.plat.common.utils.ObjectUtils;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -74,7 +74,9 @@ public class CheckSignAspect {
         } else {
             map = logParam(paramNames, method_args);
         }
-        if (map == null || !map.containsKey("sign")) return R.error("签名校验错误");
+        if (map == null || !map.containsKey("sign")) {
+            return R.error("签名校验错误");
+        }
 
         String sign = map.get("sign").toUpperCase();
         map.remove("sign");

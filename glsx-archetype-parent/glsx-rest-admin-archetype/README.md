@@ -234,9 +234,3 @@ jar复制到非仓库目录，不然可能会发布失败
 OR
 
 <pre><code>mvn deploy:deploy-file -DgroupId=com.glsx -DartifactId=glsx-rest-admin-archetype-archetype -Dversion=1.0-SNAPSHOT -Dpackaging=jar -Dfile=D:\glsx-rest-admin-archetype-archetype-1.0-SNAPSHOT.jar -Durl=http://192.168.3.233/nexus/content/repositories/snapshots -DrepositoryId=nexus-snapshots</code></pre>
-
-
-## todo
-1、config refresh
-2、bus
-3、auth

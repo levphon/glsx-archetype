@@ -55,7 +55,11 @@
         <!--        <repo.external.url>https://repo1.maven.org/maven2</repo.external.url>-->
 
         <!-- 本地发布服务器 -->
-        <local.nexus>192.168.3.233</local.nexus>
+<!--        <local.nexus.snapshots.url>http://127.0.0.1:8081/repository/maven-snapshots/</local.nexus.snapshots.url>-->
+<!--        <local.nexus.releases.url>http://127.0.0.1:8081/repository/maven-releases/</local.nexus.releases.url>-->
+
+        <local.nexus.snapshots.url>http://192.168.3.233/nexus/content/repositories/snapshots/</local.nexus.snapshots.url>
+        <local.nexus.releases.url>http://192.168.3.233/nexus/content/repositories/releases/</local.nexus.releases.url>
     </properties>
 
     <modules>
@@ -206,7 +210,7 @@
 
     <profiles>
         <profile>
-            <id>nexus-233</id>
+            <id>nexus</id>
             <build>
                 <plugins>
                     <plugin>
@@ -237,12 +241,12 @@
                 <repository>
                     <id>nexus-releases</id>
                     <name>Local Nexus Releases Repository</name>
-                    <url>http://127.0.0.1:8081/repository/maven-releases/</url>
+                    <url>${local.nexus.releases.url}</url>
                 </repository>
                 <snapshotRepository>
                     <id>nexus-snapshots</id>
                     <name>Local Nexus Snapshots Repository</name>
-                    <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
+                    <url>${local.nexus.snapshots.url}</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>
