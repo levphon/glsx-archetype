@@ -10,25 +10,37 @@
  */
 package com.glsx.plat.wechat.modules.model;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * 〈一句话功能简述〉<br>
- * 〈微信支付预订单Model〉
+ * 〈统一支付预订单Model〉
  *
  * @author liuyf
  * @create 2018/5/17
  * @since 1.0.0
  */
 @Data
+@Builder
+@Accessors(chain = true)
 public class UnifiedPayModel {
 
+    /**
+     * 支付机构
+     */
     private Integer type;
 
     /**
-     * 订单id
+     * 支付用户openid
      */
-    private Long orderId;
+    private String openId;
+
+    /**
+     * 交易编号/流水号
+     */
+    private String tradeNo;
 
     /**
      * 购物名称
@@ -41,7 +53,7 @@ public class UnifiedPayModel {
     private Integer totalFee;
 
     /**
-     * 支付成功回调url，不由前端传，后端控制
+     * 支付回调url，不由前端传，后端控制
      */
     private String notifyUrl;
 
