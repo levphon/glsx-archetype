@@ -71,6 +71,12 @@ public class SysLogEntity implements Serializable {
     private String operatorName;
 
     /**
+     * 租户
+     */
+    @ExcelIgnore
+    private String tenant;
+
+    /**
      * 所属组织
      */
     @ExcelProperty(value = "所属组织", index = 3)

@@ -116,7 +116,7 @@ public class TreeModelUtil {
         });
 
         //然后把 root 列表找出来
-        List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> treeModel.getId().equals(rootNo)
+        List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> treeModel.getId().toString().equals(rootNo)
         ).collect(Collectors.toList());
         stopWatch.stop();
         log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
@@ -198,6 +198,31 @@ public class TreeModelUtil {
         return collect;
     }
 
+    /**
+     * 快速转换树结构; 还可以把 root 提取出来,变复杂度为 2O(n); 目前复杂度 3O(n)
+     *
+     * @param treeModels
+     * @param isRoot
+     * @return
+     */
+    public static List<? extends TreeModel> fastConvertByRootMark(List<? extends TreeModel> treeModels, Integer isRoot) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
+        treeModels.forEach(treeModel -> {
+            TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
+            if (parentTreeModel != null && !parentTreeModel.getId().equals(treeModel.getId())) {
+                parentTreeModel.getChildren().add(treeModel);
+            }
+        });
+
+        //然后把 root 列表找出来
+        List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> treeModel.isRoot().equals(isRoot)
+        ).collect(Collectors.toList());
+        stopWatch.stop();
+        log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
+        return collect;
+    }
 
     /**
      * 快速转换树结构; 还可以把 root 提取出来,变复杂度为 2O(n); 目前复杂度 3O(n)

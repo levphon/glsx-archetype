@@ -45,7 +45,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <spring-cloud-alibaba.version>2.2.3.RELEASE</spring-cloud-alibaba.version>
         <fastjson.version>1.2.70</fastjson.version>
 
@@ -55,11 +55,11 @@
         <!--        <repo.external.url>https://repo1.maven.org/maven2</repo.external.url>-->
 
         <!-- 本地发布服务器 -->
-        <local.nexus.snapshots.url>http://127.0.0.1:8081/repository/maven-snapshots/</local.nexus.snapshots.url>
-        <local.nexus.releases.url>http://127.0.0.1:8081/repository/maven-releases/</local.nexus.releases.url>
+<!--        <local.nexus.snapshots.url>http://127.0.0.1:8081/repository/maven-snapshots/</local.nexus.snapshots.url>-->
+<!--        <local.nexus.releases.url>http://127.0.0.1:8081/repository/maven-releases/</local.nexus.releases.url>-->
 
-<!--        <local.nexus.snapshots.url>http://192.168.3.233/nexus/content/repositories/snapshots/</local.nexus.snapshots.url>-->
-<!--        <local.nexus.releases.url>http://192.168.3.233/nexus/content/repositories/releases/</local.nexus.releases.url>-->
+        <local.nexus.snapshots.url>http://192.168.3.233/nexus/content/repositories/snapshots/</local.nexus.snapshots.url>
+        <local.nexus.releases.url>http://192.168.3.233/nexus/content/repositories/releases/</local.nexus.releases.url>
     </properties>
 
     <modules>

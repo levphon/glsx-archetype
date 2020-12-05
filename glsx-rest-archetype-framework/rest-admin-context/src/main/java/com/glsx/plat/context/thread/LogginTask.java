@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+/**
+ * todo 挪到loggin组件里面
+ */
 @Slf4j
 public class LogginTask implements Callable<String> {
 
@@ -41,7 +44,8 @@ public class LogginTask implements Callable<String> {
     private SysLog sysLogMark;
     private AbstractLogginStrategy strategy;
 
-    public LogginTask(HttpServletRequest request, String application, Method method, Object[] args, Map<String, Object> userInfo,
+    public LogginTask(HttpServletRequest request, String application, Method method, Object[] args,
+                      Map<String, Object> userInfo,
                       SysLog sysLogMark, AbstractLogginStrategy strategy) {
         this.request = request;
         this.application = application;
@@ -81,6 +85,7 @@ public class LogginTask implements Callable<String> {
         }
         sysLog.setOperator(operatorId);
         sysLog.setOperatorName((String) userInfo.get("account"));
+        sysLog.setTenant((String) userInfo.get("tenant"));
         sysLog.setBelongOrg((String) userInfo.get("belong"));
         sysLog.setIp(IpUtils.getIpAddr(request));
         sysLog.setCreatedDate(new Date());

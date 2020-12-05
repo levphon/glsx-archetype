@@ -26,6 +26,13 @@ public interface TreeModel<T> {
     String getLabel();
 
     /**
+     * 根标识
+     *
+     * @return
+     */
+    Integer isRoot();
+
+    /**
      * 层级深度
      *
      * @return

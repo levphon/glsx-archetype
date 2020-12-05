@@ -29,9 +29,9 @@ public abstract class BaseJwtUser {
     private String account;
 
     /**
-     * 归属（租户、组织、机构、部门、个体等等）
+     * 租户
      */
-    private String belong;
+    private String tenant;
 
     /**
      * 子类的class全限定名
