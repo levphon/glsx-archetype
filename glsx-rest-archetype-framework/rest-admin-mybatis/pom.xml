@@ -5,12 +5,12 @@
     <parent>
         <artifactId>rest-framework-admin</artifactId>
         <groupId>com.glsx</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>rest-admin-mybatis</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
 
     <properties>
         <mybatis.boot.version>2.1.3</mybatis.boot.version>
@@ -22,12 +22,10 @@
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-datasource</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -69,7 +67,6 @@
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
