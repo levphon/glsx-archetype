@@ -2,6 +2,7 @@ package com.glsx.plat.redis.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.geo.*;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisCallback;
@@ -24,7 +25,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtils {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    @Qualifier("redisTemplate")
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 判断key是否存在
@@ -284,7 +286,7 @@ public class RedisUtils {
      * @param key 键
      * @return 对应的多个键值
      */
-    public <T> Map<String, T> hmgetT(String key) {
+    public <T> Map<Object, Object> hmgetT(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 
@@ -556,7 +558,7 @@ public class RedisUtils {
      */
     public <T> List<T> lGet(String key) {
         try {
-            return redisTemplate.opsForList().range(key, 0, -1);
+            return (List<T>) redisTemplate.opsForList().range(key, 0, -1);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -800,10 +802,10 @@ public class RedisUtils {
      * @param limit
      * @return
      */
-    public GeoResults<RedisGeoCommands.GeoLocation<String>> georadius(String key, double distanceVal, String member, long limit) {
+    public GeoResults<RedisGeoCommands.GeoLocation<Object>> georadius(String key, double distanceVal, String member, long limit) {
         Distance distance = new Distance(distanceVal, Metrics.KILOMETERS);
         RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
-        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, member, distance, args);
+        GeoResults<RedisGeoCommands.GeoLocation<Object>> results = redisTemplate.opsForGeo().radius(key, member, distance, args);
         return results;
     }
 
@@ -816,10 +818,10 @@ public class RedisUtils {
      * @param limit
      * @return
      */
-    public GeoResults<RedisGeoCommands.GeoLocation<String>> georadius(String key, double longitude, double latitude, long limit) {
+    public GeoResults<RedisGeoCommands.GeoLocation<Object>> georadius(String key, double longitude, double latitude, long limit) {
         Circle circle = new Circle(longitude, latitude, Metrics.KILOMETERS.getMultiplier());
         RedisGeoCommands.GeoRadiusCommandArgs args = RedisGeoCommands.GeoRadiusCommandArgs.newGeoRadiusArgs().includeDistance().includeCoordinates().sortAscending().limit(limit);
-        GeoResults<RedisGeoCommands.GeoLocation<String>> results = redisTemplate.opsForGeo().radius(key, circle, args);
+        GeoResults<RedisGeoCommands.GeoLocation<Object>> results = redisTemplate.opsForGeo().radius(key, circle, args);
         return results;
     }
 
