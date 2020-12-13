@@ -37,7 +37,12 @@
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-exception</artifactId>
-            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.rongcloud.im</groupId>
+            <artifactId>server-sdk-java</artifactId>
+            <version>3.1.14</version>
         </dependency>
     </dependencies>
 </project>

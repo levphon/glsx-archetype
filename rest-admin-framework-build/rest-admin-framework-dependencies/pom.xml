@@ -188,6 +188,16 @@
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-push</artifactId>
+                <version>${rest-admin-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-quartz</artifactId>
+                <version>${rest-admin-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-redis</artifactId>
                 <version>${rest-admin-framework.version}</version>
             </dependency>
