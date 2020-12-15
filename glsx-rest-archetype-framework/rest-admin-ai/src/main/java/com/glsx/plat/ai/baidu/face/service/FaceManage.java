@@ -3,6 +3,7 @@ package com.glsx.plat.ai.baidu.face.service;
 import com.alibaba.fastjson.JSON;
 import com.baidu.aip.face.FaceVerifyRequest;
 import com.baidu.aip.face.MatchRequest;
+import com.glsx.plat.ai.baidu.face.FaceConfig;
 import com.glsx.plat.ai.baidu.face.constant.FaceConstant;
 import com.glsx.plat.ai.baidu.face.enums.ActionTypeEnum;
 import com.glsx.plat.ai.baidu.face.enums.LivenessControlEnum;
@@ -27,6 +28,9 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class FaceManage {
+
+    @Autowired
+    private FaceConfig config;
 
     @Autowired
     private FaceUtil faceUtil;
@@ -221,7 +225,7 @@ public class FaceManage {
      * @return
      */
     public boolean isFaceMatch(ImageU imageU1, ImageU imageU2, Integer score) {
-        int defaultScore = FaceConstant.MATCH_SCORE;
+        int defaultScore = config.getFaceMatchScore();
         if (Objects.nonNull(score)) {
             defaultScore = score;
         }

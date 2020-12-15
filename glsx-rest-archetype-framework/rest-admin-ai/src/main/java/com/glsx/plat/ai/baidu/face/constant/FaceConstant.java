@@ -3,9 +3,6 @@ package com.glsx.plat.ai.baidu.face.constant;
 public final class FaceConstant {
 
     public final static String DEFAULT_GROUP_ID = "DEFAULT_GROUP";
-
-    public static final int MATCH_SCORE = 80;
-
     public static final String ERROR_CODE = "error_code";
     public static final String ERROR_MSG = "error_msg";
     public static final String SCORE = "score";

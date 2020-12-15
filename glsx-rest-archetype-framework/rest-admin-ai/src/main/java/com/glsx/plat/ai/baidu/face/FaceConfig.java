@@ -18,6 +18,6 @@ public class FaceConfig {
     private String secretKey;
 
     @Value("${baidu.face.matchScore:80}")
-    private String faceMatchScore;
+    private Integer faceMatchScore;
 
 }
