@@ -11,8 +11,8 @@ public class FaceConfig {
     @Value("${baidu.appId:}")
     private String appId;
 
-    @Value("${baidu.appKey:}")
-    private String appKey;
+    @Value("${baidu.apiKey:}")
+    private String apiKey;
 
     @Value("${baidu.secretKey:}")
     private String secretKey;

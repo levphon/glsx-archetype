@@ -23,7 +23,7 @@ public class FaceUtil implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        client = new AipFace(faceConfig.getAppId(), faceConfig.getAppKey(), faceConfig.getSecretKey());
+        client = new AipFace(faceConfig.getAppId(), faceConfig.getApiKey(), faceConfig.getSecretKey());
         client.setConnectionTimeoutInMillis(2000);
         client.setSocketTimeoutInMillis(60000);
     }
