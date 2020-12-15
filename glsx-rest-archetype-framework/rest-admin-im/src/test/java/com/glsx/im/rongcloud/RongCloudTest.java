@@ -1,4 +1,4 @@
-package com.glsx.plat.im.rongcloud;
+package com.glsx.im.rongcloud;
 
 import io.rong.RongCloud;
 import io.rong.methods.user.User;
@@ -30,7 +30,7 @@ public class RongCloudTest {
         //{"token":"6A1b1WLvnq5iUSX3eyR2p2PuVyJo+H2GA8tenjeXNz8=@puwy.cn.rongnav.com;puwy.cn.rongcfg.com","userId":"hHjap87","code":200}
 
         OnlineStatus onlineStatus = rongCloud.user.onlineStatus;
-        CheckOnlineResult onlineResult = onlineStatus.check(new UserModel().setId("324428586138271744"));
+        CheckOnlineResult onlineResult = onlineStatus.check(new UserModel().setId("324417181364350976"));
         System.out.println("onlineResult:  " + onlineResult.toString());
     }
 

@@ -24,5 +24,13 @@ public class RongCloudService {
         OnlineStatus onlineStatus = utils.getRongCloud().user.onlineStatus;
         return onlineStatus.check(new UserModel().setId(userId));
     }
+
+    public boolean isOnline(String userId) throws Exception {
+        CheckOnlineResult result = this.checkOnline(userId);
+        if (utils.isSuccess(result)) {
+            return "1".equals(result.getStatus());
+        }
+        return false;
+    }
     
 }
