@@ -8,9 +8,8 @@ import java.util.Map;
 /**
  * 短信推送
  *
- * @author zhangwf
+ * @author payu
  * @see
- * @since 2019-07-11
  */
 public class PushSmsInfo {
 
@@ -38,4 +37,5 @@ public class PushSmsInfo {
         smsinfo.setOfflineSendtime(100000L);
         return smsinfo;
     }
+
 }

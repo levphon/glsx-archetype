@@ -7,9 +7,8 @@ import com.gexin.rp.sdk.template.style.Style6;
 /**
  * 推送样式
  *
- * @author zhangwf
+ * @author payu
  * @see
- * @since 2019-07-09
  */
 public class PushStyle {
 
@@ -80,4 +79,5 @@ public class PushStyle {
         style.setChannelLevel(3); //设置通知渠道重要性
         return style;
     }
+
 }
