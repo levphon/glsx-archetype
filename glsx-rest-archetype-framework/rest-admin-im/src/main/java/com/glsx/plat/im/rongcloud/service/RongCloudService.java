@@ -20,17 +20,23 @@ public class RongCloudService {
         return user.register(userModel);
     }
 
-    public CheckOnlineResult checkOnline(String userId) throws Exception {
+    public CheckOnlineResult checkOnline(String userId) {
         OnlineStatus onlineStatus = utils.getRongCloud().user.onlineStatus;
-        return onlineStatus.check(new UserModel().setId(userId));
+        try {
+            return onlineStatus.check(new UserModel().setId(userId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public boolean isOnline(String userId) throws Exception {
+    public boolean isOnline(String userId) {
         CheckOnlineResult result = this.checkOnline(userId);
         if (utils.isSuccess(result)) {
+            assert result != null;
             return "1".equals(result.getStatus());
         }
         return false;
     }
-    
+
 }
