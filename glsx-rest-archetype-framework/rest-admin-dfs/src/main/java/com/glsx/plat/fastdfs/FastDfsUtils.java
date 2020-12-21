@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Base64;
 
 @Slf4j
 @Component
@@ -78,10 +79,27 @@ public class FastDfsUtils {
      * @return fastDfs路径
      */
     public String upload(byte[] bytes, long fileSize, String extension) {
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+        InputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
         StorePath storePath = storageClient.uploadFile(byteArrayInputStream, fileSize, extension, null);
-        log.info(storePath.getGroup() + "==" + storePath.getPath() + "======" + storePath.getFullPath());
-        return storePath.getFullPath();
+        return domain + ":" + port + "/" + storePath.getFullPath();
+    }
+
+    /**
+     * 上传文件并生成缩略图
+     *
+     * @param base64
+     * @return
+     */
+    public String uploadByBase64(String base64) {
+        String[] base64ImageSplit = base64.split(",");
+        byte[] bytes = Base64.getDecoder().decode(base64ImageSplit[1]);//解码
+        String fileExtName = base64ImageSplit[0].substring(base64ImageSplit[0].indexOf("/") + 1, base64ImageSplit[0].indexOf(";"));
+        for (int i = 0; i < bytes.length; ++i) {
+            if (bytes[i] < 0) {// 调整异常数据
+                bytes[i] += 256;
+            }
+        }
+        return upload(bytes, bytes.length, fileExtName);
     }
 
     /**
