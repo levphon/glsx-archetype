@@ -1,12 +1,12 @@
-package com.glsx.plat.context.aop;
+package com.glsx.plat.loggin.aop;
 
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.utils.StringUtils;
-import com.glsx.plat.context.thread.LogginTask;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.jwt.util.JwtUtils;
 import com.glsx.plat.loggin.LogginConstants;
 import com.glsx.plat.loggin.LogginStrategyFactory;
+import com.glsx.plat.loggin.thread.LogginTask;
 import com.glsx.plat.redis.service.GainIdService;
 import com.glsx.plat.web.utils.IpUtils;
 import com.glsx.plat.web.utils.SessionUtils;

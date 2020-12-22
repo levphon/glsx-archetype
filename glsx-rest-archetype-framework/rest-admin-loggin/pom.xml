@@ -14,13 +14,29 @@
     <dependencies>
         <dependency>
             <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.glsx</groupId>
             <artifactId>rest-admin-mongodb</artifactId>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-office</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-web</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>

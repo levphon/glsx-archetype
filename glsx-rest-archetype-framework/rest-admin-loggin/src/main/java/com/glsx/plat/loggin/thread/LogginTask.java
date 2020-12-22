@@ -1,4 +1,4 @@
-package com.glsx.plat.context.thread;
+package com.glsx.plat.loggin.thread;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
