@@ -58,7 +58,7 @@ public class PushTemplate {
      * @param paramJson
      * @return
      */
-    public static TransmissionTemplate offLineTransmissionTemplate(Notify notify, JSONObject paramJson) {
+    public static TransmissionTemplate offlineTransmissionTemplate(Notify notify, JSONObject paramJson) {
         //厂商通道离线推送注意类的使用，在线和离线使用不同
         TransmissionTemplate template = new TransmissionTemplate();
         //设置第三方通知
@@ -134,17 +134,16 @@ public class PushTemplate {
         APNPayload payload = new APNPayload();
         //在已有数字基础上加1显示，设置为-1时，在已有数字上减1显示，设置为数字时，显示指定数字
         payload.setAutoBadge("+1");
-        payload.setContentAvailable(1);
+        payload.setContentAvailable(0);
         //ios 12.0 以上可以使用 Dictionary 类型的 sound
         payload.setSound("default");
-        payload.setCategory("$由客户端定义");
+//        payload.setCategory("$由客户端定义");
         for (String key : paramJson.keySet()) {
             payload.addCustomMsg(key, paramJson.getString(key));
         }
 
         //简单模式APNPayload.SimpleMsg
-        payload.setAlertMsg(new APNPayload.SimpleAlertMsg(notify.getContent()));
-
+        payload.setAlertMsg(new APNPayload.SimpleAlertMsg("推送异常..."));
         return payload;
     }
 
@@ -153,10 +152,10 @@ public class PushTemplate {
         APNPayload payload = new APNPayload();
         //在已有数字基础上加1显示，设置为-1时，在已有数字上减1显示，设置为数字时，显示指定数字
         payload.setAutoBadge("+1");
-        payload.setContentAvailable(1);
+        payload.setContentAvailable(0);
         //ios 12.0 以上可以使用 Dictionary 类型的 sound
         payload.setSound("default");
-        payload.setCategory("$由客户端定义");
+        //payload.setCategory("$由客户端定义");
         for (String key : paramJson.keySet()) {
             payload.addCustomMsg(key, paramJson.getString(key));
         }
@@ -204,7 +203,7 @@ public class PushTemplate {
         APNPayload payload = new APNPayload();
         //在已有数字基础上加1显示，设置为-1时，在已有数字上减1显示，设置为数字时，显示指定数字
         payload.setAutoBadge("+1");
-        payload.setContentAvailable(1);
+        payload.setContentAvailable(0);
         //ios 12.0 以上可以使用 Dictionary 类型的 sound
         payload.setSound("default");
         payload.setCategory("$由客户端定义");

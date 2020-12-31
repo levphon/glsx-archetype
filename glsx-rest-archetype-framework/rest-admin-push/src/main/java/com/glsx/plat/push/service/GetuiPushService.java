@@ -119,8 +119,8 @@ public class GetuiPushService implements InitializingBean {
      * @param notify
      * @param paramJson
      */
-    public void uniPushOffLine(String cid, Notify notify, JSONObject paramJson) {
-        AbstractTemplate template = PushTemplate.offLineTransmissionTemplate(notify, paramJson);
+    public void uniPushOffline(String cid, Notify notify, JSONObject paramJson) {
+        AbstractTemplate template = PushTemplate.offlineTransmissionTemplate(notify, paramJson);
 //        AbstractTemplate template = PushTemplate.getLinkTemplate(); //点击通知打开(第三方)网页模板
 //        AbstractTemplate template = PushTemplate.getTransmissionTemplate(); //透传消息模版
 //        AbstractTemplate template = PushTemplate.getRevokeTemplate(); //消息撤回模版
