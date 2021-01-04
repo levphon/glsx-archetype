@@ -9,12 +9,12 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.Protocol;
-import redis.clients.jedis.util.SafeEncoder;
+import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtils {
 
     @Autowired
-    @Qualifier("redisTemplate")
+    @Qualifier("restRedisTemplate")
     private RedisTemplate<String, Object> redisTemplate;
 
     /**
@@ -99,71 +99,6 @@ public class RedisUtils {
             connection.del(key);
             return null;
         });
-    }
-
-    /**
-     * 分布式加锁
-     *
-     * @param key     key
-     * @param value   value
-     * @param seconds 过期时间（秒）
-     * @return
-     */
-    public boolean lock(String key, String value, int seconds) {
-        //EX seconds – 设置键key的过期时间，单位时秒
-        //PX milliseconds – 设置键key的过期时间，单位时毫秒
-        //NX – 只有键key不存在的时候才会设置key的值
-        //XX – 只有键key存在的时候才会设置key的值
-        Object execute = redisTemplate.execute((RedisCallback<Boolean>) connection -> {
-            Object obj = connection.execute("set", key.getBytes(), value.getBytes(),
-                    //NX表示只有当锁定资源不存在的时候才能 SET 成功。利用 Redis 的原子性，保证了只有第一个请求的线程才能获得锁，而之后的所有线程在锁定资源被释放之前都不能获得锁。
-                    SafeEncoder.encode("NX"),
-                    SafeEncoder.encode("EX"),//让该 key 在超时之后自动删除。EX 秒 PX 毫秒
-                    Protocol.toByteArray(seconds));
-            return obj != null;
-        });
-        return (boolean) execute;
-    }
-
-    /**
-     * 分布式解锁
-     * 释放锁的时候，有可能因为持锁之后方法执行时间大于锁的有效期，此时有可能已经被另外一个线程持有锁，所以不能直接删除
-     *
-     * @param key
-     * @param value
-     */
-    public boolean unlock(String key, String value) {
-        Long RELEASE_SUCCESS = 1L;
-        //lua script
-        String lua_script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-        try {
-            // 使用lua脚本删除redis中匹配value的key，可以避免由于方法执行时间过长而redis锁自动过期失效的时候误删其他线程的锁
-            // spring自带的执行脚本方法中，集群模式直接抛出不支持执行脚本的异常，所以只能拿到原redis的connection来执行脚本
-            RedisCallback<Long> callback = (connection) -> {
-                Object nativeConnection = connection.getNativeConnection();
-                // 集群模式和单机模式虽然执行脚本的方法一样，但是没有共同的接口，所以只能分开执行
-                // 集群模式
-                if (nativeConnection instanceof JedisCluster) {
-                    return (Long) ((JedisCluster) nativeConnection).eval(lua_script, Collections.singletonList(key), Collections.singletonList(value));
-                }
-                // 单机模式
-                else if (nativeConnection instanceof Jedis) {
-                    return (Long) ((Jedis) nativeConnection).eval(lua_script, Collections.singletonList(key), Collections.singletonList(value));
-                }
-                return 0L;
-            };
-            Object result = redisTemplate.execute(callback);
-
-            if (RELEASE_SUCCESS.equals(result)) {
-                return true;
-            }
-        } catch (Exception e) {
-            log.error("release lock occured an exception", e);
-        } finally {
-            // 清除掉ThreadLocal中的数据，避免内存溢出
-            //lockFlag.remove();
-        }
-        return false;
     }
 
     //============================String=============================
@@ -729,17 +664,35 @@ public class RedisUtils {
     }
 
     /**
-     * 设置分布式锁
+     * 分布式加锁
      *
-     * @param key
-     * @param value
-     * @param seconds
+     * @param key     key
+     * @param value   value
+     * @param seconds 过期时间（秒）
      * @return
      */
     public boolean setnx(String key, Object value, long seconds) {
         //SET key value [EX seconds] [PX milliseconds] [NX|XX]
-        Boolean present = redisTemplate.opsForValue().setIfPresent(key, value, seconds, TimeUnit.SECONDS);
-        return present;
+        return redisTemplate.opsForValue().setIfAbsent(key, value, seconds, TimeUnit.SECONDS);
+    }
+
+    /**
+     * 分布式解锁
+     * 释放锁的时候，有可能因为持锁之后方法执行时间大于锁的有效期，此时有可能已经被另外一个线程持有锁，所以不能直接删除
+     *
+     * @param key
+     * @param value
+     */
+    public boolean unlock(String key, Object value) {
+        Object currentValue = this.get(key);
+        try {
+            if (!StringUtils.isEmpty(currentValue) && currentValue.equals(value)) {
+                this.del(key);
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     /**
