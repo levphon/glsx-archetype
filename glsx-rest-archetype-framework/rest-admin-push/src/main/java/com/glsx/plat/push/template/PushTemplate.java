@@ -156,8 +156,9 @@ public class PushTemplate {
         if (badge != null && badge.trim().length() > 0) {
             payload.setAutoBadge(badge);
         }
-        payload.setContentAvailable(1);
+        payload.setContentAvailable(0);
         // ios 12.0 以上可以使用 Dictionary 类型的 sound
+        // 通知铃声文件名，无声设置为"com.gexin.ios.silence"
         payload.setSound("default");
 //      payload.setCategory("$由客户端定义");
         if (customMsg != null) {
@@ -176,7 +177,6 @@ public class PushTemplate {
 //
 //      // 添加多媒体资源
 //      payload.addMultiMedia(new MultiMedia().setResType(MultiMedia.MediaType.pic).setResUrl("资源文件地址").setOnlyWifi(true));
-
         return payload;
     }
 
