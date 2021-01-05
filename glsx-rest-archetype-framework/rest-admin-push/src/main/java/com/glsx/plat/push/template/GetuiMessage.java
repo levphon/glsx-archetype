@@ -17,6 +17,7 @@ public class GetuiMessage extends HashMap<String, String> {
     private static final long serialVersionUID = -5993986890576211345L;
 
     public static final String MESSAGE_TYPE = "messageType";
+    public static final String PACKAGE_NAME = "packageName";
     private final String title = "title";
     private final String content = "content";
 

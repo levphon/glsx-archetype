@@ -134,7 +134,7 @@ public class PushTemplate {
      */
     private static String getIntent(String title, String content, Map<String, String> payload) {
         String intent = "intent:#Intent;launchFlags=0x04000000;action=android.intent.action.oppopush;package=${packageName};component=${packageName}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.title=${title};S.content=${content};S.payload=${payload};end";
-        intent = intent.replace("${packageName}", payload.get("packageName"))
+        intent = intent.replace("${packageName}", payload.get(GetuiMessage.PACKAGE_NAME))
                 .replace("${title}", title)
                 .replace("${content}", content)
                 .replace("${payload}", JSON.toJSONString(payload));
