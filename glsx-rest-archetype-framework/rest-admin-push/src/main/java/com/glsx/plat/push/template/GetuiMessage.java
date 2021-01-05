@@ -15,7 +15,7 @@ public class GetuiMessage extends HashMap<String, String> {
 
     private static final long serialVersionUID = -5993986890576211345L;
 
-    private final String messageType = "messageType";
+    public static final String MESSAGE_TYPE = "messageType";
     private final String title = "title";
     private final String content = "content";
 
@@ -29,7 +29,7 @@ public class GetuiMessage extends HashMap<String, String> {
         assert customParam != null;
         this.putAll(customParam);
         // 把优先级高的Key放在后面，即便在customParam有重复的KEY，也不会影响。
-        this.put(messageType, typeEnum.getCode());
+        this.put(MESSAGE_TYPE, typeEnum.getCode());
         this.put(title, typeEnum.getTitle());
         this.put(content, typeEnum.getContent(customParam));
     }
@@ -47,7 +47,7 @@ public class GetuiMessage extends HashMap<String, String> {
 
         this.putAll(customParam);
         // 把优先级高的Key放在后面，即便在customParam有重复的KEY，也不会影响。
-        this.put(messageType, customParam.get("messageType"));
+        this.put(MESSAGE_TYPE, customParam.get("messageType"));
         this.put(this.title, title);
         this.put(this.content, content);
     }
