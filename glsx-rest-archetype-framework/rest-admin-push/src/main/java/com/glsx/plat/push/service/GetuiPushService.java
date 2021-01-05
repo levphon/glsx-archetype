@@ -1,19 +1,19 @@
 package com.glsx.plat.push.service;
 
-import com.gexin.fastjson.JSONObject;
 import com.gexin.rp.sdk.base.IBatch;
 import com.gexin.rp.sdk.base.IPushResult;
 import com.gexin.rp.sdk.base.impl.AppMessage;
 import com.gexin.rp.sdk.base.impl.SingleMessage;
 import com.gexin.rp.sdk.base.impl.Target;
-import com.gexin.rp.sdk.base.notify.Notify;
 import com.gexin.rp.sdk.base.uitls.AppConditions;
 import com.gexin.rp.sdk.exceptions.PushAppException;
 import com.gexin.rp.sdk.exceptions.RequestException;
 import com.gexin.rp.sdk.http.IGtPush;
 import com.gexin.rp.sdk.template.AbstractTemplate;
 import com.gexin.rp.sdk.template.LinkTemplate;
+import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.glsx.plat.push.properties.GetuiProperties;
+import com.glsx.plat.push.template.GetuiMessage;
 import com.glsx.plat.push.template.PushTemplate;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.InitializingBean;
@@ -35,34 +35,20 @@ public class GetuiPushService implements InitializingBean {
     @Autowired
     private GetuiProperties properties;
 
-//    public static void main(String[] args) {
-//        String cid = "dc5610a356cf1c4b3de6b6dcdf04b0cd";
-//
-//        GetuiPushService pushService = new GetuiPushService();
-//
-//        Notify notify = new Notify();
-//        notify.setTitle("test");
-//        notify.setContent("this is a test");
-//        notify.setType(GtReq.NotifyInfo.Type._intent);
-//        String intent = "intent:#Intent;launchFlags=0x10000000;package=io.yue.app;component=你的包名 /com.getui.demo.MainActivity;i.parm1=12;end";
-//        notify.setIntent(intent);
-//
-////      pushService.uniPushToApp();
-//        pushService.uniPushToSingle(cid, notify);
-//        pushService.uniPushOnline(cid, notify);
-//        pushService.uniPushOffLine(cid, notify, new JSONObject());
-//    }
-
     /**
      * 批量单推
      * <p>
      * 当单推任务较多时，推荐使用该接口，可以减少与服务端的交互次数。
      */
-    private void uniPushToSingleBatch(Notify notify, String... cids) {
+    private void uniPushToSingleBatch(GetuiMessage getuiMessage, String... cids) {
         IBatch batch = push.getBatch();
 
         //构建点击通知打开网页消息
-        AbstractTemplate template = PushTemplate.getLinkTemplate(notify);
+        LinkTemplate template = PushTemplate.getLinkTemplate(
+                getuiMessage.getTitle(),
+                getuiMessage.getContent(),
+                getuiMessage);
+
         //构建透传消息
         //AbstractTemplate template = PushTemplate.offLineTransmissionTemplate(notify, new JSONObject());
 
@@ -71,7 +57,7 @@ public class GetuiPushService implements InitializingBean {
         IPushResult ret = null;
         try {
             for (int i = 0; i < cids.length; i++) {
-                // 设置推送目标，填入appid和clientId
+                //设置推送目标，填入appid和clientId
                 Target target = new Target();
                 target.setAppId(properties.getAppId());
                 target.setClientId(cids[i]);
@@ -96,10 +82,15 @@ public class GetuiPushService implements InitializingBean {
     /***
      * unipush 在线推送
      * @param cid
-     * @param notify
+     * @param getuiMessage
      */
-    public void uniPushOnline(String cid, Notify notify) {
-        AbstractTemplate template = PushTemplate.onlineNotificationTemplate(notify);
+    public void uniPushOnline(String cid, GetuiMessage getuiMessage) {
+        TransmissionTemplate template = PushTemplate.getTransmissionTemplateWith3rdNotifyInfoAndAPNPayload(
+                getuiMessage.getTitle(),
+                getuiMessage.getContent(),
+                "+1",
+                getuiMessage);
+
 //        AbstractTemplate template = PushTemplate.getLinkTemplate(); //点击通知打开(第三方)网页模板
 //        AbstractTemplate template = PushTemplate.getTransmissionTemplate(); //透传消息模版
 //        AbstractTemplate template = PushTemplate.getRevokeTemplate(); //消息撤回模版
@@ -116,11 +107,15 @@ public class GetuiPushService implements InitializingBean {
      * 场景2：用户定制了某本书的预订更新，当本书有更新时，需要向该用户及时下发一条更新提醒信息。
      * 这些需要向指定某个用户推送消息的场景，即需要使用对单个用户推送消息的接口。
      * @param cid
-     * @param notify
-     * @param paramJson
+     * @param getuiMessage
      */
-    public void uniPushOffline(String cid, Notify notify, JSONObject paramJson) {
-        AbstractTemplate template = PushTemplate.offlineTransmissionTemplate(notify, paramJson);
+    public void uniPushOffline(String cid, GetuiMessage getuiMessage) {
+        TransmissionTemplate template = PushTemplate.getTransmissionTemplateWith3rdNotifyInfoAndAPNPayload(
+                getuiMessage.getTitle(),
+                getuiMessage.getContent(),
+                "+1",
+                getuiMessage);
+
 //        AbstractTemplate template = PushTemplate.getLinkTemplate(); //点击通知打开(第三方)网页模板
 //        AbstractTemplate template = PushTemplate.getTransmissionTemplate(); //透传消息模版
 //        AbstractTemplate template = PushTemplate.getRevokeTemplate(); //消息撤回模版
@@ -160,14 +155,80 @@ public class GetuiPushService implements InitializingBean {
         }
     }
 
+
+    /**
+     * 推送消息至App所有用户，100次/天，每分钟不能超过5次，相同的消息内容，10分钟内不可以重复发送<br/>
+     * 华为，平果测试通过
+     *
+     * @param getuiMessage
+     * @return
+     */
+    public IPushResult toApp(GetuiMessage getuiMessage) {
+        TransmissionTemplate template = PushTemplate.getTransmissionTemplateWith3rdNotifyInfoAndAPNPayload(
+                getuiMessage.getTitle(),
+                getuiMessage.getContent(),
+                "+1",
+                getuiMessage);
+
+        // 设置APPID与APPKEY
+        template.setAppId(properties.getAppId());
+        template.setAppkey(properties.getAppKey());
+
+        AppMessage message = new AppMessage();
+        message.setData(template);
+        message.setOffline(true);
+        message.setOfflineExpireTime(24 * 1000 * 3600);
+        message.setAppIdList(Lists.newArrayList(properties.getAppId()));
+        IPushResult ret = push.pushMessageToApp(message);
+        return ret;
+    }
+
+    /**
+     * 推送消息至特定的ClientID,频次限制：没有限制！
+     *
+     * @param cid          接收的ClientId
+     * @param getuiMessage 消息对象
+     * @return
+     */
+    public IPushResult toSingle(String cid, GetuiMessage getuiMessage) {
+        // 获取消息模板
+        TransmissionTemplate template = PushTemplate.getTransmissionTemplateWith3rdNotifyInfoAndAPNPayload(
+                getuiMessage.getTitle(),
+                getuiMessage.getContent(),
+                "+1",
+                getuiMessage);
+
+        // 设置APPID与APPKEY
+        template.setAppId(properties.getAppId());
+        template.setAppkey(properties.getAppKey());
+
+        // 制作消息
+        SingleMessage message = new SingleMessage();
+        message.setData(template);
+        message.setOffline(true);// 设置消息离线，并设置离线时间
+        message.setOfflineExpireTime(72 * 3600 * 1000); // 离线有效时间，单位为毫秒，可选
+//      message.setPriority(1);// 优先级
+//      message.setPushNetWorkType(0); // 判断客户端是否wifi环境下推送。1为仅在wifi环境下推送，0为不限制网络环境，默认不限
+        // 生成接收人
+        Target target = new Target();
+        target.setAppId(properties.getAppId());
+        target.setClientId(cid);
+        // 发送消息
+        IPushResult ret = push.pushMessageToSingle(message, target);
+        return ret;
+    }
+
     /**
      * 广播到app
      *
-     * @param notify
+     * @param getuiMessage
      * @return
      */
-    public String uniPushToApp(Notify notify) {
-        LinkTemplate template = PushTemplate.getLinkTemplate(notify);
+    public String uniPushToApp(GetuiMessage getuiMessage) {
+        LinkTemplate template = PushTemplate.getLinkTemplate(
+                getuiMessage.getTitle(),
+                getuiMessage.getContent(),
+                getuiMessage);
 
         // 设置APPID与APPKEY
         template.setAppId(properties.getAppId());
