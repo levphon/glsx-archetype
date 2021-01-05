@@ -32,10 +32,6 @@
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.glsx</groupId>
-            <artifactId>rest-admin-loggin</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.aspectj</groupId>

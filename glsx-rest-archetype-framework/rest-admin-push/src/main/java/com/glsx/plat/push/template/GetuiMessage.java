@@ -3,6 +3,7 @@ package com.glsx.plat.push.template;
 import com.glsx.plat.push.constant.MessageType;
 import lombok.Getter;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class GetuiMessage extends HashMap<String, String> {
      */
     public GetuiMessage(String title, String content, Map<String, String> customParam) {
         assert customParam != null;
-        Assert.isTrue(customParam.get("messageType") == null, "需指定消息类型messageType");
+        Assert.isTrue(!StringUtils.isEmpty(customParam.get("messageType")), "需指定消息类型messageType");
 
         this.putAll(customParam);
         // 把优先级高的Key放在后面，即便在customParam有重复的KEY，也不会影响。
