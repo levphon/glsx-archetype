@@ -10,6 +10,7 @@ import com.gexin.rp.sdk.base.payload.MultiMedia;
 import com.gexin.rp.sdk.base.payload.VoIPPayload;
 import com.gexin.rp.sdk.dto.GtReq;
 import com.gexin.rp.sdk.template.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import java.util.UUID;
  * @author payu
  * @see
  */
+@Slf4j
 public class PushTemplate {
 
     /***
@@ -95,10 +97,18 @@ public class PushTemplate {
         template.setTransmissionType(2);
 
         // 透传内容
-        template.setTransmissionContent(JSON.toJSONString(customParam));
+        String transmissionContent = JSON.toJSONString(customParam);
+
+        log.info("TransmissionContent:{}", transmissionContent);
+
+        template.setTransmissionContent(transmissionContent);
+
+        Notify notify = get3rdNotifyInfo(title, body, customParam);
+
+        log.info("3rdNotifyInfo:{}", notify.toString());
 
         // 第三方厂商推送
-        template.set3rdNotifyInfo(get3rdNotifyInfo(title, body, customParam));
+        template.set3rdNotifyInfo(notify);
 
         // 针对IOS消息推送，设置APNs
         template.setAPNInfo(getAPNPayload(title, body, badge, customParam));
@@ -119,8 +129,15 @@ public class PushTemplate {
         notify.setTitle(title);
         notify.setContent(content);
         notify.setType(GtReq.NotifyInfo.Type._intent);
-        notify.setIntent(getIntent(title, content, payload));
-        notify.setPayload(JSON.toJSONString(payload));
+
+        String intent = getIntent(title, content, payload);
+        log.info("Intent:{}", intent);
+        notify.setIntent(intent);
+
+        String payloadJson = JSON.toJSONString(payload);
+        log.info("Payload:{}", payloadJson);
+        notify.setPayload(payloadJson);
+
         return notify;
     }
 

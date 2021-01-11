@@ -1,7 +1,6 @@
 package com.glsx.plat.push.template;
 
 import com.glsx.plat.push.constant.MessageType;
-import lombok.Getter;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 /**
  * @author payu
  */
-@Getter
 public class GetuiMessage extends HashMap<String, String> {
 
     private static final long serialVersionUID = -5993986890576211345L;
@@ -54,4 +52,11 @@ public class GetuiMessage extends HashMap<String, String> {
         this.put(this.content, content);
     }
 
+    public String getTitle() {
+        return this.get(title);
+    }
+
+    public String getContent() {
+        return this.get(content);
+    }
 }

@@ -16,6 +16,7 @@ import com.glsx.plat.push.properties.GetuiProperties;
 import com.glsx.plat.push.template.GetuiMessage;
 import com.glsx.plat.push.template.PushTemplate;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.List;
 /**
  * @author payu
  */
+@Slf4j
 @Service
 public class GetuiPushService implements InitializingBean {
 
