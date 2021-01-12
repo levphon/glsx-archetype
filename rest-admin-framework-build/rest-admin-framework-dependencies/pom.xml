@@ -43,7 +43,6 @@
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-ai</artifactId>
-                
                 <version>${rest-admin-framework.version}</version>
             </dependency>
             <dependency>
