@@ -16,7 +16,6 @@
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-mybatis</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

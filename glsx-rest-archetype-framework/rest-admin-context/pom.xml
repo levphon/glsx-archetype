@@ -42,5 +42,12 @@
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
+
+        <!--内部缓存框架统一采用caffeine-->
+        <!--这样Spring cloud loadbalancer用的本地实例缓存也是基于Caffeine-->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
     </dependencies>
 </project>

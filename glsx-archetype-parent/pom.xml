@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.glsx</groupId>
         <artifactId>rest-framework-admin</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>glsx-rest-parent</artifactId>
@@ -24,6 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <rest-admin-framework.version>1.1.0-SNAPSHOT</rest-admin-framework.version>
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
         <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
         <!--        <repo.proxy.url>https://repo1.maven.org/maven2</repo.proxy.url>-->
@@ -47,6 +48,14 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!--rest-admin-framework-->
+            <dependency>
+                <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-framework-dependencies</artifactId>
+                <version>${rest-admin-framework.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

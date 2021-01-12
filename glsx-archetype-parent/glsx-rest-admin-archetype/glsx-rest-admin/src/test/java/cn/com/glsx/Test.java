@@ -2,7 +2,7 @@ package cn.com.glsx;
 
 import cn.com.glsx.admin.modules.user.converter.UserConverter;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
-import com.glsx.vasp.modules.entity.User;
+import cn.com.glsx.vasp.modules.entity.User;
 
 public class Test {
 

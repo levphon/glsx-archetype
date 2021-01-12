@@ -1,4 +1,4 @@
-package com.glsx.vasp.modules.model;
+package cn.com.glsx.vasp.modules.model;
 
 import cn.hutool.db.Page;
 import lombok.Data;
