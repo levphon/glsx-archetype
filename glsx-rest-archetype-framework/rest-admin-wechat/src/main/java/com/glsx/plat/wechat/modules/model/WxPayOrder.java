@@ -26,12 +26,7 @@ import lombok.experimental.Accessors;
 @Builder
 @Accessors(chain = true)
 public class WxPayOrder {
-
-    /**
-     * 支付机构
-     */
-    private Integer type;
-
+    
     /**
      * 支付用户openid
      */
