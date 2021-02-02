@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 @Data
 @Builder
 @Accessors(chain = true)
-public class UnifiedPayModel {
+public class WxPayOrder {
 
     /**
      * 支付机构

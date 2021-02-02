@@ -13,7 +13,7 @@ import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.utils.SnowFlake;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.web.utils.IpUtils;
-import com.glsx.plat.wechat.modules.model.UnifiedPayModel;
+import com.glsx.plat.wechat.modules.model.WxPayOrder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -58,27 +58,27 @@ public class WxPayController {
 
     @SysLog
     @PostMapping("unifiedOrder")
-    public R unifiedOrder(UnifiedPayModel model) throws WxPayException {
+    public R unifiedOrder(WxPayOrder order) throws WxPayException {
 //        Customer user = getSessionUser();
 //        if (StringUtils.isNullOrEmpty(user.getWxOpenId()))
 //            throw BusinessException.create(ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getCode(), ResultCodeEnum.USER_NOT_FOLLOW_OFFICIAL_ACCOUNT.getMsg());
 
-        if (model.getTotalFee() == null || model.getTotalFee() <= 0)
+        if (order.getTotalFee() == null || order.getTotalFee() <= 0)
             throw WxPayException.newBuilder().build();//.create("支付金额有误或此订单无需支付");
 
         String notifyUrl = "";//PropertiesUtils.getProperty("wechat.repayment.notifyUrl");
         log.info("支付通知url：" + notifyUrl);
-        model.setNotifyUrl(notifyUrl);
+        order.setNotifyUrl(notifyUrl);
 
         String tradeFlowNo = "B" + SnowFlake.nextSerialNumber();
         String openid = "";
-        WxPayMpOrderResult result = unifiedOrder(openid, tradeFlowNo, model);
+        WxPayMpOrderResult result = unifiedOrder(openid, tradeFlowNo, order);
 
         //交易记录入库
 //        TradingFlow tradingFlow = new TradingFlow();
 //        tradingFlow.setFlowNo(tradeFlowNo);
-//        tradingFlow.setOrderId(model.getOrderId());
-//        tradingFlow.setBody(model.getBody());
+//        tradingFlow.setOrderId(order.getOrderId());
+//        tradingFlow.setBody(order.getBody());
 //        tradingFlow.setType(0);
 //        tradingFlow.setStatus(0);
 //        tradingFlow.setCreateTime(new Date());
@@ -92,16 +92,16 @@ public class WxPayController {
      *
      * @param openid
      * @param tradeFlowNo
-     * @param model
+     * @param order
      * @return
      * @throws WxPayException
      */
-    private WxPayMpOrderResult unifiedOrder(String openid, String tradeFlowNo, UnifiedPayModel model) throws WxPayException {
+    private WxPayMpOrderResult unifiedOrder(String openid, String tradeFlowNo, WxPayOrder order) throws WxPayException {
         final WxPayUnifiedOrderRequest unifiedOrderRequest = WxPayUnifiedOrderRequest.newBuilder()
-                .body(model.getBody())
-                .totalFee(model.getTotalFee())
+                .body(order.getBody())
+                .totalFee(order.getTotalFee())
                 .spbillCreateIp(IpUtils.getIpAddr(request))
-                .notifyUrl(model.getNotifyUrl())
+                .notifyUrl(order.getNotifyUrl())
                 .tradeType(WxPayConstants.TradeType.JSAPI)
                 .openid(openid)
                 .outTradeNo(tradeFlowNo)
