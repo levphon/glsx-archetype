@@ -2,8 +2,6 @@ package com.glsx.plat.context.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +9,6 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -23,29 +20,34 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ThreadPoolConfig implements AsyncConfigurer {
 
+    DefaultRejectedExecutionHandler rejectedExecutionHandler = new DefaultRejectedExecutionHandler();
     // 线程池维护线程的最少数量
-    private int corePoolSize = 5;
+    private int corePoolSize = 60;
     //最大线程池大小
-    private int maxPoolSize = 30;
+    private int maxPoolSize = 300;
     //队列容量,排队数
     private int queueCapacity = 10000;
 
-    DefaultRejectedExecutionHandler rejectedExecutionHandler = new DefaultRejectedExecutionHandler();
-
-    /**
-     * 当前配置为 初始化为 5 个,线程池空闲时允许 5 个其它线程空闲时间超过 0.5 秒会销毁
-     *
-     * @return
-     */
     @Bean(name = "threadPoolTaskExecutor")
     @Override
     public ThreadPoolTaskExecutor getAsyncExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        //设置核心线程数
         threadPoolTaskExecutor.setCorePoolSize(corePoolSize);
-        threadPoolTaskExecutor.setKeepAliveSeconds(500);    // 0.5 秒允许空闲 最大允许空闲时间,超过时间并且当前池中线程数大于 corePoolSize 的时候会销毁
+        //设置最大线程数
         threadPoolTaskExecutor.setMaxPoolSize(maxPoolSize);
+        //设置队列容量
         threadPoolTaskExecutor.setQueueCapacity(queueCapacity);
-        threadPoolTaskExecutor.setRejectedExecutionHandler(rejectedExecutionHandler);
+        //设置线程活跃时间（秒） 最大允许空闲时间,超过时间并且当前池中线程数大于 corePoolSize 的时候会销毁
+        threadPoolTaskExecutor.setKeepAliveSeconds(60);
+        //设置默认线程名称
+        threadPoolTaskExecutor.setThreadNamePrefix("payu-");
+        //设置拒绝策略
+//        threadPoolTaskExecutor.setRejectedExecutionHandler(rejectedExecutionHandler);
+        threadPoolTaskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        //等待所有任务结束后再关闭线程池
+        threadPoolTaskExecutor.setWaitForTasksToCompleteOnShutdown(true);
+        threadPoolTaskExecutor.initialize();
         return threadPoolTaskExecutor;
     }
 
@@ -56,12 +58,12 @@ public class ThreadPoolConfig implements AsyncConfigurer {
      */
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler = new AsyncUncaughtExceptionHandler() {
-            private Log logger = LogFactory.getLog(getClass());
-
-            @Override
-            public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
-                log.error(method.getName() + " 执行异常", throwable);
+        AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler = (throwable, method, objects) -> {
+            log.error(method.getName() + " 执行异常", throwable);
+            log.info("Exception message - " + throwable.getMessage());
+            log.info("Method name - " + method.getName());
+            for (Object param : objects) {
+                log.info("Parameter value - " + param);
             }
         };
         return asyncUncaughtExceptionHandler;
