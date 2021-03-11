@@ -101,20 +101,27 @@ public class SysLogAspect {
     /**
      * 方法之后调用
      *
-     * @param joinPoint
+     * @param jp
      * @param returnValue 方法返回值
      */
     @AfterReturning(pointcut = "logPointCut()", returning = "returnValue")
-    public void doAfterReturning(JoinPoint joinPoint, Object returnValue) {
+    public void doAfterReturning(JoinPoint jp, Object returnValue) {
         log.info("Returning Args : {}", new Gson().toJson(returnValue));
         // 处理完请求，返回内容
         String logTraceId = MDC.get(LogginConstants.MDC_LOG_DB_ID);
 
-        R r = (R) returnValue;
-        try {
-            logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
-        } catch (Exception e) {
-            e.printStackTrace();
+        MethodSignature methodSignature = (MethodSignature) jp.getSignature();
+        Method method = methodSignature.getMethod();
+        //获取注解上的文字
+        SysLog sysLog = method.getAnnotation(SysLog.class);
+
+        if (sysLog.saveLog()) {
+            R r = (R) returnValue;
+            try {
+                logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         MDC.clear();
     }
