@@ -210,11 +210,15 @@ public class FaceManage {
         requests.add(req2);
         JSONObject res = faceUtil.getClient().match(requests);
         FaceResult result = FaceResultUtil.isSuccess(res);
-        // 对结果进行特殊处理
-        Integer score = result.getData().getInteger(FaceConstant.SCORE);
-        return score == null ? 0 : score;
+        if (result.isSuccess()) {
+            // 对结果进行特殊处理
+            Integer score = result.getData().getInteger(FaceConstant.SCORE);
+            return score == null ? 0 : score;
+        } else {
+            log.error("人脸对比错误(错误码{}) {}", result.getErrorCode(), result.getErrorMsg());
+            return -1;
+        }
     }
-
 
     /**
      * 人脸是否对比成功
