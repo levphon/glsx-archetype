@@ -109,13 +109,7 @@ public class SysLogAspect {
         log.info("Returning Args : {}", new Gson().toJson(returnValue));
         // 处理完请求，返回内容
         String logTraceId = MDC.get(LogginConstants.MDC_LOG_DB_ID);
-
-        MethodSignature methodSignature = (MethodSignature) jp.getSignature();
-        Method method = methodSignature.getMethod();
-        //获取注解上的文字
-        SysLog sysLog = method.getAnnotation(SysLog.class);
-
-        if (sysLog.saveLog()) {
+        if (StringUtils.isNotEmpty(logTraceId)) {
             R r = (R) returnValue;
             try {
                 logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
