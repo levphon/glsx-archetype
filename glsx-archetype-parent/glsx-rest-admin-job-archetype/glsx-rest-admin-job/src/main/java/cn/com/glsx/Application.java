@@ -21,7 +21,7 @@ import static java.util.TimeZone.getTimeZone;
 @EnableDiscoveryClient
 @EnableTransactionManagement
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"cn.com.glsx"})
 public class Application {
 
     public static void main(String[] args) {

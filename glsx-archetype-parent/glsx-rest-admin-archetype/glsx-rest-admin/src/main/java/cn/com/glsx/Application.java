@@ -1,6 +1,7 @@
 package cn.com.glsx;
 
 import com.glsx.plat.context.EnableRestAdmin;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -18,6 +19,7 @@ import static java.util.TimeZone.getTimeZone;
 /**
  * @author payu
  */
+@EnableDubbo
 @EnableRestAdmin
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = {"cn.com.glsx.admin.api", "cn.com.glsx.echocenter.api"})

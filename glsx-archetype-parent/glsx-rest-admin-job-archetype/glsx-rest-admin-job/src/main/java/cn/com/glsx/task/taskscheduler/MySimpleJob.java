@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Slf4j
@@ -32,15 +34,10 @@ public class MySimpleJob implements SimpleJob {
                 shardingContext.getJobName(),
                 shardingContext.getJobParameter()
         );
-
+        List<Integer> list =new ArrayList<>();
         String normalDate = DateUtils.formatNormal(new Date());
         log.info("---------------{}-开始----------------", normalDate);
-
-        //todo 执行业务逻辑
-        // doSomeThing
         simpleJobService.simpleJob("张三 " + normalDate);
-
-
         log.info("---------------{}-结束--------------", normalDate);
     }
 

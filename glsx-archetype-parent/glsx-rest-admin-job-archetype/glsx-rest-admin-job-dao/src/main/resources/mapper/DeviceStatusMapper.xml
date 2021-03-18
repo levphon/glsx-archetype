@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.glsx.vasp.modules.mapper.DeviceStatusMapper">
+  <resultMap id="BaseResultMap" type="cn.com.glsx.vasp.modules.entity.DeviceStatus">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="device_order_code" jdbcType="VARCHAR" property="deviceOrderCode" />
+    <result column="device_order_value" jdbcType="VARCHAR" property="deviceOrderValue" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="product_key" jdbcType="VARCHAR" property="productKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id, device_id,device_order_code, device_order_value, createtime, updatetime,
+    product_key
+  </sql>
+
+  <!-- 查询符合周期（每天+当天类型）且满足全部条件触发 -->
+  <select id="getByIdAndCode" resultMap="BaseResultMap">
+    select device_id,device_order_code,device_order_value from smart_device_status where device_id = #{deviceId} and device_order_code = #{deviceOrderCode}
+  </select>
+</mapper>
