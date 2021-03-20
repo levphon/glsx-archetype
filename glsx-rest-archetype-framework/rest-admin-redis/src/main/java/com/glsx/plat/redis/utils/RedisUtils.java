@@ -7,6 +7,7 @@ import org.springframework.data.geo.*;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -466,6 +467,72 @@ public class RedisUtils {
             return 0;
         }
     }
+
+    /**
+     * 将数据放入zset缓存
+     *
+     * @param key           键
+     * @param typedTupleSet 值
+     * @return 成功个数
+     */
+    public long zsSet(String key, Set<ZSetOperations.TypedTuple<Object>> typedTupleSet) {
+        try {
+            return redisTemplate.opsForZSet().add(key, typedTupleSet);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 根据value从一个zset中查询,是否存在
+     *
+     * @param key   键
+     * @param value 值
+     * @return true 存在 false不存在
+     */
+    public boolean zsHasKey(String key, Object value) {
+        try {
+            long index = redisTemplate.opsForZSet().rank(key,value);
+            return index > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 获取zset缓存的长度
+     *
+     * @param key 键
+     * @return
+     */
+    public long zsGetSetSize(String key) {
+        try {
+            return redisTemplate.opsForZSet().size(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 移除值为value的
+     *
+     * @param key    键
+     * @param values 值 可以是多个
+     * @return 移除的个数
+     */
+    public long zSetRemove(String key, Object... values) {
+        try {
+            Long count = redisTemplate.opsForZSet().remove(key, values);
+            return count;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
     //===============================list=================================
 
     /**
