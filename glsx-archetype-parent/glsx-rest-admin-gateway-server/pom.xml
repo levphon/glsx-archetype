@@ -22,27 +22,22 @@
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-gateway-server</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-core</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-exception</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-redis</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>rest-admin-jwt</artifactId>
-            <scope>compile</scope>
         </dependency>
 
         <!--内部缓存框架统一采用caffeine-->

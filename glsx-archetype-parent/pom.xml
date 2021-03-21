@@ -17,7 +17,6 @@
     <modules>
         <module>glsx-rest-admin-gateway-server</module>
         <module>glsx-rest-admin-monitor-server</module>
-        <module>gslx-rest-admin-kafka</module>
     </modules>
 
     <properties>
