@@ -10,10 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Base64;
 
 @Slf4j
@@ -79,9 +76,29 @@ public class FastDfsUtils {
      * @return fastDfs路径
      */
     public String upload(byte[] bytes, long fileSize, String extension) {
-        InputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-        StorePath storePath = storageClient.uploadFile(byteArrayInputStream, fileSize, extension, null);
+        InputStream bais = new ByteArrayInputStream(bytes);
+        StorePath storePath = storageClient.uploadFile(bais, fileSize, extension, null);
         return domain + ":" + port + "/" + storePath.getFullPath();
+    }
+
+    /**
+     * 文件上传
+     * 最后返回fastDFS中的文件名称;group1/M00/01/04/CgMKrVvS0geAQ0pzAACAAJxmBeM793.doc
+     *
+     * @param bytes     文件字节
+     * @param extension 文件扩展名
+     * @return fastDfs路径
+     */
+    public String upload(byte[] bytes, String extension) {
+        InputStream bais = new ByteArrayInputStream(bytes);
+        StorePath storePath = null;
+        try {
+            storePath = storageClient.uploadFile(bais, bais.available(), extension, null);
+            return domain + ":" + port + "/" + storePath.getFullPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
