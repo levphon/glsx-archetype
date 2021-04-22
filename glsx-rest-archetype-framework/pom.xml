@@ -132,7 +132,6 @@
 
         <module>rest-admin-elasticsearch</module>
 
-        <module>rest-admin-document</module>
         <module>rest-admin-swagger2</module>
         <module>rest-admin-office</module>
 
@@ -146,6 +145,7 @@
         <module>rest-admin-ai</module>
         <module>rest-admin-push</module>
         <module>rest-admin-quartz</module>
+        <module>rest-admin-pulsar</module>
     </modules>
 
     <dependencies>

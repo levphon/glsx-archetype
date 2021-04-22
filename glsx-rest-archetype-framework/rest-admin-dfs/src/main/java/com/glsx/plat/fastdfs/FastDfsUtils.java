@@ -36,7 +36,7 @@ public class FastDfsUtils {
     public String upload(MultipartFile file) throws Exception {
         String fileExtName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
         StorePath storePath = this.storageClient.uploadFile(file.getInputStream(), file.getSize(), fileExtName, null);
-        return domain + ":" + port + "/" + storePath.getFullPath();
+        return domain + (port == 80 ? "" : ":" + port) + "/" + storePath.getFullPath();
     }
 
     /**
@@ -49,7 +49,7 @@ public class FastDfsUtils {
     public String uploadImage(MultipartFile file) throws Exception {
         String fileExtName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
         StorePath storePath = this.storageClient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(), fileExtName, null);
-        return domain + ":" + port + "/" + storePath.getFullPath();
+        return domain + (port == 80 ? "" : ":" + port) + "/" + storePath.getFullPath();
     }
 
     /**
@@ -63,7 +63,7 @@ public class FastDfsUtils {
         String fileExtName = file.getName().substring(file.getName().lastIndexOf(".") + 1);
         InputStream fis = new FileInputStream(file);
         StorePath storePath = this.storageClient.uploadFile(fis, fis.available(), fileExtName, null);
-        return domain + ":" + port + "/" + storePath.getFullPath();
+        return domain + (port == 80 ? "" : ":" + port) + "/" + storePath.getFullPath();
     }
 
     /**
@@ -78,7 +78,7 @@ public class FastDfsUtils {
     public String upload(byte[] bytes, long fileSize, String extension) {
         InputStream bais = new ByteArrayInputStream(bytes);
         StorePath storePath = storageClient.uploadFile(bais, fileSize, extension, null);
-        return domain + ":" + port + "/" + storePath.getFullPath();
+        return domain + (port == 80 ? "" : ":" + port) + "/" + storePath.getFullPath();
     }
 
     /**
@@ -94,7 +94,7 @@ public class FastDfsUtils {
         StorePath storePath = null;
         try {
             storePath = storageClient.uploadFile(bais, bais.available(), extension, null);
-            return domain + ":" + port + "/" + storePath.getFullPath();
+            return domain + (port == 80 ? "" : ":" + port) + "/" + storePath.getFullPath();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -128,8 +128,7 @@ public class FastDfsUtils {
     public byte[] download(String fileUrl) {
         String group = fileUrl.substring(0, fileUrl.indexOf("/"));
         String path = fileUrl.substring(fileUrl.indexOf("/") + 1);
-        byte[] bytes = storageClient.downloadFile(group, path, new DownloadByteArray());
-        return bytes;
+        return storageClient.downloadFile(group, path, new DownloadByteArray());
     }
 
     /**
