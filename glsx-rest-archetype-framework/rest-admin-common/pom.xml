@@ -14,7 +14,7 @@
     <properties>
         <commons.lang.version>2.6</commons.lang.version>
         <commons.fileupload.version>1.4</commons.fileupload.version>
-        <commons.io.version>2.5</commons.io.version>
+        <commons.io.version>2.7</commons.io.version>
         <commons.codec.version>1.10</commons.codec.version>
         <commons.lang3.version>3.9</commons.lang3.version>
         <commons.collections4.version>4.3</commons.collections4.version>
