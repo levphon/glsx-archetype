@@ -32,73 +32,16 @@
             <artifactId>rest-admin-alliance</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-elasticjob</artifactId>
+        </dependency>
+
         <!-- dao示例 -->
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>glsx-rest-admin-job-dao</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.kuhn-he</groupId>
-            <artifactId>elastic-job-lite-spring-boot-starter</artifactId>
-            <version>2.1.53</version>
-        </dependency>
-
-        <!-- zookeeper 分布式锁、注意zookeeper版本 版本限制-->
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-            <version>2.10.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-framework</artifactId>
-            <version>2.10.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.glsx</groupId>
-            <artifactId>rest-admin-redis</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>18.0</version>
-        </dependency>
-
-
-
-        <!--kafak-->
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.10</artifactId>
-            <version>0.8.1.1</version>
-            <!--<exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>-->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.zookeeper</groupId>
-                    <artifactId>zookeeper</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-        </dependency>
-
-        <!-- protocol buf -->
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <version>2.6.1</version>
         </dependency>
     </dependencies>
 </project>

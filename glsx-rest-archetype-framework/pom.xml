@@ -146,6 +146,8 @@
         <module>rest-admin-push</module>
         <module>rest-admin-quartz</module>
         <module>rest-admin-pulsar</module>
+        <module>rest-admin-elasticjob</module>
+        <module>rest-admin-kafka-ancient</module>
     </modules>
 
     <dependencies>

@@ -157,6 +157,11 @@
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-kafka-ancient</artifactId>
+                <version>${rest-admin-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-loggin</artifactId>
                 <version>${rest-admin-framework.version}</version>
             </dependency>
@@ -248,6 +253,16 @@
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-wechat</artifactId>
+                <version>${rest-admin-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-elasticjob</artifactId>
+                <version>${rest-admin-framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-pulsar</artifactId>
                 <version>${rest-admin-framework.version}</version>
             </dependency>
         </dependencies>

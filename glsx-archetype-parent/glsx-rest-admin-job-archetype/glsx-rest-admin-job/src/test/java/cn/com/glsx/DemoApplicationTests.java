@@ -1,6 +1,6 @@
 package cn.com.glsx;
 
-import cn.com.glsx.task.modules.service.MySimpleJobService;
+import cn.com.glsx.scheduler.modules.service.MySimpleJobService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class DemoApplicationTests {
     private MySimpleJobService mySimpleJobService;
 
     @Test
-    public void testLogin() {
+    public void testJob() {
         mySimpleJobService.simpleJob("13800138000");
     }
 

@@ -5,6 +5,7 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
@@ -26,9 +27,12 @@ public class NacosConfigLog {
         String serverAddr = env.getRequiredProperty("spring.cloud.nacos.config.server-addr");
         String group = env.getRequiredProperty("spring.cloud.nacos.config.group");
 
-        String prefix = env.getRequiredProperty("spring.cloud.nacos.config.prefix");
-        String active = env.getRequiredProperty("spring.profiles.active");
-        String extension = env.getRequiredProperty("spring.cloud.nacos.config.file-extension");
+        String prefix = env.getProperty("spring.cloud.nacos.config.prefix");
+        if (StringUtils.isEmpty(prefix)) {
+            prefix = env.getRequiredProperty("spring.application.name");
+        }
+        String active = env.getProperty("spring.profiles.active", "dev");
+        String extension = env.getProperty("spring.cloud.nacos.config.file-extension", "properties");
         String dataId = prefix + "-" + active + "." + extension;
 
         Properties properties = new Properties();

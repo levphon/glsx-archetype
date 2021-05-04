@@ -215,7 +215,7 @@ spring.cloud.gateway.routes[0].filters[0]=StripPrefix=0
 
 ##脚手架
 a. 构建脚手架命令
-<pre><code>cd glsx-rest-admin-archetype</code></pre>
+<pre><code>cd glsx-archetype-parent\glsx-rest-admin-archetype</code></pre>
 <pre><code>mvn archetype:create-from-project</code></pre>
 
 b. 安装脚手架命令
