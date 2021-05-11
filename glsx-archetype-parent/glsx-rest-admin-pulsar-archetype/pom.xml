@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
 
-    <artifactId>glsx-rest-admin-pulsar</artifactId>
+    <artifactId>glsx-rest-admin-pulsar-archetype</artifactId>
     <modelVersion>4.0.0</modelVersion>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
