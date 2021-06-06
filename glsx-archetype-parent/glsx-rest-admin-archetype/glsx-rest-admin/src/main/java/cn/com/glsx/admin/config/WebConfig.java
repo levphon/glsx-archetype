@@ -1,6 +1,6 @@
 package cn.com.glsx.admin.config;
 
-import cn.com.glsx.admin.modules.user.utils.JwtUser;
+import cn.com.glsx.admin.modules.utils.JwtUser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;

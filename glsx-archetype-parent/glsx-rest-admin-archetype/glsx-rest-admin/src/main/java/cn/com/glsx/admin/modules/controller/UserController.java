@@ -1,7 +1,7 @@
-package cn.com.glsx.admin.modules.user.controller;
+package cn.com.glsx.admin.modules.controller;
 
 import cn.com.glsx.admin.modules.BaseController;
-import cn.com.glsx.admin.modules.user.service.UserService;
+import cn.com.glsx.admin.modules.service.UserService;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
 import cn.com.glsx.vasp.modules.model.UserSearch;
 import cn.com.glsx.echocenter.api.EchoCenterFeignClient;

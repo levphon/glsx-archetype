@@ -1,4 +1,4 @@
-package cn.com.glsx.admin.modules.user.utils;
+package cn.com.glsx.admin.modules.utils;
 
 import com.glsx.plat.jwt.base.BaseJwtUser;
 import lombok.Getter;

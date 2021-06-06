@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rest-admin-framework-dependencies-parent</artifactId>
         <groupId>com.glsx</groupId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -16,8 +16,8 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <rest-admin-framework.version>1.1.0-SNAPSHOT</rest-admin-framework.version>
-        <fastjson.version>1.2.70</fastjson.version>
+        <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
+        <fastjson.version>1.2.76</fastjson.version>
         <guava.version>22.0</guava.version>
     </properties>
 
@@ -93,11 +93,6 @@
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-disruptor</artifactId>
-                <version>${rest-admin-framework.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.glsx</groupId>
-                <artifactId>rest-admin-document</artifactId>
                 <version>${rest-admin-framework.version}</version>
             </dependency>
             <dependency>

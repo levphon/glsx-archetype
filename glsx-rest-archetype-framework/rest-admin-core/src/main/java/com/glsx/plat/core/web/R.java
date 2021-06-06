@@ -1,5 +1,10 @@
 package com.glsx.plat.core.web;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,9 +12,7 @@ import java.util.Map;
 /**
  * 返回数据
  */
-public class R extends HashMap<String, Object> {
-
-    private static final long serialVersionUID = 1L;
+public class R<T> extends HashMap<String, Object> {
 
     public final static String CODE_KEY = "code";
     public final static String MSG_KEY = "message";
@@ -49,6 +52,10 @@ public class R extends HashMap<String, Object> {
         return r;
     }
 
+    public static R ok() {
+        return new R();
+    }
+
     public static R ok(String msg) {
         R r = new R();
         r.put(MSG_KEY, msg);
@@ -61,11 +68,7 @@ public class R extends HashMap<String, Object> {
         return r;
     }
 
-    public static R ok() {
-        return new R();
-    }
-
-    public R data(Object o) {
+    public R data(T o) {
         super.put(DATA_KEY, o);
         return this;
     }
@@ -83,7 +86,7 @@ public class R extends HashMap<String, Object> {
      * @param totalElements
      * @return
      */
-    public R putPageData(Object value, long totalElements) {
+    public R putPageData(T value, long totalElements) {
         Map data = new HashMap(2);
         data.put(LIST_KEY, value);
         data.put(TOTAL_ELEMENTS_KEY, totalElements);
@@ -164,24 +167,43 @@ public class R extends HashMap<String, Object> {
         return this;
     }
 
-    public void setMessage(String formatMessage) {
-        this.put(MSG_KEY, formatMessage);
-    }
-
     public String getMessage() {
         return (String) this.get(MSG_KEY);
     }
 
-    public void setCode(int code) {
-        this.put(CODE_KEY, code);
+    public void setMessage(String formatMessage) {
+        this.put(MSG_KEY, formatMessage);
     }
 
     public int getCode() {
         return (int) this.get(CODE_KEY);
     }
 
+    public void setCode(int code) {
+        this.put(CODE_KEY, code);
+    }
+
     public Object getData() {
         return this.get(DATA_KEY);
+    }
+
+    public <T> T getData(Class<T> clazz) {
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(this.get(DATA_KEY));
+        return gson.fromJson(json, clazz);
+    }
+
+    public <T> T getDataList(Type type) {
+        Gson gson = new GsonBuilder().create();
+        String arrayJson = gson.toJson(this.get(DATA_KEY));
+        T list = gson.fromJson(arrayJson, type);
+        return list;
+    }
+
+    public Class<T> getGenericType() {
+        Type type = this.getClass().getGenericSuperclass();
+        Type[] parameter = ((ParameterizedType) type).getActualTypeArguments();
+        return (Class<T>) parameter[0];
     }
 
     public boolean isSuccess() {

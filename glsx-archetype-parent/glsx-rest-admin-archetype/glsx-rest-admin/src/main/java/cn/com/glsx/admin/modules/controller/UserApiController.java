@@ -1,8 +1,8 @@
-package cn.com.glsx.admin.modules.user.controller;
+package cn.com.glsx.admin.modules.controller;
 
 import cn.com.glsx.admin.api.UserCenterFeignClient;
-import cn.com.glsx.admin.modules.user.converter.UserConverter;
-import cn.com.glsx.admin.modules.user.service.UserService;
+import cn.com.glsx.admin.modules.converter.UserConverter;
+import cn.com.glsx.admin.modules.service.UserService;
 import cn.com.glsx.admin.services.userservice.model.UserBO;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
 import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
@@ -11,6 +11,7 @@ import com.github.pagehelper.PageInfo;
 import com.glsx.plat.context.utils.validator.AssertUtils;
 import cn.com.glsx.vasp.modules.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -64,7 +65,7 @@ public class UserApiController implements UserCenterFeignClient {
 
     @Override
     @PostMapping(value = "/edit")
-    public int edit(@RequestBody @Valid UserBO userBO) {
+    public int edit(@RequestBody @Validated UserBO userBO) {
         AssertUtils.isNull(userBO.getId(), "ID不能为空");
         User user = UserConverter.INSTANCE.bo2do(userBO);
         int editCnt = userService.editUser(user);

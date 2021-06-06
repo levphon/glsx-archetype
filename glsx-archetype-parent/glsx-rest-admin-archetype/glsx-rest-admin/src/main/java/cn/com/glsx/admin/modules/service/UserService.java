@@ -1,9 +1,9 @@
-package cn.com.glsx.admin.modules.user.service;
+package cn.com.glsx.admin.modules.service;
 
 import cn.com.glsx.admin.common.exception.AdminException;
-import cn.com.glsx.admin.modules.user.converter.UserConverter;
-import cn.com.glsx.admin.modules.user.utils.JwtUser;
+import cn.com.glsx.admin.modules.converter.UserConverter;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
+import cn.com.glsx.admin.modules.utils.JwtUser;
 import com.github.pagehelper.PageInfo;
 import com.glsx.plat.common.utils.ObjectUtils;
 import com.glsx.plat.common.utils.StringUtils;

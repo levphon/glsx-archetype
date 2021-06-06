@@ -9,12 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rest-admin-webflux</artifactId>
+    <artifactId>rest-admin-flowable</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
     <dependencies>
+        <!--flowable工作流依赖-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter</artifactId>
+            <version>6.6.0</version>
         </dependency>
     </dependencies>
 </project>

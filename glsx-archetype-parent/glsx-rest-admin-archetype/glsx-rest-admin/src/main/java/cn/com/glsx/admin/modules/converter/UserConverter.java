@@ -1,4 +1,4 @@
-package cn.com.glsx.admin.modules.user.converter;
+package cn.com.glsx.admin.modules.converter;
 
 import cn.com.glsx.admin.services.userservice.model.UserBO;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
@@ -20,10 +20,8 @@ public interface UserConverter {
 
     UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
 
-    @Mappings(@Mapping(source = "username", target = "username"))
     UserDTO do2dto(User user);
 
-    @Mappings(@Mapping(source = "username", target = "username"))
     User dto2do(UserDTO userDTO);
 
     @Mappings(@Mapping(source = "realname", target = "realName"))

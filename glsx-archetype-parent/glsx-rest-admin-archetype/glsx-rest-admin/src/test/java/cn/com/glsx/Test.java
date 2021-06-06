@@ -1,6 +1,6 @@
 package cn.com.glsx;
 
-import cn.com.glsx.admin.modules.user.converter.UserConverter;
+import cn.com.glsx.admin.modules.converter.UserConverter;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
 import cn.com.glsx.vasp.modules.entity.User;
 

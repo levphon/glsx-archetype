@@ -1,6 +1,6 @@
 package cn.com.glsx.admin.modules;
 
-import cn.com.glsx.admin.modules.user.service.UserService;
+import cn.com.glsx.admin.modules.service.UserService;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.web.controller.AbstractController;
 import cn.com.glsx.vasp.modules.entity.User;

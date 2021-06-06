@@ -7,6 +7,7 @@ import feign.Logger;
 import feign.codec.Decoder;
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;
+import feign.form.spring.converter.SpringManyMultipartFilesReader;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -16,8 +17,11 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -51,21 +55,38 @@ public class FeignConfig {
     }
 
     @Bean
-    public Encoder EncoderfeignEncoder() {
+    public Encoder feignEncoder() {
         return new SpringEncoder(feignHttpMessageConverter());
     }
 
     @Bean
-    public Decoder DecoderfeignDecoder() {
+    public Decoder feignDecoder() {
         return new SpringDecoder(feignHttpMessageConverter());
     }
 
     private ObjectFactory<HttpMessageConverters> feignHttpMessageConverter() {
-        final HttpMessageConverters httpMessageConverters = new HttpMessageConverters(getFastJsonConverter());
+        final HttpMessageConverters httpMessageConverters = getSpringConverter();
+//        final HttpMessageConverters httpMessageConverters = getGsonConverter();
+//        final HttpMessageConverters httpMessageConverters = getFastJsonConverter();
         return () -> httpMessageConverters;
     }
 
-    private FastJsonHttpMessageConverter getFastJsonConverter() {
+    private HttpMessageConverters getSpringConverter() {
+        List<HttpMessageConverter<?>> springConverters = messageConverters.getObject().getConverters();
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<>(springConverters.size() + 1);
+        messageConverters.addAll(springConverters);
+        messageConverters.add(new SpringManyMultipartFilesReader(4096));
+        return new HttpMessageConverters(true, messageConverters);
+    }
+
+    public HttpMessageConverters getGsonConverter() {
+        GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
+        Collection<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+        messageConverters.add(converter);
+        return new HttpMessageConverters(true, messageConverters);
+    }
+
+    private HttpMessageConverters getFastJsonConverter() {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
@@ -94,7 +115,7 @@ public class FeignConfig {
         //日期格式化
         fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
         converter.setFastJsonConfig(fastJsonConfig);
-        return converter;
+        return new HttpMessageConverters(converter);
     }
 
 }

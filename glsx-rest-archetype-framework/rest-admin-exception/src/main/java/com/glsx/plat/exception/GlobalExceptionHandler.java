@@ -12,7 +12,9 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.PersistenceException;
@@ -95,6 +97,7 @@ public class GlobalExceptionHandler {
         // ex.getFieldError():随机返回一个对象属性的异常信息。如果要一次性返回所有对象属性异常信息，则调用ex.getAllErrors()
         FieldError fieldError = ex.getFieldError();
         StringBuilder sb = new StringBuilder();
+        assert fieldError != null;
         sb.append(fieldError.getField())
                 .append("=[").append(fieldError.getRejectedValue()).append("]")
                 .append(fieldError.getDefaultMessage());
@@ -143,7 +146,7 @@ public class GlobalExceptionHandler {
     public R handleServiceException(ConstraintViolationException e) {
         log.error("参数验证失败", e);
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (ConstraintViolation<?> violation : violations) {
             buf.append(violation.getMessage()).append(",");
         }
@@ -151,15 +154,32 @@ public class GlobalExceptionHandler {
         return R.error(HttpStatus.BAD_REQUEST.value(), buf.deleteCharAt(buf.length() - 1).toString());
     }
 
+    /**
+     * 处理@Validated参数校验失败异常
+     *
+     * @param e 异常类
+     * @return 响应
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         StringBuilder sb = new StringBuilder();
         for (FieldError error : e.getBindingResult().getFieldErrors()) {
-            sb.append(error.getDefaultMessage() + ",");
+            sb.append(error.getDefaultMessage()).append(",");
         }
-        log.error("参数错误：{}", sb.toString());
+        log.error("参数错误：{}", sb);
         saveException(e, ExceptionLevel.fatal);
         return R.error(HttpStatus.BAD_REQUEST.value(), sb.length() > 0 ? sb.deleteCharAt(sb.length() - 1).toString() : "参数异常！");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public R handleMissingServletRequestParameterException(MissingServletRequestParameterException ex, HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String name = ex.getParameterName();
+        String type = ex.getParameterType();
+        log.error("请求{} 参数[{}]类型[{}] 错误信息：{}", uri, name, type, ex.getMessage());
+        return R.error(HttpStatus.BAD_REQUEST.value(), name + " 参数异常！");
     }
 
     @ExceptionHandler(ServiceException.class)

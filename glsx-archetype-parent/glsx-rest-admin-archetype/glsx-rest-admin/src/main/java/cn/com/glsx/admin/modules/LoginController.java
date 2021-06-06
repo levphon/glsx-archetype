@@ -2,7 +2,7 @@ package cn.com.glsx.admin.modules;
 
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
-import cn.com.glsx.admin.modules.user.service.UserService;
+import cn.com.glsx.admin.modules.service.UserService;
 import cn.com.glsx.vasp.modules.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;

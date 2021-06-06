@@ -1,6 +1,6 @@
 package cn.com.glsx;
 
-import cn.com.glsx.admin.modules.user.service.UserService;
+import cn.com.glsx.admin.modules.service.UserService;
 import com.glsx.biz.common.base.entity.Carbrand;
 import com.glsx.biz.common.base.service.CarbrandService;
 import com.glsx.biz.merchant.common.entity.Merchant;
@@ -10,7 +10,6 @@ import com.glsx.cloudframework.exception.ServiceException;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
