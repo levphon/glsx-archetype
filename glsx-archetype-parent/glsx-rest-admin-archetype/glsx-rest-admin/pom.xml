@@ -31,46 +31,48 @@
             <artifactId>rest-admin-dubbo</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.glsx.biz</groupId>
-            <artifactId>biz-base-service</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.glsx.biz</groupId>
-            <artifactId>biz-merchant-service</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.glsx.biz</groupId>-->
+<!--            <artifactId>biz-base-service</artifactId>-->
+<!--            <version>3.0.0-SNAPSHOT</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.hibernate.javax.persistence</groupId>-->
+<!--                    <artifactId>hibernate-jpa-2.0-api</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.glsx.biz</groupId>-->
+<!--            <artifactId>biz-merchant-service</artifactId>-->
+<!--            <version>2.0.0-SNAPSHOT</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.hibernate.javax.persistence</groupId>-->
+<!--                    <artifactId>hibernate-jpa-2.0-api</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
 
-        <!-- 用户聚合服务 -->
-        <dependency>
-            <groupId>com.glsx.biz</groupId>
-            <artifactId>biz-user-service</artifactId>
-            <version>3.0.0-SNAPSHOT</version>
-        </dependency>
+<!--        &lt;!&ndash; 用户聚合服务 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>com.glsx.biz</groupId>-->
+<!--            <artifactId>biz-user-service</artifactId>-->
+<!--            <version>3.0.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
 
         <!-- dao示例 -->
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>glsx-rest-admin-dao</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
             <artifactId>glsx-rest-admin-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>

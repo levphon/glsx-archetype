@@ -1,6 +1,6 @@
 package cn.com.glsx.scheduler.modules.service;
 
-import cn.com.glsx.vasp.modules.mapper.UserMapper;
+import cn.com.glsx.admin.modules.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

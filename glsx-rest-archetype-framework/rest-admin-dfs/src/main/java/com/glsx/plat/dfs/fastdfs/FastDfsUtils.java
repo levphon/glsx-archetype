@@ -1,4 +1,4 @@
-package com.glsx.plat.fastdfs;
+package com.glsx.plat.dfs.fastdfs;
 
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.domain.proto.storage.DownloadByteArray;

@@ -3,12 +3,12 @@ package cn.com.glsx.admin.modules.controller;
 import cn.com.glsx.admin.modules.BaseController;
 import cn.com.glsx.admin.modules.service.UserService;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
-import cn.com.glsx.vasp.modules.model.UserSearch;
+import cn.com.glsx.admin.modules.model.UserSearch;
 import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.glsx.plat.core.web.R;
-import cn.com.glsx.vasp.modules.entity.User;
+import cn.com.glsx.admin.modules.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

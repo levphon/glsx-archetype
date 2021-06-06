@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.glsx</groupId>
         <artifactId>rest-framework-admin</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -27,12 +27,14 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.2.3.RELEASE</spring-cloud-alibaba.version>
-        <rest-admin-framework.version>1.1.0-SNAPSHOT</rest-admin-framework.version>
-        <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
-        <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
-        <!--        <repo.proxy.url>https://repo1.maven.org/maven2</repo.proxy.url>-->
-        <!--        <repo.external.url>https://repo1.maven.org/maven2</repo.external.url>-->
+        <spring-cloud-alibaba.version>2.2.5.RELEASE</spring-cloud-alibaba.version>
+        <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
+        <!-- 本地发布服务器 -->
+        <local.nexus.snapshots.url>http://127.0.0.1:8081/repository/maven-snapshots/</local.nexus.snapshots.url>
+        <local.nexus.releases.url>http://127.0.0.1:8081/repository/maven-releases/</local.nexus.releases.url>
+
+        <!--        <local.nexus.snapshots.url>http://192.168.3.233/nexus/content/repositories/snapshots/</local.nexus.snapshots.url>-->
+        <!--        <local.nexus.releases.url>http://192.168.3.233/nexus/content/repositories/releases/</local.nexus.releases.url>-->
     </properties>
 
     <dependencies>
@@ -66,6 +68,19 @@
         </dependencies>
     </dependencyManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Local Nexus Releases Repository</name>
+            <url>${local.nexus.releases.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Local Nexus Snapshots Repository</name>
+            <url>${local.nexus.snapshots.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <resources>
             <resource>
@@ -87,7 +102,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-archetype-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

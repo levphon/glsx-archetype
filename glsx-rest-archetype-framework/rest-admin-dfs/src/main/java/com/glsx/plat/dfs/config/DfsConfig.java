@@ -1,4 +1,4 @@
-package com.glsx.plat.config;
+package com.glsx.plat.dfs.config;
 
 import com.github.tobato.fastdfs.FdfsClientConfig;
 import org.springframework.context.annotation.Configuration;

@@ -9,7 +9,7 @@ import cn.com.glsx.echocenter.api.EchoCenterFeignClient;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.glsx.plat.context.utils.validator.AssertUtils;
-import cn.com.glsx.vasp.modules.entity.User;
+import cn.com.glsx.admin.modules.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

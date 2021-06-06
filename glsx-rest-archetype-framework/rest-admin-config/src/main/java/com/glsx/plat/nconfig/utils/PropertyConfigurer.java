@@ -1,4 +1,4 @@
-package com.glsx.plat.config;
+package com.glsx.plat.nconfig.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;

@@ -2,7 +2,7 @@ package cn.com.glsx.admin.modules.converter;
 
 import cn.com.glsx.admin.services.userservice.model.UserBO;
 import cn.com.glsx.admin.services.userservice.model.UserDTO;
-import cn.com.glsx.vasp.modules.entity.User;
+import cn.com.glsx.admin.modules.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

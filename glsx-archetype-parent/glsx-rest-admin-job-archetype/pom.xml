@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.glsx</groupId>
         <artifactId>rest-framework-admin</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
@@ -26,8 +26,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
-        <spring-cloud-alibaba.version>2.2.3.RELEASE</spring-cloud-alibaba.version>
-        <rest-admin-framework.version>1.1.0-SNAPSHOT</rest-admin-framework.version>
+        <spring-cloud-alibaba.version>2.2.5.RELEASE</spring-cloud-alibaba.version>
+        <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
         <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
         <!--        <repo.proxy.url>https://repo1.maven.org/maven2</repo.proxy.url>-->

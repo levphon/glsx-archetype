@@ -3,7 +3,7 @@ package cn.com.glsx.admin.modules;
 import cn.com.glsx.admin.modules.service.UserService;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.web.controller.AbstractController;
-import cn.com.glsx.vasp.modules.entity.User;
+import cn.com.glsx.admin.modules.entity.User;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;

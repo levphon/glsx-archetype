@@ -1,15 +1,15 @@
-package com.glsx.plat.config;
+package com.glsx.plat.nconfig.log;
 
 import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.Properties;
@@ -39,6 +39,10 @@ public class NacosConfigLog {
         properties.put(PropertyKeyConst.SERVER_ADDR, serverAddr);
         ConfigService configService = NacosFactory.createConfigService(properties);
         String content = configService.getConfig(dataId, group, 5000);
+        if (StringUtils.isEmpty(content)) {
+            dataId = prefix + "." + extension;
+            content = configService.getConfig(dataId, group, 5000);
+        }
         log.info("- dataId {} config info\n{}", dataId, content);
     }
 
