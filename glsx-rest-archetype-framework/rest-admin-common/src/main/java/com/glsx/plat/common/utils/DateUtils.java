@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -209,7 +210,9 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
      */
     public static int getAgeByBirth(Date birthday) {
         int age = 0;
-        if (birthday == null) return age;
+        if (birthday == null) {
+            return age;
+        }
         Calendar cal = Calendar.getInstance();
         if (cal.before(birthday)) { //出生日期晚于当前时间，无法计算
             throw new IllegalArgumentException(
@@ -225,12 +228,58 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         age = yearNow - yearBirth;   //计算整岁数
         if (monthNow <= monthBirth) {
             if (monthNow == monthBirth) {
-                if (dayOfMonthNow < dayOfMonthBirth) age--;//当前日期在生日之前，年龄减一
+                if (dayOfMonthNow < dayOfMonthBirth) {
+                    age--;//当前日期在生日之前，年龄减一
+                }
             } else {
                 age--;//当前月份在生日之前，年龄减一
             }
         }
         return age;
+    }
+
+    /**
+     * 获取今天剩余的秒数
+     *
+     * @return 秒数
+     */
+    public static int oddSecondOfDay() {
+        DateTime start = new DateTime();
+        DateTime end = new DateTime().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+        return Seconds.secondsBetween(start, end).getSeconds();
+    }
+
+    /**
+     * 获取本周剩余的秒数
+     *
+     * @return 秒数
+     */
+    public static int oddSecondOfWeek() {
+        DateTime start = new DateTime();
+        DateTime end = new DateTime().dayOfWeek().withMaximumValue().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+        return Seconds.secondsBetween(start, end).getSeconds();
+    }
+
+    /**
+     * 获取本月剩余的秒数
+     *
+     * @return 秒数
+     */
+    public static int oddSecondOfMonth() {
+        DateTime start = new DateTime();
+        DateTime end = new DateTime().dayOfMonth().withMaximumValue().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+        return Seconds.secondsBetween(start, end).getSeconds();
+    }
+
+    /**
+     * 获取今年剩余的秒数
+     *
+     * @return 秒数
+     */
+    public static int oddSecondOfYear() {
+        DateTime start = new DateTime();
+        DateTime end = new DateTime().dayOfYear().withMaximumValue().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
+        return Seconds.secondsBetween(start, end).getSeconds();
     }
 
 }
