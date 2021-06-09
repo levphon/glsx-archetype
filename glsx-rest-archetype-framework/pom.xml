@@ -48,7 +48,6 @@
         <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
         <spring-cloud-alibaba.version>2.2.5.RELEASE</spring-cloud-alibaba.version>
         <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
-        <org.projectlombok.version>1.18.20</org.projectlombok.version>
 
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
         <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->
@@ -182,7 +181,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${org.projectlombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
