@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @author payu
  */
-public class GetuiMessage extends HashMap<String, String> {
+public class GetuiMessage extends HashMap<String, Object> {
 
     private static final long serialVersionUID = -5993986890576211345L;
 
@@ -53,10 +53,10 @@ public class GetuiMessage extends HashMap<String, String> {
     }
 
     public String getTitle() {
-        return this.get(title);
+        return (String) this.get(title);
     }
 
     public String getContent() {
-        return this.get(content);
+        return (String) this.get(content);
     }
 }

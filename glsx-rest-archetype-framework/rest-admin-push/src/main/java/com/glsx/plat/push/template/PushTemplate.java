@@ -90,7 +90,7 @@ public class PushTemplate {
     public static TransmissionTemplate getTransmissionTemplateWith3rdNotifyInfoAndAPNPayload(String title,
                                                                                              String body,
                                                                                              String badge,
-                                                                                             Map<String, String> customParam) {
+                                                                                             Map<String, Object> customParam) {
         TransmissionTemplate template = new TransmissionTemplate();
 
         // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
@@ -105,7 +105,7 @@ public class PushTemplate {
 
         Notify notify = get3rdNotifyInfo(title, body, customParam);
 
-        log.info("3rdNotifyInfo:{}", notify.toString());
+        log.info("3rdNotifyInfo:{}", notify);
 
         // 第三方厂商推送
         template.set3rdNotifyInfo(notify);
@@ -124,7 +124,7 @@ public class PushTemplate {
      * @param payload 附带属性
      * @return
      */
-    private static Notify get3rdNotifyInfo(String title, String content, Map<String, String> payload) {
+    private static Notify get3rdNotifyInfo(String title, String content, Map<String, Object> payload) {
         Notify notify = new Notify();
         notify.setTitle(title);
         notify.setContent(content);
@@ -149,9 +149,9 @@ public class PushTemplate {
      * @param payload
      * @return
      */
-    private static String getIntent(String title, String content, Map<String, String> payload) {
+    private static String getIntent(String title, String content, Map<String, Object> payload) {
         String intent = "intent:#Intent;launchFlags=0x04000000;action=android.intent.action.oppopush;package=${packageName};component=${packageName}/io.dcloud.PandoraEntry;S.UP-OL-SU=true;S.title=${title};S.content=${content};S.payload=${payload};end";
-        intent = intent.replace("${packageName}", payload.get(GetuiMessage.PACKAGE_NAME))
+        intent = intent.replace("${packageName}", (CharSequence) payload.get(GetuiMessage.PACKAGE_NAME))
                 .replace("${title}", title)
                 .replace("${content}", content)
                 .replace("${payload}", JSON.toJSONString(payload));
@@ -167,7 +167,7 @@ public class PushTemplate {
      * @param customMsg
      * @return
      */
-    private static APNPayload getAPNPayload(String title, String body, String badge, Map<String, String> customMsg) {
+    private static APNPayload getAPNPayload(String title, String body, String badge, Map<String, Object> customMsg) {
         APNPayload payload = new APNPayload();
         // 在已有数字基础上加1显示，设置为-1时，在已有数字上减1显示，设置为数字时，显示指定数字
         if (badge != null && badge.trim().length() > 0) {
@@ -179,7 +179,7 @@ public class PushTemplate {
         payload.setSound("default");
 //      payload.setCategory("$由客户端定义");
         if (customMsg != null) {
-            for (Map.Entry<String, String> entry : customMsg.entrySet()) {
+            for (Map.Entry<String, Object> entry : customMsg.entrySet()) {
                 payload.addCustomMsg(entry.getKey(), entry.getValue());
             }
         }
@@ -228,7 +228,7 @@ public class PushTemplate {
      */
     public static LinkTemplate getLinkTemplate(String title,
                                                String body,
-                                               Map<String, String> customParam) {
+                                               Map<String, Object> customParam) {
 
         Notify notify = getLinkNotifyInfo(title, body, customParam);
 
@@ -254,12 +254,12 @@ public class PushTemplate {
      * @param payload 附带属性
      * @return
      */
-    private static Notify getLinkNotifyInfo(String title, String content, Map<String, String> payload) {
+    private static Notify getLinkNotifyInfo(String title, String content, Map<String, Object> payload) {
         Notify notify = new Notify();
         notify.setTitle(title);
         notify.setContent(content);
         notify.setType(GtReq.NotifyInfo.Type._url);
-        notify.setUrl(payload.get("url"));
+        notify.setUrl((String) payload.get("url"));
         return notify;
     }
 
