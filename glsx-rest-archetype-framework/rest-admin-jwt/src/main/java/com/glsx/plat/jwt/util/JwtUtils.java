@@ -32,28 +32,52 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JwtUtils<T extends BaseJwtUser> {
 
-    @Value("${spring.application.name}")
-    private String application;
-
-    @Autowired
-    private JwtConfigProperties properties;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-
+    private final static String PAYLOAD_MAP = "payloadMap";
     /**
      * jwt-session-前缀
      */
     public final String JWT_SESSION_PREFIX = "JWT-SESSION-";
-
     public final String CLAZZ = "clazz";
-
     public final String BEARER = "Bearer ";
-
-    private final static String PAYLOAD_MAP = "payloadMap";
-
+    @Value("${spring.application.name}")
+    private String application;
+    @Autowired
+    private JwtConfigProperties properties;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
     private Class<T> jwtUserClass;
 
+    public static void main(String[] args) throws ClassNotFoundException {
+        String secretKey = "5371f568a45e5ab1f442c38e0932aef24447139c";
+
+        JwtUtils<BaseJwtUser> jwtUtils = new JwtUtils<>();
+
+        ComJwtUser jwtUser = new ComJwtUser();
+        jwtUser.setApplication("test");
+        jwtUser.setUserId("1");
+        jwtUser.setJwtId(UUID.randomUUID().toString());
+//        Map<String, Object> userMap = (Map<String, Object>) ObjectUtils.objectToMap(jwtUser);
+
+//        String token = jwtUtils.create(secretKey, jwtUser.getJwtId(), userMap, Instant.now(), 100L);
+//
+//        System.out.println(token);
+//
+//        jwtUtils.verify(secretKey, token);
+
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXlsb2FkTWFwIjp7ImNsYXp6IjoiY29tLmdsc3gucGxhdC5qd3QuYmFzZS5Db21Kd3RVc2VyIiwidXNlcklkIjoiMSIsImp3dElkIjoiMTIyMzE5ZTAtMDQyMS00MDNjLTkyYzctMGU0MzU2MWU0ZjNkIn0sImV4cCI6MTYwNDU2NTQzNCwiaWF0IjoxNjA0NTY1MzM0LCJqdGkiOiIxMjIzMTllMC0wNDIxLTQwM2MtOTJjNy0wZTQzNTYxZTRmM2QifQ.MH_ie-zX6GqM4JWrCEevgNRorMwhzNurL60t6RoiYZs";
+
+//        Map<String, Object> claimMap = jwtUtils.parseClaim(token);
+//        Class clazz = jwtUtils.getJwtUserClass(token);
+
+        DecodedJWT decodedJWT = jwtUtils.decode(token);
+
+        if (jwtUtils.isNeedRefreshToken(decodedJWT)) {
+            token = jwtUtils.refreshToken(secretKey, decodedJWT, 100L, 200L);
+
+            System.out.println(token);
+        }
+        jwtUtils.verify(secretKey, token);
+    }
 
     /**
      * 根据用户的登录时间生成动态私钥
@@ -132,9 +156,10 @@ public class JwtUtils<T extends BaseJwtUser> {
             }
             newClaims.put(key, value);
         }
+        //对iat进行向前偏移properties.getIssueAtOffset()秒是为了避免集群环境服务器时间存在不同步问题
         JWTCreator.Builder builder = JWT.create()
                 .withJWTId(jwtId)
-                .withClaim("iat", Date.from(issueAt))
+                .withClaim("iat", Date.from(issueAt.plusSeconds(properties.getIssueAtOffset() == null ? 0 : -properties.getIssueAtOffset())))
                 .withClaim("exp", Date.from(exp))
                 .withClaim(PAYLOAD_MAP, newClaims);
 
@@ -215,7 +240,6 @@ public class JwtUtils<T extends BaseJwtUser> {
         Class clazz = Class.forName(jwtUserClazz);
         return clazz;
     }
-
 
     /**
      * 验证token
@@ -404,38 +428,6 @@ public class JwtUtils<T extends BaseJwtUser> {
     public void destroyCachedToken(String token) {
         DecodedJWT decodedJWT = this.decode(token);
         stringRedisTemplate.delete(decodedJWT.getId());
-    }
-
-    public static void main(String[] args) throws ClassNotFoundException {
-        String secretKey = "5371f568a45e5ab1f442c38e0932aef24447139c";
-
-        JwtUtils<BaseJwtUser> jwtUtils = new JwtUtils<>();
-
-        ComJwtUser jwtUser = new ComJwtUser();
-        jwtUser.setApplication("test");
-        jwtUser.setUserId("1");
-        jwtUser.setJwtId(UUID.randomUUID().toString());
-//        Map<String, Object> userMap = (Map<String, Object>) ObjectUtils.objectToMap(jwtUser);
-
-//        String token = jwtUtils.create(secretKey, jwtUser.getJwtId(), userMap, Instant.now(), 100L);
-//
-//        System.out.println(token);
-//
-//        jwtUtils.verify(secretKey, token);
-
-        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXlsb2FkTWFwIjp7ImNsYXp6IjoiY29tLmdsc3gucGxhdC5qd3QuYmFzZS5Db21Kd3RVc2VyIiwidXNlcklkIjoiMSIsImp3dElkIjoiMTIyMzE5ZTAtMDQyMS00MDNjLTkyYzctMGU0MzU2MWU0ZjNkIn0sImV4cCI6MTYwNDU2NTQzNCwiaWF0IjoxNjA0NTY1MzM0LCJqdGkiOiIxMjIzMTllMC0wNDIxLTQwM2MtOTJjNy0wZTQzNTYxZTRmM2QifQ.MH_ie-zX6GqM4JWrCEevgNRorMwhzNurL60t6RoiYZs";
-
-//        Map<String, Object> claimMap = jwtUtils.parseClaim(token);
-//        Class clazz = jwtUtils.getJwtUserClass(token);
-
-        DecodedJWT decodedJWT = jwtUtils.decode(token);
-
-        if (jwtUtils.isNeedRefreshToken(decodedJWT)) {
-            token = jwtUtils.refreshToken(secretKey, decodedJWT, 100L, 200L);
-
-            System.out.println(token);
-        }
-        jwtUtils.verify(secretKey, token);
     }
 
 }

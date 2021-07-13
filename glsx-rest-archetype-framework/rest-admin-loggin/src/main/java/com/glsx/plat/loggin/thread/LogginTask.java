@@ -3,6 +3,7 @@ package com.glsx.plat.loggin.thread;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.glsx.plat.common.annotation.SysLog;
+import com.glsx.plat.common.enums.OperateType;
 import com.glsx.plat.common.enums.RequestSaveMethod;
 import com.glsx.plat.common.utils.DateUtils;
 import com.glsx.plat.loggin.AbstractLogginStrategy;
@@ -73,20 +74,37 @@ public class LogginTask implements Callable<String> {
     public SysLogEntity wrapSysLogEntity() {
         //创建日志类
         SysLogEntity sysLog = new SysLogEntity();
+        sysLog.setApplication(application);
         sysLog.setModule(sysLogMark.module());
         sysLog.setAction(sysLogMark.action().getType());
-        sysLog.setApplication(application);
+        sysLog.setRemark(sysLogMark.value());
         Long operatorId = 0L;
-        try {
-            operatorId = Long.valueOf(String.valueOf(userInfo.get("userId")));
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error("操作人标识转换异常");
+        String operator = "";
+        if (OperateType.LOGIN.getType().equals(sysLogMark.action().getType())) {
+            //登录没参数？？？，不可能
+            if (args[0] instanceof String) {
+                operator = (String) args[0];
+            } else {
+                JSONObject loginArg = (JSONObject) JSONObject.toJSON(args[0]);
+                if (loginArg.containsKey("account")) {
+                    operator = loginArg.getString("account");
+                } else if (loginArg.containsKey("username")) {
+                    operator = loginArg.getString("username");
+                }
+            }
+        } else {
+            try {
+                operatorId = Long.valueOf(String.valueOf(userInfo.get("userId")));
+            } catch (Exception e) {
+                log.error("操作人标识转换异常");
+            }
+            operator = (String) userInfo.get("account");
+            sysLog.setTenant((String) userInfo.get("tenant"));
+            sysLog.setBelongOrg((String) userInfo.get("belong"));
         }
+        sysLog.setOperatorName(operator);
         sysLog.setOperator(operatorId);
-        sysLog.setOperatorName((String) userInfo.get("account"));
-        sysLog.setTenant((String) userInfo.get("tenant"));
-        sysLog.setBelongOrg((String) userInfo.get("belong"));
+
         sysLog.setIp(IpUtils.getIpAddr(request));
         sysLog.setCreatedDate(new Date());
 

@@ -54,11 +54,11 @@ public class SysLogEntity implements Serializable {
     @ExcelIgnore
     private String requestData;
 
-    /**
-     * 操作类型
-     */
     @ExcelProperty(value = "操作类型", index = 1)
     private String action;
+
+    @ExcelProperty(value = "操作说明", index = 2)
+    private String remark;
 
     /**
      * 操作人
@@ -66,10 +66,7 @@ public class SysLogEntity implements Serializable {
     @ExcelIgnore
     private Long operator;
 
-    /**
-     * 操作人
-     */
-    @ExcelProperty(value = "操作账号", index = 2)
+    @ExcelProperty(value = "操作账号", index = 3)
     private String operatorName;
 
     /**
@@ -78,29 +75,17 @@ public class SysLogEntity implements Serializable {
     @ExcelIgnore
     private String tenant;
 
-    /**
-     * 所属组织
-     */
-    @ExcelProperty(value = "所属组织", index = 3)
+    @ExcelProperty(value = "所属组织", index = 4)
     private String belongOrg;
 
-    /**
-     * ip地址
-     */
-    @ExcelProperty(value = "主机IP", index = 4)
+    @ExcelProperty(value = "主机IP", index = 5)
     private String ip;
 
-    /**
-     * 操作结果
-     */
-    @ExcelProperty(value = "操作结果", index = 5)
+    @ExcelProperty(value = "操作结果", index = 6)
     private String result;
 
-    /**
-     * 时间
-     */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @ExcelProperty(value = "操作时间", index = 6)
+    @ExcelProperty(value = "操作时间", index = 7)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdDate;
 

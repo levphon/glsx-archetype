@@ -24,6 +24,11 @@ public class JwtConfigProperties {
     private Long refreshTtl;
 
     /**
+     * 生效时间偏移量
+     */
+    private Integer issueAtOffset;
+
+    /**
      * 签名私钥
      */
     private String key;

@@ -13,7 +13,8 @@ public enum OperateType {
     LOGIN("登录"), LOGOUT("登出"),
     QUERY("查询"), ADD("新增"), EDIT("编辑"), DELETE("删除"),
     IMPORT("导出"), EXPORT("导入"),
-    AUDIT("审核");
+    AUDIT("审核"),
+    API("API调用");
 
     private String type;
 
