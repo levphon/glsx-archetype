@@ -3,9 +3,12 @@ package com.glsx.plat.im.rongcloud.service;
 import com.glsx.plat.im.rongcloud.util.RongCloudUtil;
 import io.rong.messages.BaseMessage;
 import io.rong.methods.message._private.Private;
+import io.rong.methods.message.system.MsgSystem;
 import io.rong.methods.user.User;
 import io.rong.methods.user.onlinestatus.OnlineStatus;
 import io.rong.models.message.PrivateMessage;
+import io.rong.models.message.PushExt;
+import io.rong.models.message.SystemMessage;
 import io.rong.models.response.CheckOnlineResult;
 import io.rong.models.response.ResponseResult;
 import io.rong.models.response.TokenResult;
@@ -50,7 +53,6 @@ public class RongCloudService {
     public void sendMessage(String senderId, List<String> targetIdList, BaseMessage message) {
         /**
          * API 文档: http://www.rongcloud.cn/docs/server_sdk_api/message/private.html#send
-         *
          * 发送单聊消息<文本, 语音, 文件类型 等消息类型>
          */
 
@@ -77,6 +79,44 @@ public class RongCloudService {
             log.info("send private message: {}", privateResult);
         } catch (Exception e) {
             log.info("send private message exception:{}", e.getMessage());
+        }
+    }
+
+    public void sendSysMessage(String senderId, List<String> targetIdList, BaseMessage message) {
+        /**
+         * API 文档: http://www.rongcloud.cn/docs/server_sdk_api/message/system.html#send
+         * 发送系统消息
+         */
+
+        MsgSystem system = utils.getRongCloud().message.system;
+
+        String[] targetIds = new String[targetIdList.size()];
+
+        PushExt pe = PushExt.build("title", 1,
+                new PushExt.HW("channelId", "NORMAL"),
+                new PushExt.VIVO("1"),
+                new PushExt.APNs("234353efsfwd", "232"),
+                new PushExt.OPPO("134324"));
+
+        SystemMessage systemMessage = new SystemMessage()
+                .setSenderId(senderId)
+                .setTargetId(targetIds)
+                .setObjectName(message.getType())
+                .setContent(message)
+                .setPushContent("this is a push")
+                .setPushData("{'pushData':'hello'}")
+                .setPushExt(pe)
+                .setIsPersisted(0)
+                .setIsCounted(0)
+                .setContentAvailable(0);
+
+        ResponseResult systemResult = null;
+        try {
+            systemResult = system.send(systemMessage);
+            log.info("send system getReqBody: {}", systemResult.getReqBody());
+            log.info("send system message: {}", systemResult);
+        } catch (Exception e) {
+            log.info("send system message exception:{}", e.getMessage());
         }
     }
 
