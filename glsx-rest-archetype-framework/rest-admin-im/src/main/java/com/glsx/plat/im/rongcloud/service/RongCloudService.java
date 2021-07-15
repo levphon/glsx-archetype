@@ -100,7 +100,7 @@ public class RongCloudService {
 
         SystemMessage systemMessage = new SystemMessage()
                 .setSenderId(senderId)
-                .setTargetId(targetIds)
+                .setTargetId(targetIdList.toArray(targetIds))
                 .setObjectName(message.getType())
                 .setContent(message)
                 .setPushContent("this is a push")
