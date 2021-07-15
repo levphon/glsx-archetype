@@ -12,12 +12,11 @@ import java.util.Map;
  */
 public class GetuiMessage extends HashMap<String, Object> {
 
-    private static final long serialVersionUID = -5993986890576211345L;
-
     public static final String MESSAGE_TYPE = "messageType";
     public static final String PACKAGE_NAME = "packageName";
-    private final String title = "title";
-    private final String content = "content";
+    private static final long serialVersionUID = -5993986890576211345L;
+    private final String TITLE = "title";
+    private final String CONTENT = "content";
 
     /**
      * 生成推送消息
@@ -30,8 +29,8 @@ public class GetuiMessage extends HashMap<String, Object> {
         this.putAll(customParam);
         // 把优先级高的Key放在后面，即便在customParam有重复的KEY，也不会影响。
         this.put(MESSAGE_TYPE, typeEnum.getCode());
-        this.put(title, typeEnum.getTitle());
-        this.put(content, typeEnum.getContent(customParam));
+        this.put(TITLE, typeEnum.getTitle());
+        this.put(CONTENT, typeEnum.getContent(customParam));
     }
 
     /**
@@ -48,15 +47,15 @@ public class GetuiMessage extends HashMap<String, Object> {
         this.putAll(customParam);
         // 把优先级高的Key放在后面，即便在customParam有重复的KEY，也不会影响。
         this.put(MESSAGE_TYPE, customParam.get("messageType"));
-        this.put(this.title, title);
-        this.put(this.content, content);
+        this.put(this.TITLE, title);
+        this.put(this.CONTENT, content);
     }
 
     public String getTitle() {
-        return (String) this.get(title);
+        return (String) this.get(TITLE);
     }
 
     public String getContent() {
-        return (String) this.get(content);
+        return (String) this.get(CONTENT);
     }
 }

@@ -18,7 +18,7 @@ public enum MessageType {
     }
 
     public String getContent(Map<String, String> customParam) {
-        return null;
+        return customParam.getOrDefault("content", "");
     }
 
 }

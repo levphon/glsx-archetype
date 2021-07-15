@@ -23,6 +23,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <spring-cloud-alibaba.version>2.2.5.RELEASE</spring-cloud-alibaba.version>
         <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->
         <!--        <repo.internal.releases.url>https://repo1.maven.org/maven2</repo.internal.releases.url>-->

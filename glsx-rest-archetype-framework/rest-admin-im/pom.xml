@@ -42,7 +42,7 @@
         <dependency>
             <groupId>cn.rongcloud.im</groupId>
             <artifactId>server-sdk-java</artifactId>
-            <version>3.2.6</version>
+            <version>3.2.12</version>
         </dependency>
     </dependencies>
 </project>
