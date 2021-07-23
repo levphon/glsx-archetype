@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -23,6 +24,7 @@ public class LogginStrategyByMongoDB extends AbstractLogginStrategy {
         mongoTemplate.insert(entity);
     }
 
+    @Async
     @Override
     public void updateLogStatus(String logTraceId, String result) {
         Query query = new Query(Criteria.where("_id").is(logTraceId));

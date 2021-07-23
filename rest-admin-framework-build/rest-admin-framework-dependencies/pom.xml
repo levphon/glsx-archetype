@@ -260,6 +260,11 @@
                 <artifactId>rest-admin-pulsar</artifactId>
                 <version>${rest-admin-framework.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.glsx</groupId>
+                <artifactId>rest-admin-cache</artifactId>
+                <version>${rest-admin-framework.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

@@ -13,8 +13,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-cache</artifactId>
         </dependency>
         <!-- 配置连接池需要-->
         <dependency>
