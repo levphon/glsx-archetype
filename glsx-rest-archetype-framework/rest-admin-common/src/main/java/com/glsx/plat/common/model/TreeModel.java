@@ -9,14 +9,14 @@ public interface TreeModel<T> {
      *
      * @return
      */
-    Long getId();
+    Object getId();
 
     /**
      * 父级编号
      *
      * @return
      */
-    Long getParentId();
+    Object getParentId();
 
     /**
      * 获取文本

@@ -36,6 +36,15 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     public final static String SERIAL_DATE_TIME_PATTERN = "yyyyMMddHHmmss";
 
     /**
+     * 获取当前时间字符串
+     *
+     * @return
+     */
+    public static String currentDateTime() {
+        return format(new Date(), NORMAL_DATE_TIME_PATTERN);
+    }
+
+    /**
      * 日期格式化 日期格式为：yyyy-MM-dd
      *
      * @param date 日期
@@ -280,6 +289,28 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         DateTime start = new DateTime();
         DateTime end = new DateTime().dayOfYear().withMaximumValue().withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59);
         return Seconds.secondsBetween(start, end).getSeconds();
+    }
+
+    /**
+     * 格式化传的时间为 X天X小时X分X秒
+     *
+     * @param durationTime 秒
+     * @return 时间
+     */
+    public static String formatTimeInSec(long durationTime) {
+        if (durationTime > 0) {
+            int s = (int) durationTime;
+            int day = s / (3600 * 24);
+            s = s % (3600 * 24);
+            int hour = s / 3600;
+            s = s % 3600;
+            int min = s / 60;
+            s = s % 60;
+            int sec = s;
+            return day + "天" + hour + "小时" + min + "分" + sec + "秒";
+        } else {
+            return "0";
+        }
     }
 
 }

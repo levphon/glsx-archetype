@@ -188,13 +188,26 @@ public class R<T> extends HashMap<String, Object> {
     }
 
     public <T> T getData(Class<T> clazz) {
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         String json = gson.toJson(this.get(DATA_KEY));
         return gson.fromJson(json, clazz);
     }
 
     public <T> T getDataList(Type type) {
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        String arrayJson = gson.toJson(this.get(DATA_KEY));
+        T list = gson.fromJson(arrayJson, type);
+        return list;
+    }
+
+    public <T> T getData(Class<T> clazz, String pattern) {
+        Gson gson = new GsonBuilder().setDateFormat(pattern).create();
+        String json = gson.toJson(this.get(DATA_KEY));
+        return gson.fromJson(json, clazz);
+    }
+
+    public <T> T getDataList(Type type, String pattern) {
+        Gson gson = new GsonBuilder().setDateFormat(pattern).create();
         String arrayJson = gson.toJson(this.get(DATA_KEY));
         T list = gson.fromJson(arrayJson, type);
         return list;

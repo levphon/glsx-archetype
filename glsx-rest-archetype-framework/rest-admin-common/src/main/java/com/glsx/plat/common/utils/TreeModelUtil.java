@@ -60,9 +60,9 @@ public class TreeModelUtil {
      * @param treeModels
      * @return
      */
-    public static List<TreeModel> findChildren(Long rootNo, List<? extends TreeModel> treeModels) {
+    public static List<TreeModel> findChildren(Object rootNo, List<? extends TreeModel> treeModels) {
         if (CollectionUtils.isNotEmpty(treeModels)) {
-            List<TreeModel> children = treeModels.stream().filter(treeModel -> rootNo.equals(treeModel.getParentId())).collect(Collectors.toList());
+            List<TreeModel> children = treeModels.stream().filter(treeModel -> rootNo.toString().equals(treeModel.getParentId())).collect(Collectors.toList());
             children.stream().forEach(c -> findChildren(c.getId(), treeModels));
             return children;
         }
@@ -76,12 +76,12 @@ public class TreeModelUtil {
      * @param treeModels
      * @return
      */
-    public static void findChildrenIds(Long rootNo, List<? extends TreeModel> treeModels, List<Long> ids) {
+    public static void findChildrenIds(String rootNo, List<? extends TreeModel> treeModels, List<String> ids) {
         if (CollectionUtils.isNotEmpty(treeModels)) {
             List<TreeModel> children = treeModels.stream().filter(treeModel -> rootNo.equals(treeModel.getParentId())).collect(Collectors.toList());
             children.stream().forEach(c -> {
-                ids.add(c.getId());
-                findChildrenIds(c.getId(), c.getChildren(), ids);
+                ids.add(c.getId().toString());
+                findChildrenIds(c.getId().toString(), c.getChildren(), ids);
             });
         }
     }
@@ -94,7 +94,7 @@ public class TreeModelUtil {
      * @return
      */
     public static List<TreeModel> findRoots(List<? extends TreeModel> treeModels, String rootNo) {
-        List<TreeModel> treeRoots = treeModels.stream().filter(treeModel -> treeModel.getId().equals(rootNo)).collect(Collectors.toList());
+        List<TreeModel> treeRoots = treeModels.stream().filter(treeModel -> treeModel.getId().toString().equals(rootNo)).collect(Collectors.toList());
         return treeRoots;
     }
 
@@ -107,7 +107,7 @@ public class TreeModelUtil {
     public static List<? extends TreeModel> fastConvert(List<? extends TreeModel> treeModels, String rootNo) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
+        Map<Object, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
         treeModels.stream().forEach(treeModel -> {
             TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
             if (parentTreeModel != null) {
@@ -129,35 +129,10 @@ public class TreeModelUtil {
      * @param treeModels
      * @return
      */
-    public static List<? extends TreeModel> fastConvert(List<? extends TreeModel> treeModels, Long rootNo) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
-        treeModels.stream().forEach(treeModel -> {
-            TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
-            if (parentTreeModel != null) {
-                parentTreeModel.getChildren().add(treeModel);
-            }
-        });
-
-        //然后把 root 列表找出来
-        List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> (treeModel).getId().equals(rootNo)
-        ).collect(Collectors.toList());
-        stopWatch.stop();
-        log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
-        return collect;
-    }
-
-    /**
-     * 快速转换树结构; 还可以把 root 提取出来,变复杂度为 2O(n); 目前复杂度 3O(n)
-     *
-     * @param treeModels
-     * @return
-     */
     public static List<? extends TreeModel> fastConvertByDepth(List<? extends TreeModel> treeModels, Integer depth) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
+        Map<Object, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
         treeModels.stream().forEach(treeModel -> {
             TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
             if (parentTreeModel != null && !treeModel.getDepth().equals(depth)) {
@@ -179,10 +154,10 @@ public class TreeModelUtil {
      * @param treeModels
      * @return
      */
-    public static List<? extends TreeModel> fastConvertByRootId(List<? extends TreeModel> treeModels, Long rootNo) {
+    public static List<? extends TreeModel> fastConvertByRootId(List<? extends TreeModel> treeModels, String rootNo) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
+        Map<Object, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
         treeModels.forEach(treeModel -> {
             TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
             if (parentTreeModel != null) {
@@ -191,7 +166,7 @@ public class TreeModelUtil {
         });
 
         //然后把 root 列表找出来
-        List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> treeModel.getParentId().equals(rootNo)
+        List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> treeModel.getParentId().toString().equals(rootNo)
         ).collect(Collectors.toList());
         stopWatch.stop();
         log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
@@ -208,14 +183,13 @@ public class TreeModelUtil {
     public static List<? extends TreeModel> fastConvertByRootMark(List<? extends TreeModel> treeModels, Integer isRoot) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
+        Map<Object, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
         treeModels.forEach(treeModel -> {
             TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
             if (parentTreeModel != null && !parentTreeModel.getId().equals(treeModel.getId())) {
                 parentTreeModel.getChildren().add(treeModel);
             }
         });
-
         //然后把 root 列表找出来
         List<? extends TreeModel> collect = treeModels.stream().filter(treeModel -> treeModel.isRoot().equals(isRoot)
         ).collect(Collectors.toList());
@@ -230,11 +204,10 @@ public class TreeModelUtil {
      * @param treeModels
      * @return
      */
-    public static List<? extends TreeModel> fastConvertClosure(List<? extends TreeModel> treeModels, List<Long> rootIdList) {
+    public static List<? extends TreeModel> fastConvertClosure(List<? extends TreeModel> treeModels, List<Object> rootIdList) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-
-        Map<Long, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
+        Map<Object, ? extends TreeModel> treeIdMap = treeModels.stream().collect(Collectors.toMap(TreeModel::getId, treeModel -> treeModel));
         treeModels.forEach(treeModel -> {
             TreeModel parentTreeModel = treeIdMap.get(treeModel.getParentId());
             if (parentTreeModel != null) {
@@ -244,10 +217,10 @@ public class TreeModelUtil {
         });
 
         //然后把 root 列表找出来
-        List<? extends TreeModel> rootTreeModel = treeModels.stream()
-                .filter(treeModel -> rootIdList.contains(treeModel.getId())).collect(Collectors.toList());
+        List<? extends TreeModel> rootTreeModel = treeModels.stream().filter(treeModel -> rootIdList.contains(treeModel.getId())).collect(Collectors.toList());
         stopWatch.stop();
         log.debug("线性结构转换树结构[fast]耗时:" + stopWatch.getTime() + " ms");
         return rootTreeModel;
     }
+
 }
