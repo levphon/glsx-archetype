@@ -24,7 +24,7 @@ public class GetuiMessage extends HashMap<String, Object> {
      * @param typeEnum    消息类型
      * @param customParam 消息内容参数和消息点击需要的参加共享相同参数
      */
-    public GetuiMessage(MessageType typeEnum, Map<String, String> customParam) {
+    public GetuiMessage(MessageType typeEnum, Map<String, Object> customParam) {
         assert customParam != null;
         this.putAll(customParam);
         // 把优先级高的Key放在后面，即便在customParam有重复的KEY，也不会影响。
@@ -40,7 +40,7 @@ public class GetuiMessage extends HashMap<String, Object> {
      * @param content     消息内容
      * @param customParam 消息内容参数和消息点击需要的参加共享相同参数
      */
-    public GetuiMessage(String title, String content, Map<String, String> customParam) {
+    public GetuiMessage(String title, String content, Map<String, Object> customParam) {
         assert customParam != null;
         Assert.isTrue(!StringUtils.isEmpty(customParam.get("messageType")), "需指定消息类型messageType");
 

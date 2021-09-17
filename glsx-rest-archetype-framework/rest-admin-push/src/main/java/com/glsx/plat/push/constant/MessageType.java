@@ -17,8 +17,8 @@ public enum MessageType {
         this.code = code;
     }
 
-    public String getContent(Map<String, String> customParam) {
-        return customParam.getOrDefault("content", "");
+    public String getContent(Map<String, Object> customParam) {
+        return (String) customParam.getOrDefault("content", "");
     }
 
 }
