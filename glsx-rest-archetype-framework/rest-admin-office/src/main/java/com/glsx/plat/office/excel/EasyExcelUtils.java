@@ -43,6 +43,59 @@ public class EasyExcelUtils {
         IOUtils.closeQuietly(response.getOutputStream());
     }
 
+    /**
+     * 导出
+     *
+     * @param response
+     * @param data
+     * @param fileName
+     * @param sheetName
+     * @param head
+     * @throws Exception
+     */
+    public static void writeExcel(HttpServletResponse response, List<? extends Object> data, String fileName, String sheetName, List<List<String>> head) throws Exception {
+        //表头样式
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        //设置表头居中对齐
+        headWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        WriteFont writeFont = new WriteFont();
+        writeFont.setFontHeightInPoints((short) 12);
+        headWriteCellStyle.setWriteFont(writeFont);
+        //内容样式
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        //设置内容靠左对齐
+        contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
+        EasyExcel.write(getOutputStream(fileName, response)).head(head).excelType(ExcelTypeEnum.XLSX).sheet(sheetName).registerWriteHandler(horizontalCellStyleStrategy).doWrite(data);
+        response.getOutputStream().flush();
+        IOUtils.closeQuietly(response.getOutputStream());
+    }
+
+    /**
+     * 导出
+     *
+     * @param os
+     * @param data
+     * @param sheetName
+     * @param head
+     * @throws Exception
+     */
+    public static void writeExcel(OutputStream os, List<? extends Object> data, String sheetName, List<List<String>> head) throws Exception {
+        //表头样式
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        //设置表头居中对齐
+        headWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        WriteFont writeFont = new WriteFont();
+        writeFont.setFontHeightInPoints((short) 12);
+        headWriteCellStyle.setWriteFont(writeFont);
+        //内容样式
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        //设置内容靠左对齐
+        contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
+        EasyExcel.write(os).head(head).excelType(ExcelTypeEnum.XLSX).sheet(sheetName).registerWriteHandler(horizontalCellStyleStrategy).doWrite(data);
+    }
+
     private static OutputStream getOutputStream(String fileName, HttpServletResponse response) throws Exception {
         response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ExcelTypeEnum.XLSX.getValue());
         response.setContentType("application/msexcel;charset=UTF-8");//设置类型

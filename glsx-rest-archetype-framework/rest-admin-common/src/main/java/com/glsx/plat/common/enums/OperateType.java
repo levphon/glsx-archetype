@@ -12,6 +12,7 @@ public enum OperateType {
     REGISTER("注册"),
     LOGIN("登录"), LOGOUT("登出"),
     QUERY("查询"), ADD("新增"), EDIT("编辑"), DELETE("删除"),
+    SETTING("设置"), BINDING("绑定"), UNBOUND("解绑"),
     IMPORT("导出"), EXPORT("导入"),
     AUDIT("审核"),
     API("API调用");
