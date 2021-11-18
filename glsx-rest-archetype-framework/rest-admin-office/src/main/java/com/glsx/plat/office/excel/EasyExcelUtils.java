@@ -46,6 +46,30 @@ public class EasyExcelUtils {
     /**
      * 导出
      *
+     * @param os
+     * @param data
+     * @param sheetName
+     * @param clazz
+     */
+    public static void writeExcel(OutputStream os, List<? extends Object> data, String sheetName, Class clazz) {
+        //表头样式
+        WriteCellStyle headWriteCellStyle = new WriteCellStyle();
+        //设置表头居中对齐
+        headWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
+        WriteFont writeFont = new WriteFont();
+        writeFont.setFontHeightInPoints((short) 12);
+        headWriteCellStyle.setWriteFont(writeFont);
+        //内容样式
+        WriteCellStyle contentWriteCellStyle = new WriteCellStyle();
+        //设置内容靠左对齐
+        contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.LEFT);
+        HorizontalCellStyleStrategy horizontalCellStyleStrategy = new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
+        EasyExcel.write(os).head(clazz).excelType(ExcelTypeEnum.XLSX).sheet(sheetName).registerWriteHandler(horizontalCellStyleStrategy).doWrite(data);
+    }
+
+    /**
+     * 导出
+     *
      * @param response
      * @param data
      * @param fileName
@@ -78,9 +102,8 @@ public class EasyExcelUtils {
      * @param data
      * @param sheetName
      * @param head
-     * @throws Exception
      */
-    public static void writeExcel(OutputStream os, List<? extends Object> data, String sheetName, List<List<String>> head) throws Exception {
+    public static void writeExcel(OutputStream os, List<? extends Object> data, String sheetName, List<List<String>> head) {
         //表头样式
         WriteCellStyle headWriteCellStyle = new WriteCellStyle();
         //设置表头居中对齐
