@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,12 +21,14 @@ import java.util.Date;
  * @author payu
  */
 @Data
-@Table
+@Table(name = "t_sys_log")
 @Document(collection = "sys_log")
 public class SysLogEntity implements Serializable {
 
     @Id
     @ExcelIgnore
+    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "SELECT LAST_INSERT_ID()")
     private String id;
 
     /**
@@ -39,7 +41,7 @@ public class SysLogEntity implements Serializable {
     /**
      * 模块功能
      */
-    @ExcelProperty(value = "系统菜单", index = 0)
+    @ExcelProperty(value = "模块功能", index = 0)
     private String module;
 
     /**
@@ -51,6 +53,7 @@ public class SysLogEntity implements Serializable {
     /**
      * 请求参数
      */
+    @Transient
     @ExcelIgnore
     private String requestData;
 
@@ -61,32 +64,36 @@ public class SysLogEntity implements Serializable {
     private String remark;
 
     /**
-     * 操作人
-     */
-    @ExcelIgnore
-    private Long operator;
-
-    @ExcelProperty(value = "操作账号", index = 3)
-    private String operatorName;
-
-    /**
      * 租户
      */
     @ExcelIgnore
+    @Transient
     private String tenant;
 
     @ExcelProperty(value = "所属组织", index = 4)
+    @Column(name = "belong_org")
     private String belongOrg;
 
-    @ExcelProperty(value = "主机IP", index = 5)
+    @ExcelProperty(value = "请求IP", index = 5)
     private String ip;
 
     @ExcelProperty(value = "操作结果", index = 6)
     private String result;
 
+    /**
+     * 操作人
+     */
+    @ExcelIgnore
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    @Column(name = "created_name")
+    private String createdName;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ExcelProperty(value = "操作时间", index = 7)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "created_date", updatable = false)
     private Date createdDate;
 
 }

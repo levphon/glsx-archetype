@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.glsx</groupId>
             <artifactId>rest-admin-mongodb</artifactId>
         </dependency>
         <dependency>

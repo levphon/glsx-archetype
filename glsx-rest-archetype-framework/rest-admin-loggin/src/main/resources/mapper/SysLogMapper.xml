@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.glsx.plat.loggin.mapper.SysLogMapper">
+    <resultMap id="BaseResultMap" type="com.glsx.plat.loggin.entity.SysLogEntity">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="application" jdbcType="VARCHAR" property="application"/>
+        <result column="module" jdbcType="VARCHAR" property="module"/>
+        <result column="processed" jdbcType="VARCHAR" property="processed"/>
+        <result column="action" jdbcType="VARCHAR" property="action"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="tenant" jdbcType="VARCHAR" property="tenant"/>
+        <result column="belong_org" jdbcType="VARCHAR" property="belongOrg"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
+        <result column="result" jdbcType="VARCHAR" property="result"/>
+        <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
+        <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
+        <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        id, `application`, `module`, processed, `action`, remark, tenant, belong_org, ip,
+        `result`, created_by, created_name, created_date
+    </sql>
+
+    <select id="search" resultType="com.glsx.plat.loggin.entity.SysLogEntity">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_log
+        where 1 = 1
+        <if test="sDate != null and sDate != '' and eDate != null and eDate != ''">
+            and DATE_FORMAT(created_date,'%Y-%m-%d') between #{sDate} and #{eDate}
+        </if>
+        <if test="module != null and module != ''">
+            and module like CONCAT('%', #{module}, '%')
+        </if>
+        <if test="action != null and action != ''">
+            and action like CONCAT('%', #{action}, '%')
+        </if>
+        <if test="remark != null and remark != ''">
+            and remark like CONCAT('%', #{remark}, '%')
+        </if>
+        <if test="operator != null and operator != ''">
+            and (created_name like CONCAT('%', #{operator}, '%') or created_by = #{operator})
+        </if>
+        order by id desc
+    </select>
+</mapper>

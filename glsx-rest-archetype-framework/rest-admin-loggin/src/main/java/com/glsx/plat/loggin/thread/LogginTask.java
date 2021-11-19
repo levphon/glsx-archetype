@@ -102,8 +102,8 @@ public class LogginTask implements Callable<String> {
             sysLog.setTenant((String) userInfo.get("tenant"));
             sysLog.setBelongOrg((String) userInfo.get("belong"));
         }
-        sysLog.setOperatorName(operator);
-        sysLog.setOperator(operatorId);
+        sysLog.setCreatedBy(operatorId);
+        sysLog.setCreatedName(operator);
 
         sysLog.setIp(IpUtils.getIpAddr(request));
         sysLog.setCreatedDate(new Date());
