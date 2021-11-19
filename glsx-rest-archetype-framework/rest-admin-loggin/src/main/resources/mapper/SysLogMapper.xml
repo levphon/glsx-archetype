@@ -27,7 +27,7 @@
         `result`, created_by, created_name, created_date
     </sql>
 
-    <select id="search" resultType="com.glsx.plat.loggin.entity.SysLogEntity">
+    <select id="search" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_sys_log
