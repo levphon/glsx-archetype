@@ -15,7 +15,6 @@ public class LogginStrategyByMysql extends AbstractLogginStrategy {
 
     @Override
     public void saveLog(SysLogEntity entity) {
-
         sysLogMapper.insert(entity);
     }
 
