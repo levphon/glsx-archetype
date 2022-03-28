@@ -5,9 +5,9 @@ import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.exception.SystemMessage;
 import lombok.AllArgsConstructor;
+import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
-import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,13 +40,13 @@ public abstract class WxMpUserController {
     @NoLogin
     @RequestMapping("/getOpenid")
     public R getOpenid(@RequestParam String code) throws WxErrorException {
-        WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+        WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
         return R.ok().data(accessToken.getOpenId());
     }
 
     @RequestMapping("/getUser")
     public R getUser(@RequestParam String code) throws WxErrorException {
-        WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+        WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
 
         WxMpUser user = wxMpService.getUserService().userInfo(accessToken.getOpenId());
 
@@ -72,7 +72,7 @@ public abstract class WxMpUserController {
     @NoLogin
     @RequestMapping(value = "/loginByOpenid")
     public R loginByOpenid(@RequestParam String code) throws WxErrorException {
-        WxMpOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
+        WxOAuth2AccessToken accessToken = wxMpService.getOAuth2Service().getAccessToken(code);
 
         Map<String, Object> rtnMap = loginByOpenid(accessToken);
         if (CollectionUtils.isEmpty(rtnMap)) {
@@ -86,6 +86,6 @@ public abstract class WxMpUserController {
      *
      * @param accessToken
      */
-    protected abstract Map<String, Object> loginByOpenid(WxMpOAuth2AccessToken accessToken);
+    protected abstract Map<String, Object> loginByOpenid(WxOAuth2AccessToken accessToken);
 
 }
