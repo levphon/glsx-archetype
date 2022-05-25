@@ -1,4 +1,4 @@
-package com.glsx.plat.wechat.modules.config;
+package com.glsx.plat.wechat.config;
 
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;

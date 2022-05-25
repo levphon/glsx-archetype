@@ -1,4 +1,4 @@
-package com.glsx.plat.wechat.modules.config;
+package com.glsx.plat.wechat.config;
 
 import com.glsx.plat.wechat.common.handler.*;
 import lombok.AllArgsConstructor;
