@@ -7,10 +7,11 @@ import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
+import com.glsx.plat.wechat.modules.config.WxMaConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -25,23 +26,21 @@ import java.util.Map;
 @RequestMapping("/wx/user/{appid}")
 public abstract class WxMaUserController {
 
-    @Autowired
-    private WxMaService wxMaService;
-
     /**
      * 登陆接口
      *
      * @param appid
-     * @param js_code
+     * @param code
      * @return
      */
     @SysLog
     @NoLogin
-    @PostMapping(value = "/login", produces = "application/json")
-    public R login(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
-        if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public R login(@PathVariable String appid, @RequestParam("code") String code) throws WxErrorException {
+        if (StringUtils.isBlank(code)) return R.error("empty jscode");
 
-        WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(js_code);
+        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
+        WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(code);
         log.info(session.toString());
 
         //增加自己的逻辑，关联业务相关数据
@@ -73,6 +72,7 @@ public abstract class WxMaUserController {
     public R loginByOpenid(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
         if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
 
+        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
         WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(js_code);
         log.info(session.toString());
         //登录
@@ -98,6 +98,7 @@ public abstract class WxMaUserController {
 
         String sessionKey = getSessionKeyFromCache();
 
+        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
         // 用户信息校验
         if (!wxMaService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
             return R.error("user check failed");
@@ -136,6 +137,7 @@ public abstract class WxMaUserController {
 
         String sessionKey = getSessionKeyFromCache();
 
+        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
         //用户信息校验
         if (!wxMaService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
             return R.error("user check failed");

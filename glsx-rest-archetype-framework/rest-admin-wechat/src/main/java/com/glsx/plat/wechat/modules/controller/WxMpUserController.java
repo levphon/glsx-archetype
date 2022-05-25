@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@AllArgsConstructor
+/**
+ * 微信公众号用户接口
+ *
+ * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ */
 @RestController
 @RequestMapping("/wx/mp/")
+@AllArgsConstructor
 public abstract class WxMpUserController {
 
     private final WxMpService wxMpService;
