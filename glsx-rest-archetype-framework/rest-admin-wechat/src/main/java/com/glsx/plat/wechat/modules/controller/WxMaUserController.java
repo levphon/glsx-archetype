@@ -46,7 +46,6 @@ public abstract class WxMaUserController {
         //增加自己的逻辑，关联业务相关数据
         //todo openid入库
         //todo 设置session
-        //todo ...
         Map<String, Object> rtnMap = cacheUser(session);
 
         return R.ok().data(rtnMap);
@@ -58,34 +57,6 @@ public abstract class WxMaUserController {
      * @param session
      */
     protected abstract Map<String, Object> cacheUser(WxMaJscode2SessionResult session);
-
-    /**
-     * 登陆接口
-     *
-     * @param appid
-     * @param js_code
-     * @return
-     */
-    @SysLog
-    @NoLogin
-    @PostMapping(value = "/loginByOpenid", produces = "application/json")
-    public R loginByOpenid(@PathVariable String appid, @RequestParam("js_code") String js_code) throws WxErrorException {
-        if (StringUtils.isBlank(js_code)) return R.error("empty jscode");
-
-        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
-        WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(js_code);
-        log.info(session.toString());
-        //登录
-        Map<String, Object> rtnMap = loginByOpenid(session);
-        return R.ok().data(rtnMap);
-    }
-
-    /**
-     * openid免登录
-     *
-     * @param session
-     */
-    protected abstract Map<String, Object> loginByOpenid(WxMaJscode2SessionResult session);
 
     /**
      * <pre>
