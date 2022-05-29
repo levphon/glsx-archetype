@@ -14,10 +14,9 @@
     <artifactId>rest-admin-framework-dependencies</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
         <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
         <fastjson.version>1.2.76</fastjson.version>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <guava.version>22.0</guava.version>
     </properties>
 

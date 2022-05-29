@@ -21,7 +21,7 @@ import java.util.List;
 @EnableSwagger2
 public class Swagger2Config {
 
-    @Value("${swagger2.basePackage:cn.com.glsx}")
+    @Value("${swagger2.basePackage:cn.com.payu}")
     private String basePackage;
 
     @Bean

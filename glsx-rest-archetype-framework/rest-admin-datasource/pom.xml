@@ -12,7 +12,7 @@
     <artifactId>rest-admin-datasource</artifactId>
 
     <properties>
-        <mysql.version>8.0.18</mysql.version>
+        <mysql.version>8.0.29</mysql.version>
         <druid.starter.version>1.2.3</druid.starter.version>
     </properties>
 
@@ -22,10 +22,10 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>${druid.starter.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>druid-spring-boot-starter</artifactId>-->
+<!--            <version>${druid.starter.version}</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

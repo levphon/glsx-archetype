@@ -1,39 +1,24 @@
 package com.glsx.plat.wechat.modules.controller;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
-import cn.binarywang.wx.miniapp.bean.WxMaMessage;
-import cn.binarywang.wx.miniapp.constant.WxMaConstants;
-import com.glsx.plat.common.utils.encryption.Encrypter;
-import com.glsx.plat.core.web.R;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
+import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
 /**
- * @author <a href="https://github.com/binarywang">Binary Wang</a>
+ * @author Binary Wang(https://github.com/binarywang)
  */
 @Slf4j
-@RestController
 @AllArgsConstructor
+@RestController
 @RequestMapping("/wx/portal/{appid}")
 public class WxPortalController {
-
-    private final WxMpService wxMpService;
-
-    @Autowired
-    private WxMaService wxMaService;
+    private final WxMpService wxService;
+    private final WxMpMessageRouter messageRouter;
 
     @GetMapping(produces = "text/plain;charset=utf-8")
     public String authGet(@PathVariable String appid,
@@ -41,16 +26,18 @@ public class WxPortalController {
                           @RequestParam(name = "timestamp", required = false) String timestamp,
                           @RequestParam(name = "nonce", required = false) String nonce,
                           @RequestParam(name = "echostr", required = false) String echostr) {
-        log.info("\n接收到来自微信服务器的认证消息：signature = [{}], timestamp = [{}], nonce = [{}], echostr = [{}]",
-                signature, timestamp, nonce, echostr);
 
+        log.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature,
+                timestamp, nonce, echostr);
         if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
             throw new IllegalArgumentException("请求参数非法，请核实!");
         }
-        if (!this.wxMpService.switchover(appid)) {
+
+        if (!this.wxService.switchover(appid)) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
-        if (wxMpService.checkSignature(timestamp, nonce, signature)) {
+
+        if (wxService.checkSignature(timestamp, nonce, signature)) {
             return echostr;
         }
 
@@ -60,106 +47,59 @@ public class WxPortalController {
     @PostMapping(produces = "application/xml; charset=UTF-8")
     public String post(@PathVariable String appid,
                        @RequestBody String requestBody,
-                       @RequestParam(name = "msg_signature", required = false) String msgSignature,
-                       @RequestParam(name = "encrypt_type", required = false) String encryptType,
-                       @RequestParam(name = "signature", required = false) String signature,
+                       @RequestParam("signature") String signature,
                        @RequestParam("timestamp") String timestamp,
-                       @RequestParam("nonce") String nonce) {
-        log.info("\n接收微信请求：[msg_signature=[{}], encrypt_type=[{}], signature=[{}]," +
-                        " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
-                msgSignature, encryptType, signature, timestamp, nonce, requestBody);
+                       @RequestParam("nonce") String nonce,
+                       @RequestParam("openid") String openid,
+                       @RequestParam(name = "encrypt_type", required = false) String encType,
+                       @RequestParam(name = "msg_signature", required = false) String msgSignature) {
+        log.info("\n接收微信请求：[openid=[{}], [signature=[{}], encType=[{}], msgSignature=[{}],"
+                        + " timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ",
+                openid, signature, encType, msgSignature, timestamp, nonce, requestBody);
 
-        if (!this.wxMpService.switchover(appid)) {
+        if (!this.wxService.switchover(appid)) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
 
-        final boolean isJson = Objects.equals(wxMaService.getWxMaConfig().getMsgDataFormat(),
-                WxMaConstants.MsgDataFormat.JSON);
-        if (StringUtils.isBlank(encryptType)) {
+        if (!wxService.checkSignature(timestamp, nonce, signature)) {
+            throw new IllegalArgumentException("非法请求，可能属于伪造的请求！");
+        }
+
+        String out = null;
+        if (encType == null) {
             // 明文传输的消息
-            WxMaMessage inMessage;
-            if (isJson) {
-                inMessage = WxMaMessage.fromJson(requestBody);
-            } else {//xml
-                inMessage = WxMaMessage.fromXml(requestBody);
+            WxMpXmlMessage inMessage = WxMpXmlMessage.fromXml(requestBody);
+            WxMpXmlOutMessage outMessage = this.route(inMessage);
+            if (outMessage == null) {
+                return "";
             }
 
-            this.route(inMessage, appid);
-            return "success";
-        }
-
-        if ("aes".equals(encryptType)) {
-            // 是aes加密的消息
-            WxMaMessage inMessage;
-            if (isJson) {
-                inMessage = WxMaMessage.fromEncryptedJson(requestBody, wxMaService.getWxMaConfig());
-            } else {//xml
-                inMessage = WxMaMessage.fromEncryptedXml(requestBody, wxMaService.getWxMaConfig(),
-                        timestamp, nonce, msgSignature);
+            out = outMessage.toXml();
+        } else if ("aes".equalsIgnoreCase(encType)) {
+            // aes加密的消息
+            WxMpXmlMessage inMessage = WxMpXmlMessage.fromEncryptedXml(requestBody, wxService.getWxMpConfigStorage(),
+                    timestamp, nonce, msgSignature);
+            log.debug("\n消息解密后内容为：\n{} ", inMessage.toString());
+            WxMpXmlOutMessage outMessage = this.route(inMessage);
+            if (outMessage == null) {
+                return "";
             }
 
-            this.route(inMessage, appid);
-            return "success";
+            out = outMessage.toEncryptedXml(wxService.getWxMpConfigStorage());
         }
 
-        throw new RuntimeException("不可识别的加密类型：" + encryptType);
+        log.debug("\n组装回复信息：{}", out);
+        return out;
     }
 
-    private void route(WxMaMessage message, String appid) {
+    private WxMpXmlOutMessage route(WxMpXmlMessage message) {
         try {
-//            WxMaConfiguration.getRouter(appid).route(message);
+            return this.messageRouter.route(message);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
-    }
-
-    @GetMapping("config")
-    public R config(@PathVariable String appid, String url) throws WxErrorException {
-        if (!this.wxMpService.switchover(appid)) {
-            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
+            log.error("路由消息时出现异常！", e);
         }
 
-        String ticket = wxMpService.getJsapiTicket();
-
-        Map<String, String> rtn = sign(ticket, url);
-
-        rtn.put("appId", appid);
-
-        return R.ok().data(rtn);
-    }
-
-    public Map<String, String> sign(String ticket, String url) {
-        Map<String, String> ret = new HashMap<>();
-        String nonce_str = create_nonce_str();
-        String timestamp = create_timestamp();
-        String jsapi_ticket = ticket;
-        String str;
-        String signature = "";
-        //注意这里参数名必须全部小写，且必须有序
-        str = "jsapi_ticket=" + jsapi_ticket + "&noncestr=" + nonce_str + "&timestamp=" + timestamp + "&url=" + url;
-        try {
-            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
-            crypt.reset();
-            crypt.update(str.getBytes(StandardCharsets.UTF_8));
-            signature = Encrypter.byteToHexString(crypt.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        ret.put("jsapi_ticket", jsapi_ticket);
-        ret.put("nonceStr", nonce_str);
-        ret.put("timestamp", timestamp);
-        ret.put("signature", signature);
-        ret.put("url", url);
-        return ret;
-    }
-
-    private String create_nonce_str() {
-        return UUID.randomUUID().toString();
-    }
-
-    private String create_timestamp() {
-        return Long.toString(System.currentTimeMillis() / 1000);
+        return null;
     }
 
 }

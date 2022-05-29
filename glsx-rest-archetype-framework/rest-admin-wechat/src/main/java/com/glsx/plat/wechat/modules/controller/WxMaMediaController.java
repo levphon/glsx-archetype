@@ -2,12 +2,12 @@ package com.glsx.plat.wechat.modules.controller;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.constant.WxMaConstants;
+import com.glsx.plat.wechat.config.WxMaConfiguration;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
 import me.chanjar.weixin.common.error.WxErrorException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -32,9 +32,6 @@ import java.util.List;
 @RequestMapping("/wx/media/{appid}")
 public class WxMaMediaController {
 
-    @Autowired
-    private WxMaService wxService;
-
     /**
      * 上传临时素材
      *
@@ -42,6 +39,7 @@ public class WxMaMediaController {
      */
     @PostMapping("/upload")
     public List<String> uploadMedia(@PathVariable String appid, HttpServletRequest request) throws WxErrorException {
+        final WxMaService wxService = WxMaConfiguration.getMaService(appid);
 
         CommonsMultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 
@@ -56,7 +54,7 @@ public class WxMaMediaController {
             try {
                 MultipartFile file = multiRequest.getFile(it.next());
                 File newFile = new File(Files.createTempDir(), file.getOriginalFilename());
-                log.info("filePath is ：" + newFile.toString());
+                log.info("filePath is ：" + newFile);
                 file.transferTo(newFile);
                 WxMediaUploadResult uploadResult = wxService.getMediaService().uploadMedia(WxMaConstants.KefuMsgType.IMAGE, newFile);
                 log.info("media_id ： " + uploadResult.getMediaId());
@@ -74,6 +72,8 @@ public class WxMaMediaController {
      */
     @GetMapping("/download/{mediaId}")
     public File getMedia(@PathVariable String appid, @PathVariable String mediaId) throws WxErrorException {
+        final WxMaService wxService = WxMaConfiguration.getMaService(appid);
+
         return wxService.getMediaService().getMedia(mediaId);
     }
 
