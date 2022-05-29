@@ -8,6 +8,7 @@ import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.wechat.config.WxMaConfiguration;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,7 @@ public abstract class WxMaUserController {
      */
     @SysLog
     @NoLogin
+    @ApiOperation("登录ByCode")
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public R login(@PathVariable String appid, @RequestParam("code") String code) throws WxErrorException {
         if (StringUtils.isBlank(code)) return R.error("empty jscode");
@@ -63,6 +65,7 @@ public abstract class WxMaUserController {
      * 获取用户信息接口
      * </pre>
      */
+    @ApiOperation("获取用户信息")
     @GetMapping("/info")
     public R info(@PathVariable String appid,
                   String signature, String rawData, String encryptedData, String iv) {
@@ -102,6 +105,7 @@ public abstract class WxMaUserController {
      * 获取用户绑定手机号信息
      * </pre>
      */
+    @ApiOperation("获取用户手机号码")
     @SysLog
     @GetMapping("/phone")
     public R phone(@PathVariable String appid, String signature, String rawData, String encryptedData, String iv) {
@@ -116,7 +120,7 @@ public abstract class WxMaUserController {
         // 解密
         WxMaPhoneNumberInfo phoneNoInfo = wxMaService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
 
-        Map<String, Object> rtnMap = updatePhone(phoneNoInfo);
+        Map<String, Object> rtnMap = linkPhone(phoneNoInfo);
 
         return R.ok().data(rtnMap.get("token"));
     }
@@ -126,16 +130,6 @@ public abstract class WxMaUserController {
      *
      * @param phoneNoInfo
      */
-    protected abstract Map<String, Object> updatePhone(WxMaPhoneNumberInfo phoneNoInfo);
-
-    /**
-     * <pre>
-     * 获取用户绑定手机号信息
-     * </pre>
-     */
-    @PostMapping("/updateWxUserInfo")
-    public R update(@PathVariable String appid, @RequestBody WxMaUserInfo userInfo) {
-        return R.ok();
-    }
+    protected abstract Map<String, Object> linkPhone(WxMaPhoneNumberInfo phoneNoInfo);
 
 }
