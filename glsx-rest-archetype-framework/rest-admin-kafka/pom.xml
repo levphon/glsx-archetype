@@ -13,12 +13,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.glsx</groupId>
+            <artifactId>rest-admin-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.glsx</groupId>
-            <artifactId>rest-admin-core</artifactId>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
