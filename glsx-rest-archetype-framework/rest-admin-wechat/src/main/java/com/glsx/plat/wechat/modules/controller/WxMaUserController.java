@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -32,23 +31,26 @@ public abstract class WxMaUserController {
      *
      * @param appid
      * @param code
+     * @param encryptedData
+     * @param iv
      * @return
      */
     @SysLog
     @NoLogin
     @ApiOperation("登录ByCode")
-    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public R login(@PathVariable String appid, @RequestParam("code") String code) throws WxErrorException {
+    @GetMapping(value = "/login")
+    public R login(@PathVariable String appid, @RequestParam("code") String code, String encryptedData, String iv) throws WxErrorException {
         if (StringUtils.isBlank(code)) return R.error("empty jscode");
 
         final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
         WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(code);
         log.info(session.toString());
 
-        //增加自己的逻辑，关联业务相关数据
-        //todo openid入库
-        //todo 设置session
-        Map<String, Object> rtnMap = cacheUser(session);
+        //解密号码
+        WxMaPhoneNumberInfo phoneNoInfo = wxMaService.getUserService().getPhoneNoInfo(session.getSessionKey(), encryptedData, iv);
+
+        //增加自己的逻辑，关联相关数据
+        Map<String, Object> rtnMap = cacheUser(session, phoneNoInfo);
 
         return R.ok().data(rtnMap);
     }
@@ -57,8 +59,9 @@ public abstract class WxMaUserController {
      * 关联登录用户到数据库、服务器端缓存用户信息等
      *
      * @param session
+     * @param phoneNoInfo
      */
-    protected abstract Map<String, Object> cacheUser(WxMaJscode2SessionResult session);
+    protected abstract Map<String, Object> cacheUser(WxMaJscode2SessionResult session, WxMaPhoneNumberInfo phoneNoInfo);
 
     /**
      * <pre>
@@ -70,13 +73,9 @@ public abstract class WxMaUserController {
     public R info(@PathVariable String appid,
                   String signature, String rawData, String encryptedData, String iv) {
 
-        String sessionKey = getSessionKeyFromCache();
+        String sessionKey = "";
 
         final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
-        // 用户信息校验
-        if (!wxMaService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
-            return R.error("user check failed");
-        }
 
         // 解密用户信息
         WxMaUserInfo userInfo = wxMaService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
@@ -92,44 +91,5 @@ public abstract class WxMaUserController {
      * @param userInfo
      */
     protected abstract Map<String, Object> linkUser(WxMaUserInfo userInfo);
-
-    /**
-     * 从jwt中获取sessionKey（或redis）
-     *
-     * @return
-     */
-    protected abstract String getSessionKeyFromCache();
-
-    /**
-     * <pre>
-     * 获取用户绑定手机号信息
-     * </pre>
-     */
-    @ApiOperation("获取用户手机号码")
-    @SysLog
-    @GetMapping("/phone")
-    public R phone(@PathVariable String appid, String signature, String rawData, String encryptedData, String iv) {
-
-        String sessionKey = getSessionKeyFromCache();
-
-        final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
-        //用户信息校验
-        if (!wxMaService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
-            return R.error("user check failed");
-        }
-        // 解密
-        WxMaPhoneNumberInfo phoneNoInfo = wxMaService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
-
-        Map<String, Object> rtnMap = linkPhone(phoneNoInfo);
-
-        return R.ok().data(rtnMap.get("token"));
-    }
-
-    /**
-     * 关联登录用户到数据库、服务器端缓存用户信息等
-     *
-     * @param phoneNoInfo
-     */
-    protected abstract Map<String, Object> linkPhone(WxMaPhoneNumberInfo phoneNoInfo);
 
 }
