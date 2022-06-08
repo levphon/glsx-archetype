@@ -44,10 +44,12 @@ public abstract class WxMaUserController {
 
         final WxMaService wxMaService = WxMaConfiguration.getMaService(appid);
         WxMaJscode2SessionResult session = wxMaService.getUserService().getSessionInfo(code);
-        log.info(session.toString());
 
         //解密号码
-        WxMaPhoneNumberInfo phoneNoInfo = wxMaService.getUserService().getPhoneNoInfo(session.getSessionKey(), encryptedData, iv);
+        WxMaPhoneNumberInfo phoneNoInfo = null;
+        if (StringUtils.isNotEmpty(encryptedData) && StringUtils.isNotEmpty(iv)) {
+            phoneNoInfo = wxMaService.getUserService().getPhoneNoInfo(session.getSessionKey(), encryptedData, iv);
+        }
 
         //增加自己的逻辑，关联相关数据
         Map<String, Object> rtnMap = cacheUser(session, phoneNoInfo);

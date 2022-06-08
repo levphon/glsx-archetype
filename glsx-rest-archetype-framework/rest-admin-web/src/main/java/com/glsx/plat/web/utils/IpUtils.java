@@ -78,38 +78,9 @@ public class IpUtils {
             String[] ips = ip.split(",");
             if (ips.length > 0) return ips[0];
         }
-        return ip;
+        //替换ipv6本地地址
+        String realIp = "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
+        return realIp;
     }
-
-//    public static String getIpAddr(ServerHttpRequest request) {
-//        String ip = null;
-//        try {
-//            ip = request.getHeaders().get("x-forwarded-for").get(0);
-//            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-//                ip = request.getHeader("Proxy-Client-IP");
-//            }
-//            if (StringUtils.isEmpty(ip) || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//                ip = request.getHeader("WL-Proxy-Client-IP");
-//            }
-//            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-//                ip = request.getHeader("HTTP_CLIENT_IP");
-//            }
-//            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-//                ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-//            }
-//            if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
-//                ip = request.getRemoteAddress().getHostString();
-//            }
-//        } catch (Exception e) {
-//            log.error("IPUtils ERROR ", e);
-//        }
-//
-//        //使用代理，则获取第一个IP地址
-//        if (StringUtils.isNotEmpty(ip)) {
-//            String[] ips = ip.split(",");
-//            if (ips.length > 0) return ips[0];
-//        }
-//        return ip;
-//    }
 
 }
