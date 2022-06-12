@@ -2,16 +2,16 @@ package com.glsx.plat.common.utils;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.Seconds;
+import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 日期处理
@@ -311,6 +311,56 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         } else {
             return "0";
         }
+    }
+
+    /**
+     * 获取一段时间内的星期集合
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public List<String[]> getWeekListByDates(String startDate, String endDate) {
+        return convertWeekList(new LocalDate(startDate), new LocalDate(endDate));
+    }
+
+    /**
+     * 获取本月星期集合
+     *
+     * @return
+     */
+    public List<String[]> getLocalMonthWeekList() {
+        LocalDate now = LocalDate.now();
+        LocalDate endDate = now.dayOfMonth().withMaximumValue();
+        LocalDate startDate = now.dayOfMonth().withMinimumValue();
+        return this.convertWeekList(startDate, endDate);
+    }
+
+    /**
+     * 转换weeklist
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public static List<String[]> convertWeekList(LocalDate startDate, LocalDate endDate) {
+        List<String[]> weekList = new ArrayList<>();
+        //转换成joda-time的对象
+        LocalDate firstDay = startDate.dayOfWeek().withMinimumValue().withDayOfWeek(1);
+        LocalDate lastDay = endDate.dayOfWeek().withMaximumValue().withDayOfWeek(7);
+        //计算两日期间的区间天数
+        Period p = new Period(firstDay, lastDay, PeriodType.days());
+        int days = p.getDays();
+        if (days > 0) {
+            int weekLength = 7;
+            for (int i = 0; i < days; i = i + weekLength) {
+                String monDay = firstDay.plusDays(i).toString("yyyy-MM-dd");
+                String sunDay = firstDay.plusDays(i + 6).toString("yyyy-MM-dd");
+                String[] week = {monDay, sunDay};
+                weekList.add(week);
+            }
+        }
+        return weekList;
     }
 
 }
