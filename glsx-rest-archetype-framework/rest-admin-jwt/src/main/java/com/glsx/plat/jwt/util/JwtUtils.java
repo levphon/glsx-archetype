@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +42,9 @@ public class JwtUtils<T extends BaseJwtUser> {
     private String application;
     @Autowired
     private JwtConfigProperties properties;
-    @Resource
+    @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
     private Class<T> jwtUserClass;
 
     public static void main(String[] args) throws ClassNotFoundException {

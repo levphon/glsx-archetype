@@ -218,6 +218,14 @@
             <id>nexus</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>3.0.0-M1</version>
+                    </plugin>
                     <!-- Source -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

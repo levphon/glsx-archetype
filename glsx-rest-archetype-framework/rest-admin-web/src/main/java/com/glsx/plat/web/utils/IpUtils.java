@@ -1,12 +1,17 @@
 package com.glsx.plat.web.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.UnknownHostException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class IpUtils {
@@ -82,5 +87,36 @@ public class IpUtils {
         String realIp = "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
         return realIp;
     }
+
+    /**
+     * 百度接口
+     * 通过用户ip获取用户所在地
+     *
+     * @param strIP
+     * @return
+     */
+    public static String getAddressByBD2(String strIP) {
+        try {
+            URL url = new URL("http://opendata.baidu.com/api.php?query=" + strIP + "&co=&resource_id=6006&t=1433920989928&ie=utf8&oe=utf-8&format=json");
+            URLConnection conn = url.openConnection();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8));
+            String line = null;
+            StringBuffer result = new StringBuffer();
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+            reader.close();
+            JSONObject jsStr = JSON.parseObject(result.toString());
+            JSONArray jsData = (JSONArray) jsStr.get("data");
+            JSONObject data = (JSONObject) jsData.get(0);//位置
+            return (String) data.get("location");
+        } catch (IOException e) {
+            return "读取失败";
+        }
+    }
+
+//    public static void main(String[] args) {
+//        System.out.println(getAddressByBD2("183.62.222.181"));
+//    }
 
 }
