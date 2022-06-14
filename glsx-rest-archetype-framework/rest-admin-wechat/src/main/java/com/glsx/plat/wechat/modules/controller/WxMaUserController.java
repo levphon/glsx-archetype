@@ -6,6 +6,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import com.binarywang.spring.starter.wxjava.miniapp.properties.WxMaProperties;
 import com.glsx.plat.common.annotation.NoLogin;
 import com.glsx.plat.common.annotation.SysLog;
+import com.glsx.plat.common.enums.OperateType;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.wechat.config.WxMaConfiguration;
 import io.swagger.annotations.ApiOperation;
@@ -40,8 +41,8 @@ public abstract class WxMaUserController {
      * @param codeForPhone
      * @return
      */
-    @SysLog
     @NoLogin
+    @SysLog(module = "微信登录", action = OperateType.LOGIN, value = "小程序登录", saveLog = false)
     @ApiOperation("登录ByCode")
     @GetMapping(value = "/login")
     public R login(@RequestParam("code") String code, String codeForPhone) throws WxErrorException {

@@ -111,7 +111,7 @@ public class IpUtils {
             JSONObject data = (JSONObject) jsData.get(0);//位置
             return (String) data.get("location");
         } catch (IOException e) {
-            return "读取失败";
+            return "解析失败";
         }
     }
 
