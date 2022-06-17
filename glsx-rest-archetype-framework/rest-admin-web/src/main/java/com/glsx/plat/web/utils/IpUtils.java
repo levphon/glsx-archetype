@@ -8,7 +8,6 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -96,6 +95,9 @@ public class IpUtils {
      * @return
      */
     public static String getAddressByBD2(String strIP) {
+        if ("127.0.0.1".equals(strIP)) {
+            return strIP;
+        }
         try {
             URL url = new URL("http://opendata.baidu.com/api.php?query=" + strIP + "&co=&resource_id=6006&t=1433920989928&ie=utf8&oe=utf-8&format=json");
             URLConnection conn = url.openConnection();
@@ -110,13 +112,13 @@ public class IpUtils {
             JSONArray jsData = (JSONArray) jsStr.get("data");
             JSONObject data = (JSONObject) jsData.get(0);//位置
             return (String) data.get("location");
-        } catch (IOException e) {
-            return "解析失败";
+        } catch (Exception e) {
+            return strIP + "解析失败";
         }
     }
 
 //    public static void main(String[] args) {
-//        System.out.println(getAddressByBD2("183.62.222.181"));
+//        System.out.println(getAddressByBD2("127.0.0.1"));
 //    }
 
 }
