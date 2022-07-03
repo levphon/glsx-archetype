@@ -1,7 +1,7 @@
 /**
  * Copyright (C), 2015-2018, 广联赛讯有限公司
  * FileName: UnifiedOrderModel
- * Author:   liuyf
+ * Author:   liuyufeng
  * Date:     2018/5/17 13:59
  * Description: 微信支付预订单Modle
  * History:
@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  * 〈一句话功能简述〉<br>
  * 〈统一支付预订单Model〉
  *
- * @author liuyf
+ * @author liuyufeng
  * @since 1.0.0
  */
 @Data

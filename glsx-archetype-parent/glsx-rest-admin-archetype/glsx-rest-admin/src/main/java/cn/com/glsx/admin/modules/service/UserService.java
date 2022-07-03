@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * @author liuyf
+ * @author liuyufeng
  * @desc 用户信息
  * @date 2019年10月24日 下午2:37:40
  */

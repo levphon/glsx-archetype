@@ -23,9 +23,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>9</maven.compiler.source>
-        <maven.compiler.target>9</maven.compiler.target>
-        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
         <spring-cloud-alibaba.version>2.2.6.RELEASE</spring-cloud-alibaba.version>
         <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
         <!--        <repo.internal.snapshots.url>https://repo1.maven.org/maven2</repo.internal.snapshots.url>-->

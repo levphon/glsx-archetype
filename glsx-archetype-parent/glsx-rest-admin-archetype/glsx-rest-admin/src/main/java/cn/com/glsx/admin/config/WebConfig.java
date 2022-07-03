@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * @author liuyf
+ * @author liuyufeng
  * @Title WebConfig.java
  * @Description 系统的配置相关文件，如拦截器，过滤器，跨域等
  * @date 2019年7月18日 下午4:45:06

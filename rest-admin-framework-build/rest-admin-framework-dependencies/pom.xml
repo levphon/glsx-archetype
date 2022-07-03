@@ -6,7 +6,7 @@
         <artifactId>rest-admin-framework-dependencies-parent</artifactId>
         <groupId>com.glsx</groupId>
         <version>1.1.1-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
@@ -14,7 +14,8 @@
     <artifactId>rest-admin-framework-dependencies</artifactId>
 
     <properties>
-        <rest-admin-framework.version>1.1.1-SNAPSHOT</rest-admin-framework.version>
+        <revision>1.1.1-SNAPSHOT</revision>
+
         <fastjson.version>1.2.76</fastjson.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <guava.version>22.0</guava.version>
@@ -42,227 +43,227 @@
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-ai</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-alliance</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-bus</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-common</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-config</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-container</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-context</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-core</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-datasource</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-dfs</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-disruptor</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-dubbo</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-dynamic-datasource</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-elasticsearch</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-exception</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-feign</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-gateway-client</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-gateway-server</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-im</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-jpa</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-jwt</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-kafka</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-kafka-ancient</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-loggin</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-mail</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-mongodb</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-monitor</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-mybatis</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-office</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-push</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-quartz</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-redis</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-registry</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-seata</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-security</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-sentinel</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-sleuth</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-sms</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-swagger2</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-web</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-webflux</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-wechat</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-elasticjob</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-pulsar</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
             <dependency>
                 <groupId>com.glsx</groupId>
                 <artifactId>rest-admin-cache</artifactId>
-                <version>${rest-admin-framework.version}</version>
+                <version>${revision}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

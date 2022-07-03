@@ -3,7 +3,7 @@ package com.glsx.plat.push.constant;
 /**
  * AppInfo 相关信息
  *
- * @author liuyf
+ * @author liuyufeng
  * @see
  * @since 2019-07-09
  */

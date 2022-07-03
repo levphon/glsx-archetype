@@ -12,7 +12,7 @@ import java.util.Set;
  * <p>
  * 参考文档：http://docs.jboss.org/hibernate/validator/5.4/reference/en-US/html_single/
  *
- * @author liuyf@didihu.com.cn
+ * @author liuyufeng@outlook.com
  */
 public class ValidatorUtils {
 
