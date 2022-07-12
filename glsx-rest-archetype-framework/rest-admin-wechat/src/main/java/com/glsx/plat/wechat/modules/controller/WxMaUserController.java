@@ -52,7 +52,7 @@ public abstract class WxMaUserController {
 
         //解密号码
         WxMaPhoneNumberInfo phoneNoInfo = null;
-        if (StringUtils.isNotEmpty(codeForPhone)) {
+        if (StringUtils.isNotEmpty(codeForPhone) && !"undefined".equals(codeForPhone)) {
             phoneNoInfo = wxMaService.getUserService().getNewPhoneNoInfo(codeForPhone);
         }
 
