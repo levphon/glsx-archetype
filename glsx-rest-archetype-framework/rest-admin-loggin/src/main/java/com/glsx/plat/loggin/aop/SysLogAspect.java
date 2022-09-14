@@ -14,6 +14,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,8 +28,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -110,11 +114,13 @@ public class SysLogAspect {
         // 处理完请求，返回内容
         String logTraceId = MDC.get(LogginConstants.MDC_LOG_DB_ID);
         if (StringUtils.isNotEmpty(logTraceId)) {
-            R r = (R) returnValue;
-            try {
-                logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (returnValue != null) {
+                R r = (R) returnValue;
+                try {
+                    logginStrategyFactory.getStrategy().updateLogStatus(logTraceId, r.isSuccess() ? "成功" : "失败");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         MDC.clear();
@@ -154,7 +160,16 @@ public class SysLogAspect {
         // 打印请求的 IP
         log.info("IP             : {}", IpUtils.getIpAddr(request));
         // 打印请求入参
-        Object[] args = joinPoint.getArgs();
+        List<Object> args = Lists.newArrayList();
+        Object[] originArgs = joinPoint.getArgs();
+        if (originArgs != null) {
+            for (int i = 0; i < originArgs.length; i++) {
+                if (originArgs[i] instanceof ServletRequest || originArgs[i] instanceof ServletResponse) {
+                    continue;
+                }
+                args.add(originArgs[i]);
+            }
+        }
         log.info("Request Args   : {}", gson.toJson(args));
         // 操作人
         Map<String, Object> userInfo = parseUserInfoByToken(request);

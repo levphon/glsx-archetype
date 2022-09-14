@@ -15,6 +15,7 @@ import org.springframework.core.ParameterNameDiscoverer;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -33,13 +34,13 @@ public class LogginTask implements Callable<String> {
     private HttpServletRequest request;
     private String application;
     private Method method;
-    private Object[] args;
+    private List<Object> args;
 
     private Map<String, Object> userInfo;
     private SysLog sysLogMark;
     private AbstractLogginStrategy strategy;
 
-    public LogginTask(HttpServletRequest request, String application, Method method, Object[] args,
+    public LogginTask(HttpServletRequest request, String application, Method method, List<Object> args,
                       Map<String, Object> userInfo,
                       SysLog sysLogMark, AbstractLogginStrategy strategy) {
         this.request = request;
@@ -76,10 +77,10 @@ public class LogginTask implements Callable<String> {
         String operator = "";
         if (OperateType.LOGIN.getType().equals(sysLogMark.action().getType())) {
             //登录没参数？？？，不可能
-            if (args[0] instanceof String) {
-                operator = (String) args[0];
+            if (args.get(0) instanceof String) {
+                operator = (String) args.get(0);
             } else {
-                JSONObject loginArg = (JSONObject) JSONObject.toJSON(args[0]);
+                JSONObject loginArg = (JSONObject) JSONObject.toJSON(args.get(0));
                 if (loginArg.containsKey("account")) {
                     operator = loginArg.getString("account");
                 } else if (loginArg.containsKey("username")) {
