@@ -72,6 +72,16 @@ public class IpUtils {
             }
             if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
                 ip = request.getRemoteAddr();
+                if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")) {
+                    //根据网卡取本机配置的IP
+                    InetAddress inet = null;
+                    try {
+                        inet = InetAddress.getLocalHost();
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
+                    ip = inet.getHostAddress();
+                }
             }
         } catch (Exception e) {
             log.error("IPUtils ERROR ", e);
