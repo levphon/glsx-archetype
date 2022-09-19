@@ -13,6 +13,6 @@ public interface SysLogMapper extends CommonBaseMapper<SysLogEntity> {
 
     List<SysLogEntity> search(LogginSearch search);
 
-    int updateByTraceId(@Param("traceId") String traceId, @Param("result") String result);
+    int updateByLogId(@Param("logId") String logId, @Param("result") String result);
 
 }
