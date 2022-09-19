@@ -3,6 +3,7 @@ package com.glsx.plat.loggin.thread;
 import com.alibaba.fastjson.JSONObject;
 import com.glsx.plat.common.annotation.SysLog;
 import com.glsx.plat.common.enums.OperateType;
+import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.loggin.AbstractLogginStrategy;
 import com.glsx.plat.loggin.entity.SysLogEntity;
 import com.glsx.plat.web.utils.IpUtils;
@@ -105,7 +106,8 @@ public class LogginTask implements Callable<String> {
 
         //保存特定信息
         if (sysLogMark.saveRequest()) {
-            sysLog.setRequestData(gson.toJson(args));
+            String requestData = gson.toJson(args);
+            sysLog.setRequestData(StringUtils.left(requestData, 2000));
         }
         return sysLog;
     }
