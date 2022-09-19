@@ -34,9 +34,9 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Origin", reqs.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, HEAD, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", HttpHeaders.AUTHORIZATION + ", Accept, Origin, X-Requested-With, Content-Type, Last-Modified, X-Custom-Header");
+        response.setHeader("Access-Control-Allow-Headers", HttpHeaders.AUTHORIZATION + ", Accept, Origin, X-Requested-With, Content-Type, Last-Modified, X-Custom-Header, Origin-Channel");
 //        response.setHeader("Access-Control-Allow-Headers", "*");
-        response.setHeader("Access-Control-Expose-Headers", HttpHeaders.AUTHORIZATION + ", X-Custom-Header");
+        response.setHeader("Access-Control-Expose-Headers", HttpHeaders.AUTHORIZATION + ", X-Custom-Header, Origin-Channel");
         response.setHeader("Access-Control-Max-Age", "3600");
         if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);

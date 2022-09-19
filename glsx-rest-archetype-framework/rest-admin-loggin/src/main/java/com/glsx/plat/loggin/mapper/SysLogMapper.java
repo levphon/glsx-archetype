@@ -4,6 +4,7 @@ import com.glsx.plat.loggin.entity.SysLogEntity;
 import com.glsx.plat.loggin.model.LogginSearch;
 import com.glsx.plat.mybatis.mapper.CommonBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -11,5 +12,7 @@ import java.util.List;
 public interface SysLogMapper extends CommonBaseMapper<SysLogEntity> {
 
     List<SysLogEntity> search(LogginSearch search);
+
+    int updateByTraceId(@Param("traceId") String traceId, @Param("result") String result);
 
 }

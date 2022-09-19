@@ -6,6 +6,7 @@
           WARNING - @mbg.generated
         -->
         <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="trace_id" jdbcType="VARCHAR" property="traceId"/>
         <result column="application" jdbcType="VARCHAR" property="application"/>
         <result column="module" jdbcType="VARCHAR" property="module"/>
         <result column="processed" jdbcType="VARCHAR" property="processed"/>
@@ -23,7 +24,7 @@
         <!--
           WARNING - @mbg.generated
         -->
-        id, `application`, `module`, processed, `action`, remark, tenant, belong_org, ip,
+        id, trace_id, `application`, `module`, processed, `action`, remark, tenant, belong_org, ip,
         `result`, created_by, created_name, created_date
     </sql>
 
@@ -49,4 +50,10 @@
         </if>
         order by id desc
     </select>
+
+    <update id="updateByTraceId">
+        update t_sys_log
+        set result = #{result}
+        where trace_id = #{traceId}
+    </update>
 </mapper>

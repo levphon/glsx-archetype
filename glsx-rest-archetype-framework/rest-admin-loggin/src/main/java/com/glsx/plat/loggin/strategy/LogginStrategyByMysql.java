@@ -20,7 +20,7 @@ public class LogginStrategyByMysql extends AbstractLogginStrategy {
 
     @Override
     public void updateLogStatus(String logTraceId, String result) {
-
+        sysLogMapper.updateByTraceId(logTraceId, result);
     }
 
 }

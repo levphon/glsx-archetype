@@ -32,6 +32,12 @@ public class SysLogEntity implements Serializable {
     private String id;
 
     /**
+     * 链路日志id
+     */
+    @Column(name = "trace_id")
+    private String traceId;
+
+    /**
      * 应用/服务名
      */
     @ExcelIgnore
