@@ -1,6 +1,7 @@
 package com.glsx.plat.loggin.aop;
 
 import com.glsx.plat.common.annotation.SysLog;
+import com.glsx.plat.common.enums.OperateType;
 import com.glsx.plat.common.utils.StringUtils;
 import com.glsx.plat.core.web.R;
 import com.glsx.plat.jwt.util.JwtUtils;
@@ -170,7 +171,9 @@ public class SysLogAspect {
                 args.add(originArgs[i]);
             }
         }
-        log.info("Request Args   : {}", gson.toJson(args));
+        if (!OperateType.LOGIN.getType().equals(sysLogMark.action().getType())) {
+            log.info("Request Args   : {}", gson.toJson(args));
+        }
         // 操作人
         Map<String, Object> userInfo = parseUserInfoByToken(request);
         log.info("OperatorInfo   : {}", userInfo.toString());

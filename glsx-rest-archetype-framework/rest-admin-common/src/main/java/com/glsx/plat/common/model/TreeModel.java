@@ -44,7 +44,7 @@ public interface TreeModel<T> {
      *
      * @return
      */
-    String getOrder();
+    Integer getOrder();
 
     /**
      * 选中状态：true选中，false未选中

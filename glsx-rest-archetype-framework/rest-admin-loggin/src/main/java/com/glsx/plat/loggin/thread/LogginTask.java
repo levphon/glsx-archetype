@@ -20,9 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-/**
- * todo 挪到loggin组件里面
- */
 @Slf4j
 public class LogginTask implements Callable<String> {
 
@@ -100,14 +97,17 @@ public class LogginTask implements Callable<String> {
         }
         sysLog.setCreatedBy(operatorId);
         sysLog.setCreatedName(operator);
-
         sysLog.setIp(IpUtils.getIpAddr(request));
         sysLog.setCreatedDate(new Date());
 
         //保存特定信息
         if (sysLogMark.saveRequest()) {
             String requestData = gson.toJson(args);
-            sysLog.setRequestData(StringUtils.left(requestData, 2000));
+            if (OperateType.LOGIN.getType().equals(sysLogMark.action().getType())) {
+
+            } else {
+                sysLog.setRequestData(StringUtils.left(requestData, 2000));
+            }
         }
         return sysLog;
     }
