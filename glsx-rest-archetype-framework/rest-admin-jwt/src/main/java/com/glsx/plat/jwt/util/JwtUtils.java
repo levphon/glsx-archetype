@@ -121,6 +121,25 @@ public class JwtUtils<T extends BaseJwtUser> {
     }
 
     /**
+     * 创建缓存到redis的token
+     *
+     * @param jwtId
+     * @param userMap
+     * @param ttlSec
+     * @return
+     */
+    public String createCachedToken(String jwtId, Map<String, Object> userMap, Long ttlSec) {
+
+        stringRedisTemplate.delete(jwtId);
+
+        String token = create(jwtId, userMap, Instant.now());
+
+        stringRedisTemplate.opsForValue().set(jwtId, token, ttlSec, TimeUnit.SECONDS);
+        log.debug("create id {} token [" + token + "]", jwtId);
+        return token;
+    }
+
+    /**
      * 生成token
      *
      * @param jwtId   JWT中自定义的id
