@@ -115,7 +115,9 @@ public class JwtUtils<T extends BaseJwtUser> {
 
         String token = create(jwtId, userMap, Instant.now());
 
-        stringRedisTemplate.opsForValue().set(jwtId, token, properties.getTtl(), TimeUnit.SECONDS);
+        String value = (String) userMap.getOrDefault("account", token);
+
+        stringRedisTemplate.opsForValue().set(jwtId, value, properties.getTtl(), TimeUnit.SECONDS);
         log.debug("create id {} token [" + token + "]", jwtId);
         return token;
     }
@@ -134,7 +136,9 @@ public class JwtUtils<T extends BaseJwtUser> {
 
         String token = create(jwtId, userMap, Instant.now());
 
-        stringRedisTemplate.opsForValue().set(jwtId, token, ttlSec, TimeUnit.SECONDS);
+        String value = (String) userMap.getOrDefault("account", token);
+
+        stringRedisTemplate.opsForValue().set(jwtId, value, ttlSec, TimeUnit.SECONDS);
         log.debug("create id {} token [" + token + "]", jwtId);
         return token;
     }
