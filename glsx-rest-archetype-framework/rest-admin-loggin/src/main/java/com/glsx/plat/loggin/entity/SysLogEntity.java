@@ -81,6 +81,9 @@ public class SysLogEntity implements Serializable {
     @ExcelProperty(value = "操作结果")
     private String result;
 
+    @ExcelIgnore
+    private String platform;
+
     /**
      * 操作人
      */

@@ -16,6 +16,7 @@
         <result column="belong_org" jdbcType="VARCHAR" property="belongOrg"/>
         <result column="ip" jdbcType="VARCHAR" property="ip"/>
         <result column="result" jdbcType="VARCHAR" property="result"/>
+        <result column="platform" jdbcType="VARCHAR" property="platform"/>
         <result column="created_by" jdbcType="INTEGER" property="createdBy"/>
         <result column="created_name" jdbcType="VARCHAR" property="createdName"/>
         <result column="created_date" jdbcType="TIMESTAMP" property="createdDate"/>
@@ -25,7 +26,7 @@
           WARNING - @mbg.generated
         -->
         id, `application`, `module`, processed, `action`, request_data, remark, tenant, belong_org, ip,
-        `result`, created_by, created_name, created_date
+        `result`, platform, created_by, created_name, created_date
     </sql>
 
     <select id="search" resultMap="BaseResultMap">

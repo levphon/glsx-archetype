@@ -73,6 +73,7 @@ public class LogginTask implements Callable<String> {
         sysLog.setRemark(sysLogMark.value());
         Long operatorId = 0L;
         String operator = "";
+        String platform = "";
         if (OperateType.LOGIN.getType().equals(sysLogMark.action().getType())) {
             //登录没参数？？？，不可能
             if (args.get(0) instanceof String) {
@@ -83,6 +84,10 @@ public class LogginTask implements Callable<String> {
                     operator = loginArg.getString("account");
                 } else if (loginArg.containsKey("username")) {
                     operator = loginArg.getString("username");
+                }
+                if (loginArg.containsKey("platform")) {
+                    platform = loginArg.getString("platform");
+                    sysLog.setPlatform(platform);
                 }
             }
         } else {
