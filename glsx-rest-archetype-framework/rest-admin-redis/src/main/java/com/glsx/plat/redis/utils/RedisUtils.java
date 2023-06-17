@@ -493,7 +493,7 @@ public class RedisUtils {
      */
     public boolean zsHasKey(String key, Object value) {
         try {
-            long index = redisTemplate.opsForZSet().rank(key,value);
+            long index = redisTemplate.opsForZSet().rank(key, value);
             return index > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -643,7 +643,7 @@ public class RedisUtils {
      * @param value 值
      * @return
      */
-    public boolean lSet(String key, List<Object> value) {
+    public boolean cSet(String key, Collection<Object> value) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
@@ -661,7 +661,7 @@ public class RedisUtils {
      * @param time  时间(秒)
      * @return
      */
-    public boolean lSet(String key, List<Object> value, long time) {
+    public boolean cSet(String key, Collection<Object> value, long time) {
         try {
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0) {
